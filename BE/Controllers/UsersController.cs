@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.Models;
-
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SummerPracticeWebApi.Controllers
 {
@@ -77,7 +77,7 @@ namespace SummerPracticeWebApi.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return Ok("User deleted");
+            return NoContent();
         }
     }
 }   
