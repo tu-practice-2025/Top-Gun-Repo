@@ -9,7 +9,11 @@ namespace SummerPracticeWebApi.Models
         [Column("id")]
         
         public int UserId { get; set; }
+
+        public string name { get; set; }
         public string username { get; set; }
         public string password { get; set; }
+
+        public int next_month_income { get; set; }
     }
 }
