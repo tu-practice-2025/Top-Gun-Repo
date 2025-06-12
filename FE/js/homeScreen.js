@@ -53,6 +53,13 @@ $(document).ready(function () {
   const config = {
     type: "doughnut",
     data: data,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+    },
   };
 
   const ctx = document.getElementById("myChart").getContext("2d");
@@ -62,7 +69,6 @@ $(document).ready(function () {
     labels: ["Заплата", "Наем", "Залагане"],
     datasets: [
       {
-        label: "My First Dataset",
         data: [65, 59, 80],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
@@ -83,6 +89,11 @@ $(document).ready(function () {
     type: "bar",
     data: dataBar,
     options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
       scales: {
         y: {
           beginAtZero: true,
