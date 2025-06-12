@@ -41,7 +41,7 @@ namespace SummerPracticeWebApi.Controllers
         }
 
             // PUT: api/Transactions/5
-            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+           
             [HttpPut("{id}")]
         public async Task<IActionResult> PutTransaction(int id, Transaction transaction)
         {
@@ -68,23 +68,23 @@ namespace SummerPracticeWebApi.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Transaction updated");
         }
 
         // POST: api/Transactions
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+ 
         [HttpPost]
-        public async Task<ActionResult<Transaction>> PostTransaction(Transaction transaction)
+        public async Task<IActionResult> Post(Transaction transaction)
         {
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
+            return CreatedAtAction(nameof(Get), new { id = transaction.TransactionId }, transaction);
         }
 
         // DELETE: api/Transactions/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransaction(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var transaction = await _context.Transactions.FindAsync(id);
             if (transaction == null)
@@ -95,7 +95,7 @@ namespace SummerPracticeWebApi.Controllers
             _context.Transactions.Remove(transaction);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Transaction deleted");
         }
 
         private bool TransactionExists(int id)
