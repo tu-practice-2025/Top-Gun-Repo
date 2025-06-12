@@ -1,4 +1,6 @@
-﻿namespace SummerPracticeWebApi.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SummerPracticeWebApi.Models
 {
     public enum Currency
     {
@@ -20,18 +22,19 @@
 
     public class Transaction
     {
+        [Column("id")]
         public int TransactionId { get; set; }
-        public int CategoryId { get; set; }
-        public int MerchantId { get; set; }
-        public int UserId { get; set; }
+        public int category_id { get; set; }
+        public int merchant_id { get; set; }
+        public int user_id { get; set; }
 
-        public string MerchantName { get; set; }
+        public int card_number { get; set; }
 
-        public double Amount { get; set; }
+        public double amount { get; set; }
 
-        public Currency Currency { get; set; }
-        public DateTime Date { get; set; }
-        public PaymentType PaymentType { get; set; }
-        public TransactionType TransactionType { get; set; }
+        public Currency currency { get; set; }
+        public DateTime date { get; set; }
+        public PaymentType payment_type { get; set; }
+        public TransactionType type { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SummerPracticeWebApi.DataAccess.Context;
+using SummerPracticeWebApi.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SummerPracticeWebApi.Controllers
@@ -36,10 +37,19 @@ namespace SummerPracticeWebApi.Controllers
             return Ok(users);
 
         }
-            // POST api/<UsersController>
-            [HttpPost]
-        public void Post([FromBody] string value)
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] User user)
         {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            
+            return CreatedAtAction(nameof(Get),
+                                   new { id = user.UserId },
+                                   user);
         }
 
         // PUT api/<UsersController>/5
