@@ -1,12 +1,11 @@
-// Updated homeScreen.js - Replace your existing JavaScript with this
 $(document).ready(function () {
-  const API_BASE_URL = 'https://localhost:7121'; // Update with your actual API URL
+  const API_BASE_URL = 'https://localhost:7121'; 
   
   loadCategorySpendingData();
 
   async function loadCategorySpendingData() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Categories/spending`);
+      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/1`);//id is harcoded 
       const categoryData = await response.json();
       
       createDoughnutChart(categoryData);
@@ -75,7 +74,6 @@ $(document).ready(function () {
   }
 
   function createBarChart(apiData) {
-    // Get top 10 categories for bar chart
     const topCategories = apiData
       .filter(item => item.totalSpent > 0)
       .slice(0, 10);
@@ -84,7 +82,7 @@ $(document).ready(function () {
     const amounts = topCategories.map(item => item.totalSpent);
 
      const dataBar = {
-    labels: ["Заплата", "Наем", "Залагане"],
+    labels: ["Заплата", "Наем", "Разни"],
     datasets: [
       {
         data: [65, 59, 80],
@@ -126,13 +124,11 @@ $(document).ready(function () {
   }
 
   function updateLegend(apiData) {
-    // Get top categories for legend
     const topCategories = apiData
       .filter(item => item.totalSpent > 0)
-      .slice(0, 5); // Show top 5 in legend
-
+      .slice(0, 22);
     const legendContainer = document.querySelector('.legend-box');
-    legendContainer.innerHTML = ''; // Clear existing legend
+    legendContainer.innerHTML = '';
 
     const colors = [
       "rgba(255, 99, 132, 0.7)",
@@ -154,7 +150,6 @@ $(document).ready(function () {
   }
 
   function createChartsWithFallbackData() {
-    // Your original hardcoded data as fallback
     const data = {
       labels: [
         "Транспорт и авто услуги",
@@ -197,9 +192,8 @@ $(document).ready(function () {
     const ctx = document.getElementById("myChart").getContext("2d");
     const myChart = new Chart(ctx, config);
 
-    // Fallback bar chart
     const dataBar = {
-      labels: ["Заплата", "Наем", "Залагане"],
+      labels: ["Заплата", "Наем", "Разни"],
       datasets: [{
         data: [65, 59, 80],
         backgroundColor: [
