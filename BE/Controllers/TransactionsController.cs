@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SummerPracticeWebApi.DataAccess.Context;
+using SummerPracticeWebApi.DTOs;
 using SummerPracticeWebApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SummerPracticeWebApi.Controllers
 {
@@ -15,6 +18,7 @@ namespace SummerPracticeWebApi.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly AppDbContext _context;
+         
 
         public TransactionsController(AppDbContext context)
         {
@@ -42,7 +46,7 @@ namespace SummerPracticeWebApi.Controllers
 
             // PUT: api/Transactions/5
            
-            [HttpPut("{id}")]
+         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransaction(int id, Transaction transaction)
         {
             if (id != transaction.TransactionId)
@@ -101,6 +105,15 @@ namespace SummerPracticeWebApi.Controllers
         private bool TransactionExists(int id)
         {
             return _context.Transactions.Any(e => e.TransactionId == id);
+        }
+
+
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetTransactions(int userId, DataSetDateTime date)
+        {
+           
+
         }
     }
 }
