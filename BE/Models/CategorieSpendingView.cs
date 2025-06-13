@@ -8,5 +8,6 @@ namespace SummerPracticeWebApi.Models
         public string Code { get; set; }
         public string Name { get; set; }
         public decimal TotalSpent { get; set; }
+        public int? UserId { get; set; }
     }
 }
