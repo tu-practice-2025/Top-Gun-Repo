@@ -4,18 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/homeScreen.css" />
+    <title>Budget Tracker</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/homeScreen.js"></script>
   </head>
   <body>
-    <header>
-      <nav class="top-bar">
+    <header class="top-header">
+      <div class="top-bar">
         <h1>BUDGET TRACKER</h1>
-      </nav>
-      <div class="charts-container">
-        <div class="doughnut-chart">
-          <canvas id="myChart"></canvas>
+      </div>
+      <div class="nav-bar">
+        <a class="active" href="homeScreen.html">Home</a>
+        <a href="">Planning</a>
+      </div>
+      <div class="chart-section">
+        <div class="charts-container">
+          <div class="doughnut-chart">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+        <div class="legend-box">
+          <div class="legend-item">
+            <span class="color-dot" style="background-color: blue"></span>
+            <span class="label-text">Транспорт</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-dot" style="background-color: black"></span>
+            <span class="label-text">Храна</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-dot" style="background-color: red"></span>
+            <span class="label-text">Ток</span>
+          </div>
         </div>
         <div class="bar-chart">
           <canvas id="barChart"></canvas>
