@@ -133,7 +133,33 @@ namespace SummerPracticeWebApi.Controllers
                         Code = c.code,
                         Name = c.name,
                         TotalSpent = _context.Transactions
-                            .Where(t => t.category_id == c.CategoryId && t.user_id == userId)
+                            .Where(t => t.category_id == c.CategoryId && t.user_id == userId && !c.name.Contains("Income"))
+                            .Sum(t => (decimal?)t.amount) ?? 0,
+                        UserId = userId
+                    })
+                    .OrderByDescending(cs => cs.TotalSpent)
+                    .ToListAsync();
+
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("income/{userId}")]
+        public async Task<IActionResult> GetCategoryIncomeByUser(int userId)
+        {
+            try
+            {
+                var categorySpending = await _context.Categories
+                    .Select(c => new CategorieSpendingView
+                    {
+                        Code = c.code,
+                        Name = c.name,
+                        TotalSpent = _context.Transactions
+                            .Where(t => t.category_id == c.CategoryId && t.user_id == userId && c.name.Contains("Income"))
                             .Sum(t => (decimal?)t.amount) ?? 0,
                         UserId = userId
                     })
