@@ -5,11 +5,13 @@ $(document).ready(function () {
 
   async function loadCategorySpendingData() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/1`);//id is harcoded 
+      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/3`);//id is harcoded 
+      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/3`);
       const categoryData = await response.json();
+      const incomeData=await respone_income.json();
       
       createDoughnutChart(categoryData);
-      createBarChart(categoryData);
+      createBarChart(incomeData);
       updateLegend(categoryData);
       
     } catch (error) {
@@ -82,10 +84,11 @@ $(document).ready(function () {
     const amounts = topCategories.map(item => item.totalSpent);
 
      const dataBar = {
-    labels: ["Заплата", "Наем", "Разни"],
+    labels: labels,
     datasets: [
       {
-        data: [65, 59, 80],
+        label: "Category income",
+        data: amounts,
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(255, 159, 64, 0.2)",
