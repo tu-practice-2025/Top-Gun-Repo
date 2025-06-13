@@ -1,22 +1,58 @@
 <!DOCTYPE html>
-
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="./css/homeScreen.css" />
-        <script src="js/homeScreen.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/details.css" />
+    <script src="js/details.js"></script>
+    <title>Budget Tracker</title>
+</head>
 
-    <body>
-        <div>
-            <input
-            id="month"
-            type="month"
-            name="month"
-            required
-            pattern="[0-9]{4}-[0-9]{2}" />
-            <span class="validity"></span>
-        </div>        
-    </body>
+<body>
+    <header class="top-header">
+        <div class="top-bar">
+            <h1>BUDGET TRACKER</h1>
+        </div>
+
+        <div class="nav-bar">
+            <a href="homeScreen.html">Home</a>
+            <a href="">Planning</a>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <div class="category-display">
+            <span id="category-text">Category</span>
+        </div>
+
+        <div class="balance-box">
+            <span id="category-text">Balance</span>
+        </div>
+
+        <div class="month-picker">
+            <input id="month" type="month" name="month" required pattern="[0-9]{4}-[0-9]{2}" />
+        </div>
+
+        <div class="graph-placeholder">
+            BALANCE GRAPH
+        </div>
+
+        <div class="table-placeholder">
+            <table>
+                <tr>
+                    <th>DATE</th>
+                    <th>WHERE</th>
+                    <th>IBAN</th>
+                    <th>$</th>
+                </tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+            </table>
+        </div>
+
+        <script src="./js/details.js"></script>
+    </main>
+</body>
 </html>

@@ -1,0 +1,115 @@
+.top-bar {
+    background-color: rgba(51, 65, 92, 0.87);
+    color: white;
+    padding: 5px 0;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.nav-bar {
+    background-color: rgba(151, 157, 172, 0.77);
+    overflow: hidden;
+}
+
+.nav-bar a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.nav-bar a.active {
+    background-color: #33415c;
+    color: white;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #dfe1e5;
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 5px;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.category-display {
+    grid-column: 1;
+    grid-row: 1;
+    background-color: #33415c;
+    color: white;
+    text-align: center;
+    border-radius: 80px;
+    padding: 15px 25px;
+    font-size: 20px;
+    align-self: start;
+    justify-self: left;
+}
+
+.balance-box {
+    grid-column: 1;
+    grid-row: 3;
+    background-color: #7f8697;
+    color: black;
+    text-align: center;
+    padding: 15px 25px;
+    font-size: 18px;
+    border-radius: 80px;
+    justify-self: left;
+}
+
+.month-picker {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    align-self: center;
+}
+
+.month-picker input[type="month"] {
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+}
+
+.graph-placeholder {
+    grid-column: 1;
+    grid-row: 4;
+    width: 90%;
+    height: 300px;
+    background-color: white;
+    border: 1px solid #999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.table-placeholder {
+    grid-column: 2;
+    grid-row: 4;
+    width: 90%;
+    background-color: white;
+    border: 1px solid #999;
+    padding: 10px;
+}
+
+.table-placeholder table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-placeholder th, .table-placeholder td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
