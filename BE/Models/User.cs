@@ -14,6 +14,7 @@ namespace SummerPracticeWebApi.Models
         public string username { get; set; }
         public string password { get; set; }
 
-        public int next_month_income { get; set; }
+
+        public double? next_month_income { get; set; }
     }
 }
