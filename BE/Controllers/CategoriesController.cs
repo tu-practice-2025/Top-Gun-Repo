@@ -72,6 +72,24 @@ namespace SummerPracticeWebApi.Controllers
             return Ok("Category updated");
         }
 
+
+        [HttpGet("spending")]
+        public async Task<IActionResult> GetCategorySpending()
+        {
+            try
+            {
+                var categorySpending = await _context.CategorySpending
+                    .OrderByDescending(x => x.TotalSpent)
+                    .ToListAsync();
+
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
