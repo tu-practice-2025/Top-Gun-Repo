@@ -6,11 +6,8 @@ namespace SummerPracticeWebApi.Models
     {
         [Column("id")]
         public int CardId { get; set; }
-        public int mcc_code { get; set; }
-        public string mcc_name { get; set; }
-        public string mcc_desc { get; }
-
-        public string mcc_cat { get; set; }
-        public int cat_id { get; set; }
+        public string card_number { get; set; }
+        public int user_id { get; set; }
     }
+
 }
