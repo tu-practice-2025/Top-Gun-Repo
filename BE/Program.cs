@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SummerPracticeWebApi.DataAccess;
 using SummerPracticeWebApi.DataAccess.Context;
+using SummerPracticeWebApi.Services.Implementations;
+using SummerPracticeWebApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,16 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader(); // Allows any headers
     });
 });
+
+
+
+
+
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
+
+
+
 
 var app = builder.Build();
 
