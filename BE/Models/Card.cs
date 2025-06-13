@@ -10,4 +10,5 @@ namespace SummerPracticeWebApi.Models
         public string card_number { get; set; }
         public int user_id { get; set; }
     }
+
 }

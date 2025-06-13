@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SummerPracticeWebApi.DataAccess;
 using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.Services.Implementations;
 using SummerPracticeWebApi.Services.Interfaces;
@@ -12,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

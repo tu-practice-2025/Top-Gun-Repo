@@ -13,7 +13,6 @@ namespace SummerPracticeWebApi.Models
         }
         public string mcc_desc { get; set; }
         public string mcc_cat { get; set; }
-        public int cat_id { get; set; }
 
         
     }

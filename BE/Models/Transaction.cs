@@ -4,7 +4,6 @@ namespace SummerPracticeWebApi.Models
 {
 
 
-
     public class Transaction
     {
         [Column("id")]

@@ -72,6 +72,24 @@ namespace SummerPracticeWebApi.Controllers
             return Ok("Category updated");
         }
 
+
+        [HttpGet("spending")]
+        public async Task<IActionResult> GetCategorySpending()
+        {
+            try
+            {
+                var categorySpending = await _context.CategorySpending
+                    .OrderByDescending(x => x.TotalSpent)
+                    .ToListAsync();
+
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -102,6 +120,58 @@ namespace SummerPracticeWebApi.Controllers
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.CategoryId == id);
+        }
+
+        [HttpGet("spending/{userId}")]
+        public async Task<IActionResult> GetCategorySpendingByUser(int userId)
+        {
+            try
+            {
+                var categorySpending = await _context.Categories
+                    .Select(c => new CategorieSpendingView
+                    {
+                        Code = c.code,
+                        Name = c.name,
+                        TotalSpent = _context.Transactions
+                            .Where(t => t.category_id == c.CategoryId && t.user_id == userId && !c.name.Contains("Income"))
+                            .Sum(t => (decimal?)t.amount) ?? 0,
+                        UserId = userId
+                    })
+                    .OrderByDescending(cs => cs.TotalSpent)
+                    .ToListAsync();
+
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("income/{userId}")]
+        public async Task<IActionResult> GetCategoryIncomeByUser(int userId)
+        {
+            try
+            {
+                var categorySpending = await _context.Categories
+                    .Select(c => new CategorieSpendingView
+                    {
+                        Code = c.code,
+                        Name = c.name,
+                        TotalSpent = _context.Transactions
+                            .Where(t => t.category_id == c.CategoryId && t.user_id == userId && c.name.Contains("Income"))
+                            .Sum(t => (decimal?)t.amount) ?? 0,
+                        UserId = userId
+                    })
+                    .OrderByDescending(cs => cs.TotalSpent)
+                    .ToListAsync();
+
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

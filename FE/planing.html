@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/planing.css" />
+    <title>Budget Tracker</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/planing.js"></script>
+  </head>
+  <body>
+    <header class="top-header">
+      <div class="top-bar">
+        <h1>BUDGET TRACKER</h1>
+      </div>
+      <div class="nav-bar">
+        <a href="homeScreen.html">Home</a>
+        <a class="active" href="planing.html">Planning</a>
+      </div>
+    </header>
+
+    <table class="expenses-tab">
+      <tr>
+        <th>Category</th>
+        <th>$</th>
+      </tr>
+      <tr>
+        <td>Храна</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>Ток</td>
+        <td>200</td>
+      </tr>
+      <tr>
+        <td>Гориво</td>
+        <td>110</td>
+      </tr>
+    </table>
+
+    <div class="footer-progress">
+      <div class="progress-inputs">
+        <input type="number" id="currentValue" placeholder="0" min="0" />
+        <div class="progress-container">
+          <div class="progress">
+            <div class="progress-bar" data-done="0">0%</div>
+          </div>
+        </div>
+        <input type="number" id="maxValue" placeholder="$" min="1" />
+      </div>
+    </div>
+  </body>
+</html>

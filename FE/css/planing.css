@@ -1,0 +1,131 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.top-bar {
+  background-color: rgba(51, 65, 92, 0.87);
+  color: white;
+  padding: 5px 0;
+  text-align: center;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.nav-bar {
+  background-color: rgba(151, 157, 172, 0.77);
+  overflow: hidden;
+}
+
+.nav-bar a {
+  float: left;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.nav-bar a.active {
+  background-color: #33415c;
+  color: white;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.expenses-tab {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.expenses-tab th,
+.expenses-tab td {
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.expenses-tab th {
+  background-color: #33415c;
+  color: #ccc;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.expenses-tab tr:nth-child(even) {
+  background-color: rgba(151, 157, 172, 0.77);
+}
+
+.expenses-tab tr:hover {
+  background-color: rgba(51, 65, 92, 0.87);
+}
+
+.footer-progress {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: none;
+}
+
+.progress-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+#currentValue,
+#maxValue {
+  width: 60px;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.progress-container {
+  flex: 1;
+}
+
+.progress {
+  background-color: rgba(151, 157, 172, 0.77);
+  height: 30px;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  font-weight: bold;
+  color: white;
+  height: 100%;
+  width: 0;
+  background-color: #33415c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.6s ease-in-out;
+  border-radius: 20px;
+}
+
+
