@@ -17,11 +17,22 @@ namespace SummerPracticeWebApi.DataAccess.Context
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<FutureTransaction> Future_transactions { get; set; }
+        public DbSet<CategorieSpendingView> CategorySpending { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-      
+            modelBuilder.Entity<CategorieSpendingView>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("category_spending");
+                entity.Property(e => e.Code).HasColumnName("code");
+                entity.Property(e => e.Name).HasColumnName("name");
+                entity.Property(e => e.TotalSpent).HasColumnName("total_spent");
+            });
+
+
         }
     }
 }
