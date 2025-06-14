@@ -8,7 +8,7 @@ body {
 }
 
 .top-bar {
-  background-color: rgba(51, 65, 92, 0.87);
+  background-color: #e2001a;
   color: white;
   padding: 5px 0;
   text-align: center;
@@ -31,42 +31,85 @@ body {
 }
 
 .nav-bar a.active {
-  background-color: #33415c;
+  background-color: #c13232;
   color: white;
 }
 
-.content {
+.main-layout {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 0;
-  padding: 20px;
-  box-sizing: border-box;
+  justify-content: flex-start;
+  padding: 40px 20px;
+}
+
+.container-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.table-section {
+  width: 100%;
+  max-width: 800px;
+}
+
+.empty-message {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.table-wrapper {
+  max-height: 250px;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.total-display {
+  font-size: 16px;
+  font-weight: bold;
+  color: #33415c;
+  min-width: 100px;
+  text-align: left;
 }
 
 .expenses-tab {
   border-collapse: collapse;
   width: 100%;
-  max-width: 500px;
   background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
-  overflow: hidden;
-  font-size: 14px;
 }
 
 .expenses-tab th,
 .expenses-tab td {
-  padding: 8px 12px;
+  padding: 14px 18px;
   text-align: center;
 }
 
 .expenses-tab th {
   background-color: #33415c;
   color: #ccc;
-  font-size: 12px;
+  font-size: 20px;
   font-weight: bold;
+}
+
+.expenses-tab thead th {
+  position: sticky;
+  top: 0;
+  background-color: #33415c;
+  color: #ccc;
+  z-index: 1;
 }
 
 .expenses-tab tr:nth-child(even) {
@@ -77,10 +120,106 @@ body {
   background-color: rgba(51, 65, 92, 0.87);
 }
 
+.add-row-btn {
+  margin-top: 12px;
+  float: right;
+  padding: 8px 16px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  background-color: #33415c;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.add-row-btn:hover {
+  background-color: #1f2a3a;
+}
+
+.delete-cell {
+  cursor: pointer;
+  color: #c13232;
+  font-size: 18px;
+  text-align: center;
+}
+
+.delete-cell:hover {
+  color: #ff0000;
+}
+
+.edit-cell {
+  cursor: pointer;
+  color: #0077cc;
+  font-size: 18px;
+  text-align: center;
+}
+
+.edit-cell:hover {
+  color: #005299;
+}
+
+.popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+}
+
+.popup-content input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.popup-buttons button {
+  flex: 1;
+  padding: 8px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#confirmAdd {
+  background-color: #33415c;
+  color: white;
+}
+
+#cancelAdd {
+  background-color: #ccc;
+}
+
 .footer-progress {
   width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
+  max-width: 800px;
+  display: flex;
+  justify-content: center;
   background-color: none;
 }
 
@@ -88,17 +227,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 800px;
-  margin: 0 auto;
-  gap: 10px;
+  width: 100%;
+  gap: 20px;
 }
 
 #currentValue,
 #maxValue {
-  width: 60px;
-  padding: 5px;
+  width: 80px;
+  padding: 8px;
   font-size: 16px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   text-align: center;
 }
@@ -109,15 +247,16 @@ body {
 
 .progress {
   background-color: rgba(151, 157, 172, 0.77);
-  height: 30px;
+  height: 32px;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
 }
 
 .progress-bar {
   font-weight: bold;
   color: white;
+  font-size: 14px;
   height: 100%;
   width: 0;
   background-color: #33415c;
@@ -125,7 +264,5 @@ body {
   align-items: center;
   justify-content: center;
   transition: width 0.6s ease-in-out;
-  border-radius: 20px;
+  border-radius: 24px;
 }
-
-

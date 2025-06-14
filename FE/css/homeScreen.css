@@ -4,7 +4,7 @@ body {
 }
 
 .top-bar {
-  background-color: rgba(51, 65, 92, 0.87);
+  background-color: #e2001a;
   color: white;
   padding: 5px 0;
   text-align: center;
@@ -27,7 +27,7 @@ body {
 }
 
 .nav-bar a.active {
-  background-color: #33415c;
+  background-color: #c13232;
   color: white;
 }
 
