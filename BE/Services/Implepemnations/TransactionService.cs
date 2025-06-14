@@ -87,9 +87,10 @@ namespace SummerPracticeWebApi.Services.Implementations
             {
                 Expenses = expenses,
                 Income = incomes
+                
             };
         }
 
-    \
+    
     }
 }
