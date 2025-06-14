@@ -146,5 +146,20 @@ namespace SummerPracticeWebApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // GET: api/Categories/spending/Transport/5
+        [HttpGet("spending/{categoryname}/{userId}")]
+        public async Task<IActionResult> GetSpecificCategorySpendingByUser(string categoryname, int userId)
+        {
+            try
+            {
+                var categoryIncome = await _categoryService.GetSpecificCategorySpendingByUser(categoryname, userId);
+                return Ok(categoryIncome);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

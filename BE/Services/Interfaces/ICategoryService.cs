@@ -12,5 +12,6 @@ namespace SummerPracticeWebApi.Services.Interfaces
         Task<IEnumerable<CategorieSpendingView>> GetCategorySpendingAsync();
         Task<IEnumerable<CategorieSpendingView>> GetCategorySpendingByUserAsync(int userId);
         Task<IEnumerable<CategorieSpendingView>> GetCategoryIncomeByUserAsync(int userId);
+        Task<CategorieSpendingView?> GetSpecificCategorySpendingByUser(string categoryName, int userId);
     }
 }

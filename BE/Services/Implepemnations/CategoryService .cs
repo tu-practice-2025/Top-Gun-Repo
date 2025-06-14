@@ -114,5 +114,22 @@ namespace SummerPracticeWebApi.Services.Implepemnations
         {
             return await _context.Categories.AnyAsync(e => e.CategoryId == id);
         }
+
+        public async Task<CategorieSpendingView?> GetSpecificCategorySpendingByUser(string categoryName, int userId)
+        {
+
+            return await _context.Categories
+                .Where(c => c.name.Equals(categoryName)) 
+                .Select(c => new CategorieSpendingView
+                {
+                    Code = c.code,
+                    Name = c.name,
+                    TotalSpent = _context.Transactions
+                        .Where(t => t.category_id == c.CategoryId && t.user_id == userId)
+                        .Sum(t => (decimal?)t.amount) ?? 0,
+                    UserId = userId
+                })
+                .FirstOrDefaultAsync();
+        }
     }
 }
