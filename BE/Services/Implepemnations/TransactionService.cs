@@ -90,6 +90,6 @@ namespace SummerPracticeWebApi.Services.Implementations
             };
         }
 
-    \
+    
     }
 }
