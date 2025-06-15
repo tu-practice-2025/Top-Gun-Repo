@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.Models;
 using SummerPracticeWebApi.Services.Interfaces;
 
@@ -9,10 +11,12 @@ namespace SummerPracticeWebApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly AppDbContext _context;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, AppDbContext context)
         {
             _categoryService = categoryService;
+            _context = context;
         }
 
         // GET: api/Categories
@@ -214,6 +218,33 @@ namespace SummerPracticeWebApi.Controllers
             {
                 var categoryIncome = await _categoryService.GetCategoryIncomeByUserForMonthAsync(userId, year, month);
                 return Ok(categoryIncome);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+ // GET: api/Categories/transactions/month/5?year=2025&month=6
+        [HttpGet("transactions/month/{userId}")]
+        public async Task<IActionResult> GetUserTransactionsByMonth(int userId, [FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+
+                var transactions = await _context.TransactionDetailsViews
+                    .Where(t => t.UserId == userId && 
+                               t.TransactionYear == year && 
+                               t.TransactionMonth == month)
+                    .OrderByDescending(t => t.Date)
+                    .ToListAsync();
+
+                if (!transactions.Any())
+                {
+                    return Ok(new { message = "No transactions found for the specified month", data = transactions });
+                }
+
+                return Ok(transactions);
             }
             catch (Exception ex)
             {
