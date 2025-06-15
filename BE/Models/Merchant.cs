@@ -2,6 +2,7 @@
 
 namespace SummerPracticeWebApi.Models
 {
+    [Table("merchants")]
     public class Merchant
     {
         [Column("id")]

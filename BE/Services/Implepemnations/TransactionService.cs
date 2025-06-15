@@ -10,87 +10,86 @@ using SummerPracticeWebApi.Services.Interfaces;
 
 namespace SummerPracticeWebApi.Services.Implementations
 {
-    /// <summary>
-    /// Service implementation that retrieves and computes
-    /// monthly expense and income percentages by category.
-    /// </summary>
+
     public class TransactionService : ITransactionService
     {
+        //injektirane AppDbCntex
+
         private readonly AppDbContext _context;
 
         public TransactionService(AppDbContext context)
         {
-            _context = context;
+                       _context = context;
         }
 
-        /// <summary>
-        /// Returns both expenses and incomes for the given user and month,
-        /// grouped by category and expressed as percentages of the total.
-        /// </summary>
-        public async Task<TransactionListDTO> GetMonthlyTransactionsAsync(int userId, DateTime date)
+        public async Task<TransactionDTO> GetMonthlyTransactionAsync(int userID, DateTime date)
         {
-            // 1) Determine month boundaries
-            var start = new DateTime(date.Year, date.Month, 1);
-            var end = start.AddMonths(1);
+            // Get the first day of the month
+            var startDate = new DateTime(date.Year, date.Month, 1);
+            // Get the last day of the month
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+            // Query to get transactions for the user within the specified date range
 
-            // 2) Load category names into a lookup
-            var categoryNames = await _context.Categories
-                .ToDictionaryAsync(c => c.CategoryId, c => c.name);
+           // Dictionary<int, string> categoryNames = new Dictionary<int, string>();
 
-            // 3) Sum expenses (type = 'E')
-            var expenseSums = await _context.Transactions
-                .Where(t => t.user_id == userId
-                         && t.date >= start
-                         && t.date < end
-                         && t.type == 'E')
+            var categoryNames = await _context.Categories 
+                .ToDictionaryAsync(c => c.CategoryId, c=> c.name);
+
+            var expenseSum = await _context.Transactions
+                .Where(t => t.user_id == userID && t.type == 'E' && t.date >= startDate && t.date <= endDate)
                 .GroupBy(t => t.category_id)
-                .Select(g => new { CatId = g.Key, Sum = g.Sum(x => x.amount) })
-                .ToListAsync();
 
-            // 4) Sum incomes (type = 'I')
-            var incomeSums = await _context.Transactions
-                .Where(t => t.user_id == userId
-                         && t.date >= start
-                         && t.date < end
-                         && t.type == 'I')
-                .GroupBy(t => t.category_id)
-                .Select(g => new { CatId = g.Key, Sum = g.Sum(x => x.amount) })
-                .ToListAsync();
+                //за всяка транзакция x в групата g извличаш x.amount и ги събираш.
+                .Select(g => new {CatId = g.Key, Sum = g.Sum(x=> x.amount)}).ToListAsync();
 
-            // 5) Compute totals
-            double totalExpense = expenseSums.Sum(x => x.Sum);
-            double totalIncome = incomeSums.Sum(x => x.Sum);
 
-            // 6) Project to DTOs
-            var expenses = expenseSums
-                .Select(x => new TransactionListDTO
-                {
-                    CategoryName = categoryNames.GetValueOrDefault(x.CatId, "Unknown"),
-                    PercentageAmount = totalExpense == 0
-                        ? 0
-                        : Math.Round(x.Sum / totalExpense * 100, 2)
-                })
-                .ToList();
+            double totalExpenses = expenseSum.Sum(x=>x.Sum);
 
-            var incomes = incomeSums
-                .Select(x => new TransactionListDTO
-                {
-                    CategoryName = categoryNames.GetValueOrDefault(x.CatId, "Unknown"),
-                    PercentageAmount = totalIncome == 0
-                        ? 0
-                        : Math.Round(x.Sum / totalIncome * 100, 2)
-                })
-                .ToList();
-
-            // 7) Return the combined DTO
-            return new TransactionListDTO
+            var expenses = expenseSum.Select(x => new TransactionListDTO
             {
-                //Expenses = expenses,
-                //Income = incomes
+                CategoryName = categoryNames.GetValueOrDefault(x.CatId,"Unknown"),
+                PercentageAmount = totalExpenses == 0
+                ? 0
+                : Math.Round(x.Sum / totalExpenses * 100, 2),
                 
+            }).ToList();
+
+
+
+            var incomeSum = await _context.Transactions
+
+                .Where(t => t.user_id == userID && t.type == 'I' && t.date >= startDate && t.date <= endDate)
+                .GroupBy(t => t.category_id)
+                .Select(g => new { CatId = g.Key, Sum = g.Sum(x => x.amount) })
+                .ToListAsync();
+
+            double totalIncome = incomeSum.Sum(x => x.Sum);
+
+            var incomes = incomeSum.Select(x => new TransactionListDTO
+            {
+                CategoryName = categoryNames.GetValueOrDefault(x.CatId, "Unknown"),
+                PercentageAmount = totalIncome == 0
+                    ? 0
+                    : Math.Round(x.Sum / totalIncome * 100, 2),
+            })
+            .ToList();
+
+
+
+
+
+
+            return new TransactionDTO
+            {
+                Expenses = expenses,
+                Income = incomes
             };
+
         }
 
-    
+
     }
+
+
+
 }
