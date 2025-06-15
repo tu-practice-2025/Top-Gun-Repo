@@ -85,8 +85,8 @@ namespace SummerPracticeWebApi.Services.Implementations
             // 7) Return the combined DTO
             return new TransactionListDTO
             {
-                Expenses = expenses,
-                Income = incomes
+                //Expenses = expenses,
+                //Income = incomes
                 
             };
         }

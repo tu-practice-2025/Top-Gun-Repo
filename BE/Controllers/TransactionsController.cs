@@ -108,12 +108,12 @@ namespace SummerPracticeWebApi.Controllers
         }
 
 
-
+        /*
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetTransactions(int userId, DataSetDateTime date)
         {
            
 
-        }
+        }*/
     }
 }
