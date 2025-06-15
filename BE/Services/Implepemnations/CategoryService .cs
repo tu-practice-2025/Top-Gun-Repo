@@ -19,6 +19,10 @@ namespace SummerPracticeWebApi.Services.Implepemnations
             return await _context.Categories.ToListAsync();
         }
 
+        private async Task<bool> CategoryExistsAsync(int id)
+        {
+            return await _context.Categories.AnyAsync(e => e.CategoryId == id);
+        }
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
             return await _context.Categories
@@ -110,10 +114,6 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                 .ToListAsync();
         }
 
-        private async Task<bool> CategoryExistsAsync(int id)
-        {
-            return await _context.Categories.AnyAsync(e => e.CategoryId == id);
-        }
 
         public async Task<CategorieSpendingView?> GetSpecificCategorySpendingByUser(string categoryName, int userId)
         {
@@ -131,5 +131,61 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                 })
                 .FirstOrDefaultAsync();
         }
+        //monthly spending by specific year and month
+        public async Task<IEnumerable<CategorieSpendingView>> GetCategorySpendingByUserForMonthAsync(int userId, int year, int month)
+        {
+            return await _context.Categories
+                .Select(c => new CategorieSpendingView
+                {
+                    Code = c.code,
+                    Name = c.name,
+                    TotalSpent = _context.Transactions
+                        .Where(t => t.category_id == c.CategoryId &&
+                                   t.user_id == userId &&
+                                   !c.name.Contains("Income") &&
+                                   t.date.Year == year &&
+                                   t.date.Month == month)
+                        .Sum(t => (decimal?)t.amount) ?? 0,
+                    UserId = userId
+                })
+                .OrderByDescending(cs => cs.TotalSpent)
+                .ToListAsync();
+        }
+
+        // monthly income by specific year and month
+        public async Task<IEnumerable<CategorieSpendingView>> GetCategoryIncomeByUserForMonthAsync(int userId, int year, int month)
+        {
+            return await _context.Categories
+                .Select(c => new CategorieSpendingView
+                {
+                    Code = c.code,
+                    Name = c.name,
+                    TotalSpent = _context.Transactions
+                        .Where(t => t.category_id == c.CategoryId &&
+                                   t.user_id == userId &&
+                                   c.name.Contains("Income") &&
+                                   t.date.Year == year &&
+                                   t.date.Month == month)
+                        .Sum(t => (decimal?)t.amount) ?? 0,
+                    UserId = userId
+                })
+                .OrderByDescending(cs => cs.TotalSpent)
+                .ToListAsync();
+        }
+
+        //current month spending
+        public async Task<IEnumerable<CategorieSpendingView>> GetCurrentMonthCategorySpendingByUserAsync(int userId)
+        {
+            var currentDate = DateTime.Now;
+            return await GetCategorySpendingByUserForMonthAsync(userId, currentDate.Year, currentDate.Month);
+        }
+
+        //current month income
+        public async Task<IEnumerable<CategorieSpendingView>> GetCurrentMonthCategoryIncomeByUserAsync(int userId)
+        {
+            var currentDate = DateTime.Now;
+            return await GetCategoryIncomeByUserForMonthAsync(userId, currentDate.Year, currentDate.Month);
+        }
+
     }
 }
