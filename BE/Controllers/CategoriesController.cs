@@ -161,5 +161,64 @@ namespace SummerPracticeWebApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // GET: api/Categories/spending/current-month/5
+        [HttpGet("spending/current-month/{userId}")]
+        public async Task<IActionResult> GetCurrentMonthCategorySpendingByUser(int userId)
+        {
+            try
+            {
+                var categorySpending = await _categoryService.GetCurrentMonthCategorySpendingByUserAsync(userId);
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/spending/month/5?year=2025&month=6
+        [HttpGet("spending/month/{userId}")]
+        public async Task<IActionResult> GetCategorySpendingByUserForMonth(int userId, [FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                var categorySpending = await _categoryService.GetCategorySpendingByUserForMonthAsync(userId, year, month);
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        // GET: api/Categories/income/current-month/5
+        [HttpGet("income/current-month/{userId}")]
+        public async Task<IActionResult> GetCurrentMonthCategoryIncomeByUser(int userId)
+        {
+            try
+            {
+                var categoryIncome = await _categoryService.GetCurrentMonthCategoryIncomeByUserAsync(userId);
+                return Ok(categoryIncome);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/income/month/5?year=2025&month=6
+        [HttpGet("income/month/{userId}")]
+        public async Task<IActionResult> GetCategoryIncomeByUserForMonth(int userId, [FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                var categoryIncome = await _categoryService.GetCategoryIncomeByUserForMonthAsync(userId, year, month);
+                return Ok(categoryIncome);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

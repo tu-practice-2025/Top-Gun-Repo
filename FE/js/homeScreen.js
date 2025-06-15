@@ -5,8 +5,8 @@ $(document).ready(function () {
 
   async function loadCategorySpendingData() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/3`);//id is harcoded 
-      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/3`);
+      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/3`);//id is harcoded 
+      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
       const categoryData = await response.json();
       const incomeData=await respone_income.json();
       
