@@ -5,11 +5,13 @@ $(document).ready(function () {
 
   async function loadCategorySpendingData() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/1`);//id is harcoded 
+      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/3`);//id is harcoded 
+      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
       const categoryData = await response.json();
+      const incomeData=await respone_income.json();
       
       createDoughnutChart(categoryData);
-      createBarChart(categoryData);
+      createBarChart(incomeData);
       updateLegend(categoryData);
       
     } catch (error) {
@@ -61,12 +63,16 @@ $(document).ready(function () {
       type: "doughnut",
       data: data,
       options: {
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-      },
+        plugins: { legend: { display: false } },
+          onClick: function(evt, elements) {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    const selectedCategory = labels[index];
+                    localStorage.setItem("selectedCategory", selectedCategory);
+                    window.location.href = "details.html";
+          }
+        }
+      }
     };
 
     const ctx = document.getElementById("myChart").getContext("2d");
@@ -82,10 +88,11 @@ $(document).ready(function () {
     const amounts = topCategories.map(item => item.totalSpent);
 
      const dataBar = {
-    labels: ["Заплата", "Наем", "Разни"],
+    labels: labels,
     datasets: [
       {
-        data: [65, 59, 80],
+        label: "Category income",
+        data: amounts,
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(255, 159, 64, 0.2)",
@@ -100,6 +107,18 @@ $(document).ready(function () {
       },
     ],
   };
+
+  document.getElementById("myChart").onclick = function(evt) {
+    const activePoints = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+    if (activePoints.length > 0) {
+        const firstPoint = activePoints[0];
+        const label = myChart.data.labels[firstPoint.index];
+        
+        localStorage.setItem("selectedCategory", label);
+        
+        window.location.href = "details.html";
+    }
+};
 
 
     const configBar = {

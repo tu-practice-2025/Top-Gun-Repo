@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SummerPracticeWebApi.DataAccess.Context;
+﻿using Microsoft.AspNetCore.Mvc;
 using SummerPracticeWebApi.Models;
+using SummerPracticeWebApi.Services.Interfaces;
 
 namespace SummerPracticeWebApi.Controllers
 {
@@ -14,74 +8,107 @@ namespace SummerPracticeWebApi.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(AppDbContext context)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         // GET: api/Categories
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var categories = await _context.Transactions.ToListAsync();
-            return Ok(categories);
+            try
+            {
+                var categories = await _categoryService.GetAllCategoriesAsync();
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var category = await _context.Categories
-                .Where(x => x.CategoryId == id)
-                .OrderBy(x => x.CategoryId)
-                .FirstOrDefaultAsync();
-
-            return Ok(category);
-        }
-
-        // PUT: api/Categories/5
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Category category)
-        {
-            if (id != category.CategoryId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(category).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
+                var category = await _categoryService.GetCategoryByIdAsync(id);
+                if (category == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                return Ok(category);
             }
-
-            return Ok("Category updated");
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
+        // POST: api/Categories/
+        [HttpPost]
+        public async Task<IActionResult> Post(Category category)
+        {
+            try
+            {
+                var createdCategory = await _categoryService.CreateCategoryAsync(category);
+                return CreatedAtAction(nameof(Get), new { id = createdCategory.CategoryId }, createdCategory);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
+        // PUT: api/Categories/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, Category category)
+        {
+            try
+            {
+                var success = await _categoryService.UpdateCategoryAsync(id, category);
+                if (!success)
+                {
+                    return BadRequest("Invalid category data or category not found");
+                }
+                return Ok("Category updated");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // DELETE: api/Categories/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            try
+            {
+                var success = await _categoryService.DeleteCategoryAsync(id);
+                if (!success)
+                {
+                    return NotFound();
+                }
+                return Ok("Category deleted");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/spending
         [HttpGet("spending")]
         public async Task<IActionResult> GetCategorySpending()
         {
             try
             {
-                var categorySpending = await _context.CategorySpending
-                    .OrderByDescending(x => x.TotalSpent)
-                    .ToListAsync();
-
+                var categorySpending = await _categoryService.GetCategorySpendingAsync();
                 return Ok(categorySpending);
             }
             catch (Exception ex)
@@ -90,57 +117,103 @@ namespace SummerPracticeWebApi.Controllers
             }
         }
 
-        // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<IActionResult> Post(Category category)
-        {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Get), new { id = category.CategoryId }, category);
-        }
-
-        // DELETE: api/Categories/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
-        {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return Ok("Category deleted");
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
-        }
-
+        // GET: api/Categories/spending/5
         [HttpGet("spending/{userId}")]
         public async Task<IActionResult> GetCategorySpendingByUser(int userId)
         {
             try
             {
-                var categorySpending = await _context.Categories
-                    .Select(c => new CategorieSpendingView
-                    {
-                        Code = c.code,
-                        Name = c.name,
-                        TotalSpent = _context.Transactions
-                            .Where(t => t.category_id == c.CategoryId && t.user_id == userId)
-                            .Sum(t => (decimal?)t.amount) ?? 0,
-                        UserId = userId
-                    })
-                    .OrderByDescending(cs => cs.TotalSpent)
-                    .ToListAsync();
-
+                var categorySpending = await _categoryService.GetCategorySpendingByUserAsync(userId);
                 return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/income/5
+        [HttpGet("income/{userId}")]
+        public async Task<IActionResult> GetCategoryIncomeByUser(int userId)
+        {
+            try
+            {
+                var categoryIncome = await _categoryService.GetCategoryIncomeByUserAsync(userId);
+                return Ok(categoryIncome);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/spending/Transport/5
+        [HttpGet("spending/{categoryname}/{userId}")]
+        public async Task<IActionResult> GetSpecificCategorySpendingByUser(string categoryname, int userId)
+        {
+            try
+            {
+                var categoryIncome = await _categoryService.GetSpecificCategorySpendingByUser(categoryname, userId);
+                return Ok(categoryIncome);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/spending/current-month/5
+        [HttpGet("spending/current-month/{userId}")]
+        public async Task<IActionResult> GetCurrentMonthCategorySpendingByUser(int userId)
+        {
+            try
+            {
+                var categorySpending = await _categoryService.GetCurrentMonthCategorySpendingByUserAsync(userId);
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/spending/month/5?year=2025&month=6
+        [HttpGet("spending/month/{userId}")]
+        public async Task<IActionResult> GetCategorySpendingByUserForMonth(int userId, [FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                var categorySpending = await _categoryService.GetCategorySpendingByUserForMonthAsync(userId, year, month);
+                return Ok(categorySpending);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        // GET: api/Categories/income/current-month/5
+        [HttpGet("income/current-month/{userId}")]
+        public async Task<IActionResult> GetCurrentMonthCategoryIncomeByUser(int userId)
+        {
+            try
+            {
+                var categoryIncome = await _categoryService.GetCurrentMonthCategoryIncomeByUserAsync(userId);
+                return Ok(categoryIncome);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/Categories/income/month/5?year=2025&month=6
+        [HttpGet("income/month/{userId}")]
+        public async Task<IActionResult> GetCategoryIncomeByUserForMonth(int userId, [FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                var categoryIncome = await _categoryService.GetCategoryIncomeByUserForMonthAsync(userId, year, month);
+                return Ok(categoryIncome);
             }
             catch (Exception ex)
             {

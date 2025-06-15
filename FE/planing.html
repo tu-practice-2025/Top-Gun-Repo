@@ -9,46 +9,75 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/planing.js"></script>
   </head>
+
   <body>
     <header class="top-header">
-      <div class="top-bar">
-        <h1>BUDGET TRACKER</h1>
-      </div>
-      <div class="nav-bar">
-        <a href="homeScreen.html">Home</a>
-        <a class="active" href="planing.html">Planning</a>
-      </div>
+        <div class="top-bar">
+            <h1>BUDGET TRACKER</h1>
+            <div class="pulse-circles-top">
+                <div class="circle circle1"></div>
+                <div class="circle circle2"></div>
+                <div class="circle circle3"></div>
+                <div class="circle circle4"></div>
+                <div class="circle circle5"></div>
+            </div>
+        </div> 
     </header>
 
-    <table class="expenses-tab">
-      <tr>
-        <th>Category</th>
-        <th>$</th>
-      </tr>
-      <tr>
-        <td>Храна</td>
-        <td>100</td>
-      </tr>
-      <tr>
-        <td>Ток</td>
-        <td>200</td>
-      </tr>
-      <tr>
-        <td>Гориво</td>
-        <td>110</td>
-      </tr>
-    </table>
+    <div class="nav-bar">
+        <a href="homeScreen.html">Home</a>
+        <a href="details.html">Details</a>
+        <a class="active" href="planing.html">Planning</a>
+    </div>
 
-    <div class="footer-progress">
-      <div class="progress-inputs">
-        <input type="number" id="currentValue" placeholder="0" min="0" />
-        <div class="progress-container">
-          <div class="progress">
-            <div class="progress-bar" data-done="0">0%</div>
+    <div class="content">
+      <div class="container-wrapper">
+        <div class="table-section">
+          <div class="table-wrapper">
+            <table class="expenses-tab" id="expensesTable">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>$</th>
+                  <th colspan="2">Option</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <p id="emptyMessage" class="empty-message">Няма добавени разходи</p>
+          </div>
+
+          <button id="addRowBtn" class="add-row-btn">+</button>
+
+          <div id="popupForm" class="popup-overlay">
+            <div class="popup-content">
+              <h3>Добави разход</h3>
+              <label>Категория:</label>
+              <input type="text" id="inputCategory" />
+              <label>Сума ($):</label>
+              <input type="number" id="inputAmount" />
+              <div class="popup-buttons">
+                <button id="confirmAdd">Добави</button>
+                <button id="cancelAdd">Отказ</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="footer-progress">
+          <div class="progress-inputs">
+            <div id="totalDisplay" class="total-display">Общо: 0$</div>
+            <div class="progress-container">
+              <div class="progress">
+                <div class="progress-bar" data-done="0">0%</div>
+              </div>
+            </div>
+            <input type="number" id="maxValue" placeholder="$" />
           </div>
         </div>
-        <input type="number" id="maxValue" placeholder="$" min="1" />
       </div>
+    </div>
     </div>
   </body>
 </html>

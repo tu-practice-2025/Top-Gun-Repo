@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SummerPracticeWebApi.DataAccess.Context;
+using SummerPracticeWebApi.DTOs;
 using SummerPracticeWebApi.Models;
+using SummerPracticeWebApi.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SummerPracticeWebApi.Controllers
 {
@@ -15,10 +19,14 @@ namespace SummerPracticeWebApi.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly ITransactionService _transactionService;
 
-        public TransactionsController(AppDbContext context)
+
+
+        public TransactionsController(AppDbContext context, ITransactionService transactionService)
         {
             _context = context;
+            _transactionService = transactionService;
         }
 
         // GET: api/Transactions
@@ -29,20 +37,20 @@ namespace SummerPracticeWebApi.Controllers
             return Ok(transactions);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var transaction = await _context.Transactions
-                .Where(x => x.TransactionId == id)
-                .OrderBy(x => x.TransactionId)
-                .FirstOrDefaultAsync();
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> Get(int id)
+        //{
+        //    var transaction = await _context.Transactions
+        //        .Where(x => x.TransactionId == id)
+        //        .OrderBy(x => x.TransactionId)
+        //        .FirstOrDefaultAsync();
 
-            return Ok(transaction);
-        }
+        //    return Ok(transaction);
+        //}
 
             // PUT: api/Transactions/5
            
-            [HttpPut("{id}")]
+         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransaction(int id, Transaction transaction)
         {
             if (id != transaction.TransactionId)
@@ -101,6 +109,22 @@ namespace SummerPracticeWebApi.Controllers
         private bool TransactionExists(int id)
         {
             return _context.Transactions.Any(e => e.TransactionId == id);
+        }
+
+
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetMonthlyTransactionAsync(int userId, DateTime date)
+        {
+
+            var d = date != default
+            ? date
+            : DateTime.Today;
+
+            var dto = await _transactionService
+                .GetMonthlyTransactionAsync(userId, d);
+
+            return Ok(dto);
         }
     }
 }
