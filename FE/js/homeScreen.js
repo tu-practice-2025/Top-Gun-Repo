@@ -63,12 +63,16 @@ $(document).ready(function () {
       type: "doughnut",
       data: data,
       options: {
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-      },
+        plugins: { legend: { display: false } },
+          onClick: function(evt, elements) {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    const selectedCategory = labels[index];
+                    localStorage.setItem("selectedCategory", selectedCategory);
+                    window.location.href = "details.html";
+          }
+        }
+      }
     };
 
     const ctx = document.getElementById("myChart").getContext("2d");
@@ -103,6 +107,18 @@ $(document).ready(function () {
       },
     ],
   };
+
+  document.getElementById("myChart").onclick = function(evt) {
+    const activePoints = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+    if (activePoints.length > 0) {
+        const firstPoint = activePoints[0];
+        const label = myChart.data.labels[firstPoint.index];
+        
+        localStorage.setItem("selectedCategory", label);
+        
+        window.location.href = "details.html";
+    }
+};
 
 
     const configBar = {

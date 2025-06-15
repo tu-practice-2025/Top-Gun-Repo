@@ -19,19 +19,21 @@
                 <div class="circle circle2"></div>
                 <div class="circle circle3"></div>
                 <div class="circle circle4"></div>
+                <div class="circle circle5"></div>
             </div>
         </div> 
     </header>
 
     <div class="nav-bar">
-        <a class="active" href="homeScreen.html">Home</a>
-        <a href="details.html">Details</a>
+        <a  href="homeScreen.html">Home</a>
+        <a class="active" href="details.html">Details</a>
         <a href="planing.html">Planning</a>
     </div>
 
     <main class="content">
         <div class="category-display">
-            <span id="category-text">Category</span>
+            <select id="category-select">
+            </select>
         </div>
 
         <div class="balance-box">
@@ -40,10 +42,6 @@
 
         <div class="month-picker">
             <input id="month" type="month" name="month" required pattern="[0-9]{4}-[0-9]{2}" />
-        </div>
-
-        <div class="graph-placeholder">
-            BALANCE GRAPH
         </div>
 
         <div class="table-placeholder">
@@ -58,6 +56,10 @@
                 <tr><td></td><td></td><td></td><td></td></tr>
                 <tr><td></td><td></td><td></td><td></td></tr>
             </table>
+        </div>
+
+        <div class="balance-bars">
+            <div id="balance-bars" class="balance-bars"></div>
         </div>
 
         <script src="./js/details.js"></script>

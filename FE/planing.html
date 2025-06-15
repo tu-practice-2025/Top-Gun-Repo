@@ -9,18 +9,28 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/planing.js"></script>
   </head>
+
   <body>
     <header class="top-header">
-      <div class="top-bar">
-        <h1>BUDGET TRACKER</h1>
-      </div>
-      <div class="nav-bar">
+        <div class="top-bar">
+            <h1>BUDGET TRACKER</h1>
+            <div class="pulse-circles-top">
+                <div class="circle circle1"></div>
+                <div class="circle circle2"></div>
+                <div class="circle circle3"></div>
+                <div class="circle circle4"></div>
+                <div class="circle circle5"></div>
+            </div>
+        </div> 
+    </header>
+
+    <div class="nav-bar">
         <a href="homeScreen.html">Home</a>
         <a href="details.html">Details</a>
         <a class="active" href="planing.html">Planning</a>
-      </div>
-    </header>
-    <div class="main-layout">
+    </div>
+
+    <div class="content">
       <div class="container-wrapper">
         <div class="table-section">
           <div class="table-wrapper">
@@ -36,7 +46,9 @@
             </table>
             <p id="emptyMessage" class="empty-message">Няма добавени разходи</p>
           </div>
+
           <button id="addRowBtn" class="add-row-btn">+</button>
+
           <div id="popupForm" class="popup-overlay">
             <div class="popup-content">
               <h3>Добави разход</h3>
@@ -50,6 +62,7 @@
               </div>
             </div>
           </div>
+
         </div>
 
         <div class="footer-progress">
@@ -64,6 +77,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </body>
 </html>
