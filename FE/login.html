@@ -21,19 +21,42 @@
 
     <main class="main-body">
         <div class="login-container">
-            <div class="login-header">Тракер на разходи</div>
-            <form id="userForm">
-                <label for="email">Имейл </label>
+        <div class="login-header">Тракер на разходи</div>
+
+        <!-- Toggle Button -->
+        <button id="toggleForm" class="toggle-button" title="Превключи формата">⇄</button>
+
+        <!-- Forms Wrapper -->
+        <div class="form-wrapper">
+            <!-- Login Form -->
+            <form id="loginForm" class="form active">
+                <label for="email">Имейл</label>
                 <input type="text" name="email" id="email" required>
 
-                <label for="password">Парола </label>
+                <label for="password">Парола</label>
                 <input type="password" name="password" id="password" required>
 
                 <a href="#" class="forgot">Забравена парола?</a>
 
-                <input type="submit" id="submit" value="ВХОД">
+                <input type="submit" value="ВХОД">
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="form">
+                <label for="name">Име</label>
+                <input type="text" name="name" id="name" required>
+
+                <label for="emailRegister">Имейл</label>
+                <input type="text" name="email" id="emailRegister" required>
+
+                <label for="passwordRegister">Парола</label>
+                <input type="password" name="password" id="passwordRegister" required>
+
+                <input type="submit" value="РЕГИСТРАЦИЯ">
             </form>
         </div>
+    </div>
+
     </main>
 
     <footer>
