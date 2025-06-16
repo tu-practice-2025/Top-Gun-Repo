@@ -100,11 +100,11 @@ namespace SummerPracticeWebApi.Services.Implementations
                 .Join(_context.Merchants,
                       t => t.merchant_id,
                       m => m.MerchantId,
-                      (t, m) => new { t, m })
-                .Join(_context.Cards,
-                      tm => tm.t.card_number,
-                      c => c.card_number,
-                      (tm, c) => new { tm.t, tm.m, c });
+                      (t, m) => new { t, m });
+                //.Join(_context.Cards,
+                //      tm => tm.t.card_number,
+                //      c => c.card_number,
+                //      (tm, c) => new { tm.t, tm.m, c });
                  
 
 
