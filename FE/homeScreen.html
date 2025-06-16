@@ -13,13 +13,12 @@
   <body>
     <header class="top-header">
       <div class="top-bar">
-        <h1>BUDGET TRACKER</h1>
+        <h1>Budget tracker</h1>
         <div class="pulse-circles-top">
           <div class="circle circle1"></div>
           <div class="circle circle2"></div>
           <div class="circle circle3"></div>
           <div class="circle circle4"></div>
-          <div class="circle circle5"></div>
         </div>
       </div> 
     </header>
@@ -27,26 +26,27 @@
     <div class="nav-bar">
       <a class="active" href="homeScreen.html">Home</a>
       <a href="details.html">Details</a>
-      <a href="planning.html">Planning</a>
+      <a href="planing.html">Planning</a>
     </div>
 
     <div class="content">
       <div class="chart-section">
-        <div class="charts-row">
+  
+        <div class="left-column">
           <div class="doughnut-section">
             <div class="doughnut-chart">
               <canvas id="myChart"></canvas>
             </div>
           </div>
 
-          <div class="bar-section">
-            <div class="bar-chart">
-              <canvas id="barChart"></canvas>
-            </div>
+          <div class="legend-box">
           </div>
         </div>
 
-        <div class="legend-box">
+        <div class="bar-section">
+          <div class="bar-chart">
+            <canvas id="barChart"></canvas>
+          </div>
         </div>
       </div>
     </div>
