@@ -226,18 +226,31 @@ namespace SummerPracticeWebApi.Controllers
         }
 
  // GET: api/Categories/transactions/month/5?year=2025&month=6
-        [HttpGet("transactions/month/{userId}")]
-        public async Task<IActionResult> GetUserTransactionsByMonth(int userId, [FromQuery] int year, [FromQuery] int month)
+        [HttpGet("transactions/month/{categoryId}/{userId}")]
+        public async Task<IActionResult> GetUserTransactionsByMonth(int userId, int categoryId,[FromQuery] int year, [FromQuery] int month)
         {
             try
             {
 
                 var transactions = await _context.TransactionDetailsViews
-                    .Where(t => t.UserId == userId && 
-                               t.TransactionYear == year && 
-                               t.TransactionMonth == month)
-                    .OrderByDescending(t => t.Date)
-                    .ToListAsync();
+    .Where(t => t.UserId == userId &&
+               t.TransactionYear == year &&
+               t.TransactionMonth == month &&
+               t.CategoryId == categoryId)
+    .Select(t => new
+    {
+        TransactionId = t.TransactionId,
+        TransactionCode = t.TransactionCode,
+        CategoryName = t.CategoryName,
+        MerchantName = t.MerchantName,
+        MerchantDescription = t.MerchantDescription,
+        CardNumber = t.CardNumber,
+        Amount = t.Amount,
+        Date = t.Date,
+        Type = t.Type
+    })
+    .OrderByDescending(t => t.Date)
+    .ToListAsync();
 
                 if (!transactions.Any())
                 {
