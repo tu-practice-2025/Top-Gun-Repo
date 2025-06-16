@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniCredit Bulbank - Login</title>
+    <title>Login</title>
     <link rel="stylesheet" href="css/login.css">
+    <script src="js/login.js"></script>
+
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="https://www.unicreditbulbank.bg/favicon.ico" alt="Logo">
-            <span>UniCredit Bulbank</span>
+            <img src="" alt="Logo">
+            <span></span>
         </div>
         <div class="nav-buttons">
             <div>📞 02 933 7 333</div>
             <div>📱 15 333</div>
-
-            <div><a href="#" class="lang-button">EN</a></div>
         </div>
     </header>
 
     <main class="main-body">
         <div class="login-container">
             <div class="login-header">Тракер на разходи</div>
-            <form method="post">
+            <form method="post" id="userForm">
                 <label for="username">Потребителско име </label>
                 <input type="text" name="username" id="username" required>
 
@@ -32,7 +32,7 @@
 
                 <a href="#" class="forgot">Забравена парола?</a>
 
-                <input type="submit" value="ВХОД">
+                <input type="submit" id="submit" value="ВХОД">
             </form>
             <a href="#" class="idcode-link">Вход с електронно получен ID код</a>
         </div>
