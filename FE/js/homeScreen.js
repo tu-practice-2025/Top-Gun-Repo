@@ -9,8 +9,11 @@ $(document).ready(function () {
       const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
       const categoryData = await response.json();
       const incomeData=await respone_income.json();
-      
-      createDoughnutChart(categoryData);
+            const res  = await fetch(`${API_BASE_URL}/api/transactions/3`);
+      const data = await res.json();
+
+      // data.expenses идват от JSON-а mi
+      createDoughnutChart(data.expenses);
       createBarChart(incomeData);
       updateLegend(categoryData);
       
@@ -21,15 +24,14 @@ $(document).ready(function () {
   }
 
   function createDoughnutChart(apiData) {
-    const filteredData = apiData.filter(item => item.totalSpent > 0);
-    
-    const labels = filteredData.map(item => item.name);
-    const amounts = filteredData.map(item => item.totalSpent);
-    
+    // apiData е вече масив от { categoryName, percentageAmount }
+    const labels  = apiData.map(item => item.categoryName);
+    const amounts = apiData.map(item => item.percentageAmount);
+
     const data = {
       labels: labels,
       datasets: [{
-        label: "Category Spending",
+        label: "Expenses %",
         data: amounts,
         backgroundColor: [
           "rgba(255, 99, 132, 0.7)",
@@ -58,6 +60,7 @@ $(document).ready(function () {
         borderWidth: 1,
       }]
     };
+
 
     const config = {
       type: "doughnut",
