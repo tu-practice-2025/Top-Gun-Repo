@@ -1,35 +1,34 @@
 $(document).ready(function () {
   const API_BASE_URL = 'https://localhost:7121'; 
   
-  loadCategorySpendingData();
+  loadTransactionSummaryForCharts();
 
-  async function loadCategorySpendingData() {
+  async function loadTransactionSummaryForCharts() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/3`);//id is harcoded 
-      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
-      const categoryData = await response.json();
-      const incomeData=await respone_income.json();
-      
-      createDoughnutChart(categoryData);
-      createBarChart(incomeData);
-      updateLegend(categoryData);
-      
+
+      const res  = await fetch(`${API_BASE_URL}/api/transactions/3`);
+      const data = await res.json();
+
+      // data.expenses и data.income идват от JSON-а
+      createDoughnutChart(data.expenses);
+      createBarChart(data.income);
+      updateLegend(data.expenses);
+
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error("Error loading combined data:", error);
       createChartsWithFallbackData();
     }
   }
 
   function createDoughnutChart(apiData) {
-    const filteredData = apiData.filter(item => item.totalSpent > 0);
-    
-    const labels = filteredData.map(item => item.name);
-    const amounts = filteredData.map(item => item.totalSpent);
+    // apiData е вече масив от { categoryName, percentageAmount }
+    const labels  = apiData.map(item => item.categoryName);
+    const amounts = apiData.map(item => item.percentageAmount);
     
     const data = {
       labels: labels,
       datasets: [{
-        label: "Category Spending",
+        label: "Expenses %",
         data: amounts,
         backgroundColor: [
           "rgba(255, 99, 132, 0.7)",
@@ -80,12 +79,10 @@ $(document).ready(function () {
   }
 
   function createBarChart(apiData) {
-    const topCategories = apiData
-      .filter(item => item.totalSpent > 0)
-      .slice(0, 10);
-    
-    const labels = topCategories.map(item => item.code);
-    const amounts = topCategories.map(item => item.totalSpent);
+    // apiData е масив от { categoryName, percentageAmount }
+    const labels  = apiData.map(item => item.categoryName);
+    const amounts = apiData.map(item => item.percentageAmount);
+
 
      const dataBar = {
     labels: labels,

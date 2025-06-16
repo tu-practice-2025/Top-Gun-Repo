@@ -24,11 +24,10 @@ namespace SummerPracticeWebApi.Services.Implementations
 
         public async Task<TransactionDTO> GetMonthlyTransactionAsync(int userID, DateTime date)
         {
-            // Get the first day of the month
+   
             var startDate = new DateTime(date.Year, date.Month, 1);
-            // Get the last day of the month
+
             var endDate = startDate.AddMonths(1).AddDays(-1);
-            // Query to get transactions for the user within the specified date range
 
            // Dictionary<int, string> categoryNames = new Dictionary<int, string>();
 
@@ -75,10 +74,6 @@ namespace SummerPracticeWebApi.Services.Implementations
             .ToList();
 
 
-
-
-
-
             return new TransactionDTO
             {
                 Expenses = expenses,
@@ -87,8 +82,85 @@ namespace SummerPracticeWebApi.Services.Implementations
 
         }
 
+        public async Task<List<TransactionDetailDTO>> GetByCategoryAsync(
+      int userId, int categoryId, DateTime month)
+        {
+            var start = new DateTime(month.Year, month.Month, 1);
+            var end = start.AddMonths(1);
+
+        
+            var query = _context.Transactions
+                .Where(t => t.user_id == userId
+                         && t.category_id == categoryId
+                         && t.date >= start
+                         && t.date < end);
+
+           
+            var joined = query
+                .Join(_context.Merchants,
+                      t => t.merchant_id,
+                      m => m.MerchantId,
+                      (t, m) => new { t, m })
+                .Join(_context.Accounts,
+                      tm => tm.t.user_id,
+                      a => a.user_id,
+                      (tm, a) => new { tm.t, tm.m, a });
+
+         
+            var projected = joined
+                .OrderByDescending(x => x.t.date)
+                .Select(x => new TransactionDetailDTO
+                {
+                    Date = x.t.date,
+                    MerchantName = x.m.mcc_name,
+                    Iban = x.a.iban,
+                    Amount = x.t.type == 'E'
+                                     ? -x.t.amount    
+                                     : x.t.amount,
+                    CardNumber = x.t.type == 'E'
+                                ? x.t.card_number
+                                : null
+
+                });
+
+            return await projected.ToListAsync();
+        }
+
 
     }
+
+
+//    public async Task<List<TransactionDetailDTO>> 
+//    GetTransactionDetailsAsync(int userId, int categoryId, DateTime month)
+//{
+//    var start = new DateTime(month.Year, month.Month, 1);
+//    var end   = start.AddMonths(1);
+
+//    // Зареждаме мърчант-имена в речник (по merchant_id)
+//    var merchants = await _context.Merchants
+//        .ToDictionaryAsync(m => m.MerchantId, m => m.mcc_name);
+
+//    // Query-раме транзакциите
+//    var txs = await _context.Transactions
+//        .Where(t => t.user_id == userId
+//                 && t.category_id == categoryId
+//                 && t.date >= start
+//                 && t.date < end)
+//        .OrderByDescending(t => t.date)
+//        .Select(t => new TransactionDetailDTO {
+//            Date     = t.date,
+//            Merchant = merchants.GetValueOrDefault(t.merchant_id, null),
+//            Category = _context.Categories
+//                              .Where(c => c.CategoryId == t.category_id)
+//                              .Select(c => c.name)
+//                              .FirstOrDefault(), 
+//            Amount   = t.amount,
+//            Type     = t.type == 'E' ? "expense" : "income"
+//        })
+//        .ToListAsync();
+
+//    return txs;
+//}
 
 
 

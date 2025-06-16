@@ -126,5 +126,25 @@ namespace SummerPracticeWebApi.Controllers
 
             return Ok(dto);
         }
+
+        [HttpGet("{userId}/category/{categoryId}")]
+        public async Task<ActionResult<List<TransactionDetailDTO>>>
+                GetByCategory(
+                    int userId,
+                    int categoryId,
+                    [FromQuery] int? year,
+                    [FromQuery] int? month)
+        {
+            // ако няма подадени, по подразбиране днешен месец
+            var y = year ?? DateTime.Today.Year;
+            var m = month ?? DateTime.Today.Month;
+            var date = new DateTime(y, m, 1);
+
+            var result = await _transactionService
+                .GetByCategoryAsync(userId, categoryId, date);
+
+            return Ok(result);
+        }
+
     }
 }
