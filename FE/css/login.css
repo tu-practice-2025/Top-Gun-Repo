@@ -7,13 +7,14 @@ html, body {
     flex-direction: column;
 }
 
+/* Header */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #e6f1f5;
     border-top: 4px solid red;
-    padding: 0.5em 2em;
+    padding: 1em 2em;
 }
 
 .logo {
@@ -45,6 +46,7 @@ header {
     font-weight: bold;
 }
 
+/* Main section */
 .main-body {
     flex: 1;
     display: flex;
@@ -56,6 +58,7 @@ header {
     padding: 2em;
 }
 
+/* Login/Register Container */
 .login-container {
     background-color: rgba(255, 255, 255, 0.96);
     border-radius: 10px;
@@ -66,14 +69,64 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
+/* Header inside container */
 .login-header {
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 1em;
 }
 
+/* Toggle Button */
+.toggle-button {
+    position: absolute;
+    top: 1.5em;
+    right: 1.5em;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    background-color: #009de0;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+.toggle-button.rotate {
+    transform: rotate(180deg);
+}
+
+/* Form animation wrapper */
+.form-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+}
+
+/* Overlapping forms with transition */
+.form {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+    pointer-events: none;
+}
+
+.form.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Form content */
 form {
     width: 100%;
     display: flex;
@@ -111,13 +164,16 @@ form input[type="submit"] {
     text-decoration: none;
 }
 
-.idcode-link, .video-link {
+/* Links */
+.idcode-link,
+.video-link {
     margin-top: 1em;
     font-size: 0.9em;
     color: #0073b1;
     text-decoration: none;
 }
 
+/* Footer */
 footer {
     display: flex;
     justify-content: space-around;
