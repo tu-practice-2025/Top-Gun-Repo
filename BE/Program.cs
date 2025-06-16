@@ -14,6 +14,10 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
+
+
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
@@ -56,5 +60,8 @@ app.UseAuthorization();
 app.MapControllers();
 // Enable CORS for the application
 app.UseCors("AllowAll");
+
+app.UseSession();
+
 
 app.Run();

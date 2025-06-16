@@ -14,6 +14,8 @@ namespace SummerPracticeWebApi.Models
         public int merchant_id { get; set; }
         public int user_id { get; set; }
 
+        public string iban { get; set; }
+
         public string card_number { get; set; }
 
         public double amount { get; set; }

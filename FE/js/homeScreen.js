@@ -1,9 +1,9 @@
 $(document).ready(function () {
   const API_BASE_URL = 'https://localhost:7121'; 
   
-  loadCategorySpendingData();
+  loadTransactionSummaryForCharts();
 
-  async function loadCategorySpendingData() {
+  async function loadTransactionSummaryForCharts() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/3`);//id is harcoded 
       const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
@@ -17,8 +17,9 @@ $(document).ready(function () {
       createBarChart(incomeData);
       updateLegend(categoryData);
       
+
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error("Error loading combined data:", error);
       createChartsWithFallbackData();
     }
   }
@@ -27,7 +28,6 @@ $(document).ready(function () {
     // apiData е вече масив от { categoryName, percentageAmount }
     const labels  = apiData.map(item => item.categoryName);
     const amounts = apiData.map(item => item.percentageAmount);
-
     const data = {
       labels: labels,
       datasets: [{
@@ -83,12 +83,10 @@ $(document).ready(function () {
   }
 
   function createBarChart(apiData) {
-    const topCategories = apiData
-      .filter(item => item.totalSpent > 0)
-      .slice(0, 10);
-    
-    const labels = topCategories.map(item => item.code);
-    const amounts = topCategories.map(item => item.totalSpent);
+    // apiData е масив от { categoryName, percentageAmount }
+    const labels  = apiData.map(item => item.categoryName);
+    const amounts = apiData.map(item => item.percentageAmount);
+
 
      const dataBar = {
     labels: labels,

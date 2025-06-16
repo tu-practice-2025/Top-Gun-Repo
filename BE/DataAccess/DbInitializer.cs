@@ -53,23 +53,30 @@ namespace SummerPracticeWebApi.DataAccess
                 var user = new User
                 {
                     name = $"Човек{i}",
-                    username = $"user{i}",
+                    email = $"user{i}@gmail.com",
                     password = $"pass{i}",
-                    next_month_income = random.Next(1000, 3000)
+                    next_month_income = 0
                 };
 
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
 
-                var account = new Account
+
+                int numAccs = random.Next(1, 4);
+                var Accs = new List<string>();
+                for (int k = 0; k < numAccs; k++)
                 {
-                    iban = $"BG00UNCR{iban_counter++}",
-                    user_id = user.UserId
-                };
+                    context.Accounts.Add(new Account
+                    {
+                        iban = $"BG00UNCR{iban_counter++}",
+                        user_id = user.UserId
+                    });
+                    Accs.Add($"BG00UNCR{iban_counter - 1}");
+                }
+                
 
-                context.Accounts.Add(account);
 
-                int numCards = random.Next(1, 3);
+                int numCards = random.Next(1, 4);
                 var cardNumbers = new List<string>();
                 for (int j = 0; j < numCards; j++)
                 {
@@ -86,9 +93,7 @@ namespace SummerPracticeWebApi.DataAccess
                 {
                     var category = categories[random.Next(categories.Count)];
                     var merchant = merchants[random.Next(merchants.Count)];
-                    var transactionInfo = transactionDescriptions.ElementAt(random.Next(transactionDescriptions.Count));
-
-                    var paymentType = random.Next(2) == 0 ? "cash" : "card";
+                    var account = Accs[random.Next(0, numAccs - 1)];
                     var type = category.name.Contains("Income") ? 'I' : 'E';
                     var transaction_desc_index = random.Next(0, 22);
 
@@ -98,7 +103,8 @@ namespace SummerPracticeWebApi.DataAccess
                         category_id = category.CategoryId,
                         merchant_id = merchant.MerchantId,
                         user_id = user.UserId,
-                        card_number = cardNumbers[random.Next(0, numCards - 1)],
+                        iban = account,
+                        card_number = type == 'E' ? cardNumbers[random.Next(0, numCards - 1)] : null,
                         amount = Math.Round(random.NextDouble() * (1000 - 5) + 5, 2),
                         date = DateTime.Today.AddDays(-random.Next(0, 30)),
                         type = type
