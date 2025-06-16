@@ -5,6 +5,7 @@ $(document).ready(function () {
 
   async function loadTransactionSummaryForCharts() {
     try {
+
       const res  = await fetch(`${API_BASE_URL}/api/transactions/3`);
       const data = await res.json();
 
@@ -12,6 +13,7 @@ $(document).ready(function () {
       createDoughnutChart(data.expenses);
       createBarChart(data.income);
       updateLegend(data.expenses);
+
     } catch (error) {
       console.error("Error loading combined data:", error);
       createChartsWithFallbackData();
