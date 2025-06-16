@@ -95,25 +95,27 @@ namespace SummerPracticeWebApi.Services.Implementations
                          && t.date >= start
                          && t.date < end);
 
-           
+
             var joined = query
                 .Join(_context.Merchants,
                       t => t.merchant_id,
                       m => m.MerchantId,
                       (t, m) => new { t, m })
-                .Join(_context.Accounts,
-                      tm => tm.t.user_id,
-                      a => a.user_id,
-                      (tm, a) => new { tm.t, tm.m, a });
+                .Join(_context.Cards,
+                      tm => tm.t.card_number,
+                      c => c.card_number,
+                      (tm, c) => new { tm.t, tm.m, c });
+                 
 
-         
+
+
             var projected = joined
                 .OrderByDescending(x => x.t.date)
                 .Select(x => new TransactionDetailDTO
                 {
                     Date = x.t.date,
                     MerchantName = x.m.mcc_name,
-                    Iban = x.a.iban,
+                    Iban = x.t.iban,
                     Amount = x.t.type == 'E'
                                      ? -x.t.amount    
                                      : x.t.amount,
