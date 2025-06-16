@@ -5,14 +5,18 @@ $(document).ready(function () {
 
   async function loadTransactionSummaryForCharts() {
     try {
-
-      const res  = await fetch(`${API_BASE_URL}/api/transactions/3`);
+      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/3`);//id is harcoded 
+      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
+      const categoryData = await response.json();
+      const incomeData=await respone_income.json();
+            const res  = await fetch(`${API_BASE_URL}/api/transactions/3`);
       const data = await res.json();
 
-      // data.expenses и data.income идват от JSON-а
+      // data.expenses идват от JSON-а mi
       createDoughnutChart(data.expenses);
-      createBarChart(data.income);
-      updateLegend(data.expenses);
+      createBarChart(incomeData);
+      updateLegend(categoryData);
+      
 
     } catch (error) {
       console.error("Error loading combined data:", error);
@@ -24,7 +28,6 @@ $(document).ready(function () {
     // apiData е вече масив от { categoryName, percentageAmount }
     const labels  = apiData.map(item => item.categoryName);
     const amounts = apiData.map(item => item.percentageAmount);
-    
     const data = {
       labels: labels,
       datasets: [{
@@ -57,6 +60,7 @@ $(document).ready(function () {
         borderWidth: 1,
       }]
     };
+
 
     const config = {
       type: "doughnut",
