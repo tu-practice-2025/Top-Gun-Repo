@@ -247,7 +247,9 @@ namespace SummerPracticeWebApi.Controllers
         CardNumber = t.CardNumber,
         Amount = t.Amount,
         Date = t.Date,
-        Type = t.Type
+        Type = t.Type,
+        iban=t.iban,
+        
     })
     .OrderByDescending(t => t.Date)
     .ToListAsync();

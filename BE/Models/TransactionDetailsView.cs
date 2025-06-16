@@ -48,6 +48,9 @@ namespace SummerPracticeWebApi.Models
 
         [Column("transaction_month")]
         public int TransactionMonth { get; set; }
+
+        [Column("iban")]
+        public string iban {  get; set; }
     }
 }
 /*
