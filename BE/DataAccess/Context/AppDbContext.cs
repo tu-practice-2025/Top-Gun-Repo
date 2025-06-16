@@ -19,6 +19,8 @@ namespace SummerPracticeWebApi.DataAccess.Context
         public DbSet<Card> Cards { get; set; }
         public DbSet<FutureTransaction> Future_transactions { get; set; }
         public DbSet<CategorieSpendingView> CategorySpending { get; set; }
+        public DbSet<TransactionDetailsView> TransactionDetailsViews { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +33,7 @@ namespace SummerPracticeWebApi.DataAccess.Context
                 entity.Property(e => e.Code).HasColumnName("code");
                 entity.Property(e => e.Name).HasColumnName("name");
                 entity.Property(e => e.TotalSpent).HasColumnName("total_spent");
+                modelBuilder.Entity<TransactionDetailsView>().HasNoKey().ToView("transaction_details_view");
             });
 
 
