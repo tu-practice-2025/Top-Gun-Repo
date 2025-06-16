@@ -14,8 +14,13 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
@@ -29,9 +34,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()  // Allows any origin
-              .AllowAnyMethod()  // Allows any HTTP method
-              .AllowAnyHeader(); // Allows any headers
+        policy.WithOrigins("http://localhost:5500")
+         .AllowCredentials()
+         .AllowAnyHeader()
+         .AllowAnyMethod();
     });
 });
 
