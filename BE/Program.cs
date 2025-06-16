@@ -37,7 +37,6 @@ builder.Services.AddCors(options =>
 
 
 
-//“ова казва на .NET: Д огато н€кой поиска ITransactionService Ц дай му TransactionService.У
 
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 

@@ -11,8 +11,13 @@ namespace SummerPracticeWebApi.Models
         [Column("category_name")]
         public string? categoryName { get; set; }
 
+        [Column("amount")]
         public double amount { get; set; }
+
+        [Column("date")]
         public DateTime date { get; set; }
+
+        [Column("type")]
         public char type { get; set; }
 
         [Column("transaction_year")]

@@ -2,12 +2,13 @@
 
 namespace SummerPracticeWebApi.Models
 {
-
     public enum TType
     {
         expense,
         income
     }
+
+    [Table("future_transaction")]
     public class FutureTransaction
     {
         [Column("id")]

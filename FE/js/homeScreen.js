@@ -82,11 +82,13 @@ $(document).ready(function () {
     const myChart = new Chart(ctx, config);
   }
 
-  function createBarChart(apiData) {
-    // apiData е масив от { categoryName, percentageAmount }
-    const labels  = apiData.map(item => item.categoryName);
-    const amounts = apiData.map(item => item.percentageAmount);
-
+    function createBarChart(apiData) {
+    const topCategories = apiData
+      .filter(item => item.totalSpent > 0)
+      .slice(0, 10);
+    
+    const labels = topCategories.map(item => item.code);
+    const amounts = topCategories.map(item => item.totalSpent);
 
      const dataBar = {
     labels: labels,
@@ -242,4 +244,13 @@ $(document).ready(function () {
     const ctxBar = document.getElementById("barChart").getContext("2d");
     const barChart = new Chart(ctxBar, configBar);
   }
+});
+
+window.addEventListener('scroll', function() {
+    const nav = document.querySelector('.nav-bar');
+    if (window.scrollY > 100) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
 });
