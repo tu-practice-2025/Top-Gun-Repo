@@ -15,6 +15,7 @@ namespace SummerPracticeWebApi.Models
         public int category_id { get; set; }
         public int user_id { get; set; }
         public double amount { get; set; }
-        public TType type { get; set; }
+        public char type { get; set; }// expense or income
+        public DateTime date { get; set; }
     }
 }

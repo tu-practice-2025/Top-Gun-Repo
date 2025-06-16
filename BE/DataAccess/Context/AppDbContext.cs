@@ -20,6 +20,7 @@ namespace SummerPracticeWebApi.DataAccess.Context
         public DbSet<FutureTransaction> Future_transactions { get; set; }
         public DbSet<CategorieSpendingView> CategorySpending { get; set; }
         public DbSet<TransactionDetailsView> TransactionDetailsViews { get; set; }
+        public DbSet<FutureTransactionView> FutureTransactionViews { get; set; }
 
 
 
