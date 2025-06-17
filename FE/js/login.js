@@ -22,6 +22,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     if (response.ok) {
+        data = await response.json();
+        userId = data.userId;
+        userEmail = data.email;
+        userName = data.name;
+
+        sessionStorage.setItem('userId', userId);
+        sessionStorage.setItem('userEmail', userEmail);
+        sessionStorage.setItem('userName', userName);
+
+
         window.location.href = "homeScreen.html"; 
     } else {
         const result = await response.json();
