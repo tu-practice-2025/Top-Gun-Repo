@@ -5,7 +5,7 @@ using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.Services.Implementations;
 using SummerPracticeWebApi.Services.Implepemnations;
 using SummerPracticeWebApi.Services.Interfaces;
-using YourNamespace.Services.Implementations;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +59,13 @@ builder.Services.AddSendGrid(options =>
     options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
 });
 builder.Services.AddTransient<EmailService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IReportGeneratorService, ReportGeneratorService>();
+builder.Services.AddScoped<ILLMChatService, LLMChatService>();
+
+
+builder.Services.AddHttpClient();
+
 
 
 
