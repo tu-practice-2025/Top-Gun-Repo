@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById("toggleForm");
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
-
     toggleButton.addEventListener("click", () => {
         loginForm.classList.toggle("active");
         registerForm.classList.toggle("active");

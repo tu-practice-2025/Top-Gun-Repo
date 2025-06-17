@@ -5,13 +5,13 @@ $(document).ready(function () {
 
   async function loadTransactionSummaryForCharts() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/3`);//id is harcoded 
-      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
+      const user_id=sessionStorage.getItem("userId")
+      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/${user_id}`);//id is harcoded 
+      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/${user_id}`);
       const categoryData = await response.json();
       const incomeData=await respone_income.json();
             const res  = await fetch(`${API_BASE_URL}/api/transactions/3`);
       const data = await res.json();
-
       // data.expenses идват от JSON-а mi
       createDoughnutChart(data.expenses);
       createBarChart(incomeData);
