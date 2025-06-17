@@ -40,7 +40,7 @@ const CONFIG = {
   }
 };
 
-// API Service
+
 class ApiService {
   static async fetchExpenses(userId) {
     const response = await fetch(`${CONFIG.API_BASE_URL}/api/Categories/spending/current-month/${userId}`);
@@ -53,6 +53,7 @@ class ApiService {
     if (!response.ok) throw new Error('Failed to fetch income');
     return response.json();
   }
+
 
   static async fetchTransactions(userId) {
     const response = await fetch(`${CONFIG.API_BASE_URL}/api/transactions/${userId}`);

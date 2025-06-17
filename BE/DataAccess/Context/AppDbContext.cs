@@ -20,6 +20,7 @@ namespace SummerPracticeWebApi.DataAccess.Context
         public DbSet<FutureTransaction> Future_transactions { get; set; }
         public DbSet<CategorieSpendingView> CategorySpending { get; set; }
         public DbSet<TransactionDetailsView> TransactionDetailsViews { get; set; }
+        public DbSet<FutureTransactionView> FutureTransactionViews { get; set; }
 
 
 
@@ -35,8 +36,12 @@ namespace SummerPracticeWebApi.DataAccess.Context
                 entity.Property(e => e.TotalSpent).HasColumnName("total_spent");
                 modelBuilder.Entity<TransactionDetailsView>().HasNoKey().ToView("transaction_details_view");
             });
-
-
+            modelBuilder.Entity<FutureTransactionView>()
+    .HasNoKey()
+    .ToView("future_transaction_view");
+            modelBuilder.Entity<TransactionDetailsView>()
+    .HasNoKey()
+    .ToView("transaction_details_view");
         }
 
    
