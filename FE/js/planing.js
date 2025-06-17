@@ -1,5 +1,20 @@
 $(document).ready(function () {
+  const userId = parseInt(sessionStorage.getItem("userId"));
+  if (!userId) {
+    window.location.href = "login.html";
+    return;
+  }
   let categoriesMap = {};
+  loadUserTransactions();
+
+  function getNextMonthYear() {
+    const now = new Date();
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    return {
+      year: nextMonth.getFullYear(),
+      month: nextMonth.getMonth() + 1,
+    };
+  }
 
   function updateProgressBar() {
     let totalExpense = 0;
@@ -77,6 +92,40 @@ $(document).ready(function () {
       });
   }
 
+  function loadUserTransactions() {
+    const { year, month } = getNextMonthYear();
+
+    fetch(
+      `https://localhost:7121/api/futuretransaction/${userId}?year=${year}&month=${month}`
+    )
+      .then((response) => response.json())
+      .then((transactions) => {
+        const $tableBody = $("#expensesTable tbody");
+        $tableBody.empty();
+
+        transactions.forEach((t) => {
+          const type = t.type === "I" ? "Income" : "Expense";
+          const amount =
+            t.type === "I" ? t.amount.toFixed(2) : `-${t.amount.toFixed(2)}`;
+          const row = $("<tr></tr>").attr("id", `${t.tranId}`);
+          row.append(
+            $("<td></td>").text(type),
+            $("<td></td>").text(t.categoryName),
+            $("<td></td>").text(amount),
+            $("<td class='edit-cell'>✏️</td>"),
+            $("<td class='delete-cell'>🗑️</td>")
+          );
+          $tableBody.append(row);
+        });
+
+        updateProgressBar();
+        toggleEmptyMessage();
+      })
+      .catch((err) => console.error("Error loading transactions:", err));
+
+    loadCategories();
+  }
+
   $("#addRowBtn").on("click", function () {
     loadCategories();
     $("#popupForm").addClass("active");
@@ -141,13 +190,11 @@ $(document).ready(function () {
     const deleteCell = $("<td class='delete-cell'>🗑️</td>");
 
     newRow.append(typeCell, categoryCell, valueCell, editCell, deleteCell);
-    tableBody.append(newRow);
 
     closePopup();
     updateProgressBar();
     toggleEmptyMessage();
 
-    const userId = 1;
     const transactionDto = {
       CategoryId: categoriesMap[category],
       UserId: userId,
@@ -172,8 +219,8 @@ $(document).ready(function () {
         return response.json();
       })
       .then((data) => {
-        console.log("Successfully recorded!", data);
-        newRow.attr("data-id", data.id);
+        newRow.attr("id", `${data.id}`);
+        tableBody.append(newRow);
       })
       .catch((error) => {
         console.error("Error loading", error.message);
@@ -183,7 +230,8 @@ $(document).ready(function () {
 
   function getFirstDayOfNextMonthISO() {
     const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
+    const date = new Date(now.getFullYear(), now.getMonth() + 1, 2);
+    return date.toISOString().slice(0, 10);
   }
 
   function closePopup() {
@@ -194,20 +242,14 @@ $(document).ready(function () {
 
   $(document).on("click", ".delete-cell", function () {
     const row = $(this).closest("tr");
-    const id = row.attr("data-id");
-
+    const id = row[0].id;
     if (id) {
       fetch(`https://localhost:7121/api/futuretransaction/${id}`, {
         method: "DELETE",
       })
         .then((response) => {
           if (!response.ok) throw new Error("Failed to delete");
-          return response.json();
-        })
-        .then(() => {
-          row.remove();
-          updateProgressBar();
-          toggleEmptyMessage();
+          loadUserTransactions();
         })
         .catch((err) => {
           console.error("Delete error:", err);
@@ -244,7 +286,7 @@ $(document).ready(function () {
       $(this).text("✏️");
       updateProgressBar();
 
-      const id = row.attr("data-id");
+      const id = row.attr("id");
       const typeText = row.find("td:eq(0)").text().trim();
       const categoryName = row.find("td:eq(1)").text().trim();
       const amount = parseFloat(row.find("td:eq(2)").text().trim());
@@ -254,7 +296,7 @@ $(document).ready(function () {
 
       const updatedDto = {
         CategoryId: categoriesMap[categoryName],
-        UserId: 1,
+        UserId: userId,
         Amount: Math.abs(amount),
         Type: isIncome ? "I" : "E",
         Date: getFirstDayOfNextMonthISO(),
@@ -270,7 +312,7 @@ $(document).ready(function () {
           return response.json();
         })
         .then(() => {
-          console.log("Updated successfully!");
+          loadUserTransactions();
         })
         .catch((err) => {
           console.error("Update error:", err);

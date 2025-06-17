@@ -293,11 +293,11 @@ body {
   text-align: center;
   color: #666;
   font-style: italic;
-  margin-top: 45px;
+  margin-top: 10px;
 }
 
 .table-wrapper {
-  min-height: 150px;
+  min-height: 100px;
   max-height: 250px;
   overflow-y: auto;
   width: 100%;
