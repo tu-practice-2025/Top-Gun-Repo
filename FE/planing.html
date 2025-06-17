@@ -32,48 +32,69 @@
 
     <div class="content">
       <div class="container-wrapper">
-        <div class="table-section">
-          <div class="table-wrapper">
-            <table class="expenses-tab" id="expensesTable">
-              <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>$</th>
-                  <th colspan="2">Option</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-            <p id="emptyMessage" class="empty-message">Няма добавени разходи</p>
+        <div class="table-wrapper-with-popup">
+          <div class="table-section">
+            <div class="table-wrapper">
+              <table class="expenses-tab" id="expensesTable">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>$</th>
+                    <th colspan="2">Option</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <p id="emptyMessage" class="empty-message">No add data</p>
+            </div>
+  
+            <button id="addRowBtn" class="add-row-btn">+</button>
+  
+            <div class="footer-progress">
+              <div class="progress-inputs">
+                <div id="totalDisplay" class="total-display">Total: 0$</div>
+                <div class="progress-container">
+                  <div class="progress">
+                    <div class="progress-bar" data-done="0">0%</div>
+                  </div>
+                </div>
+                <div id="maxValueDisplay" class="max-value-display">0.00$</div>
+                <div id="budgetWarning" class="budget-warning">Over budget!</div>
+              </div>
+            </div>
           </div>
-
-          <button id="addRowBtn" class="add-row-btn">+</button>
-
+  
           <div id="popupForm" class="popup-overlay">
             <div class="popup-content">
-              <h3>Добави разход</h3>
-              <label>Категория:</label>
-              <input type="text" id="inputCategory" />
-              <label>Сума ($):</label>
+              <h3>Add Expenses</h3>
+  
+              <label for="inputCategory">Category:</label>
+              <select id="inputCategory">
+                <option value="">-- Choose --</option>
+              </select>
+  
+              <label for="inputAmount">Amount ($):</label>
               <input type="number" id="inputAmount" />
+
+              <div class="entry-type-group">
+                <div class="radio-button-group">
+                  <label class="radio-btn">
+                    <input type="radio" name="entryType" value="Expense" checked>
+                    <span>Expense</span>
+                  </label>
+                  <label class="radio-btn">
+                    <input type="radio" name="entryType" value="Income">
+                    <span>Income</span>
+                  </label>
+                </div>
+              </div>
+
               <div class="popup-buttons">
-                <button id="confirmAdd">Добави</button>
-                <button id="cancelAdd">Отказ</button>
+                <button id="confirmAdd">Add</button>
+                <button id="cancelAdd">Cancel</button>
               </div>
             </div>
-          </div>
-
-        </div>
-
-        <div class="footer-progress">
-          <div class="progress-inputs">
-            <div id="totalDisplay" class="total-display">Общо: 0$</div>
-            <div class="progress-container">
-              <div class="progress">
-                <div class="progress-bar" data-done="0">0%</div>
-              </div>
-            </div>
-            <input type="number" id="maxValue" placeholder="$" />
           </div>
         </div>
       </div>

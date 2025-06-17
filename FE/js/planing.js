@@ -1,35 +1,85 @@
 $(document).ready(function () {
-  function updateProgressBar() {
-    let total = 0;
+  let categoriesMap = {};
 
-    $("#expensesTable tr").each(function (index) {
-      if (index === 0) return;
-      const valueText = $(this).find("td:eq(1)").text().trim();
-      const value = parseFloat(valueText);
-      if (!isNaN(value)) {
-        total += value;
+  function updateProgressBar() {
+    let totalExpense = 0;
+    let totalIncome = 0;
+
+    $("#expensesTable tbody tr").each(function () {
+      const type = $(this).find("td:eq(0)").text().trim();
+      const amountText = $(this).find("td:eq(2)").text().trim();
+      const amount = parseFloat(amountText);
+
+      if (!isNaN(amount)) {
+        if (type === "Income") {
+          totalIncome += amount;
+        } else {
+          totalExpense += Math.abs(amount);
+        }
       }
     });
 
-    const max = parseFloat($("#maxValue").val());
-
-    if (isNaN(max) || max <= 0) {
-      $(".progress-bar").css("width", "0%").text("0%");
-      return;
-    }
-
-    let percent = (total / max) * 100;
+    let percent = totalIncome > 0 ? (totalExpense / totalIncome) * 100 : 0;
     if (percent > 100) percent = 100;
 
     $(".progress-bar")
       .css("width", percent + "%")
       .text(Math.round(percent) + "%");
 
-    $("#totalDisplay").text("Общо: " + total.toFixed(2) + "$");
+    $("#totalDisplay").text(`Total: ${totalExpense.toFixed(2)}$`);
+    $("#maxValueDisplay").text(`${totalIncome.toFixed(2)}$`);
+
+    if (totalExpense > totalIncome) {
+      $("#maxValueDisplay").addClass("overbudget");
+      $("#budgetWarning").show();
+    } else {
+      $("#maxValueDisplay").removeClass("overbudget");
+      $("#budgetWarning").hide();
+    }
+  }
+
+  function loadCategories() {
+    const selectedType = $("input[name='entryType']:checked").val();
+
+    fetch("https://localhost:7121/api/categories")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((categories) => {
+        categoriesMap = {};
+        const $select = $("#inputCategory");
+        $select.empty();
+        $select.append('<option value="">-- Choose category --</option>');
+
+        if (selectedType === "Income") {
+          categories.sort((a, b) => {
+            const aIsIncome = a.name.toLowerCase().includes("income") ? -1 : 1;
+            const bIsIncome = b.name.toLowerCase().includes("income") ? -1 : 1;
+            return aIsIncome - bIsIncome;
+          });
+        }
+
+        categories.forEach((category) => {
+          categoriesMap[category.name] = category.categoryId;
+          $select.append(
+            `<option value="${category.name}">${category.name}</option>`
+          );
+        });
+      })
+      .catch((error) => {
+        console.error("Error loading categories:", error);
+        $("#inputCategory").html(
+          '<option value="">No available category</option>'
+        );
+      });
   }
 
   $("#addRowBtn").on("click", function () {
-    $("#popupForm").fadeIn();
+    loadCategories();
+    $("#popupForm").addClass("active");
     $("#inputCategory").focus();
   });
 
@@ -65,42 +115,109 @@ $(document).ready(function () {
   }
 
   function confirmAndAddRow() {
-    const category = $("#inputCategory").val().trim();
+    const category = $("#inputCategory option:selected").val().trim();
     const amount = parseFloat($("#inputAmount").val());
+    const type = $("input[name='entryType']:checked").val();
+    const isIncome = type === "Income";
 
     if (!category || isNaN(amount)) {
-      alert("Моля, въведете валидни данни.");
+      alert("Please, insert correct data.");
       return;
     }
 
+    const finalAmount = isIncome ? amount : -Math.abs(amount);
+
     const tableBody = $("#expensesTable tbody");
     const newRow = $("<tr></tr>");
-    const categoryCell = $("<td contenteditable='true'></td>").text(category);
-    const valueCell = $("<td contenteditable='true'></td>").text(
-      amount.toFixed(2)
-    );
+    const typeCell = $("<td></td>").text(type);
+    const categoryCell = $("<td></td>").text(category);
+    const displayAmount = isIncome
+      ? finalAmount.toFixed(2)
+      : `-${Math.abs(finalAmount).toFixed(2)}`;
+
+    const valueCell = $("<td></td>").text(displayAmount);
 
     const editCell = $("<td class='edit-cell'>✏️</td>");
     const deleteCell = $("<td class='delete-cell'>🗑️</td>");
 
-    newRow.append(categoryCell, valueCell, editCell, deleteCell);
+    newRow.append(typeCell, categoryCell, valueCell, editCell, deleteCell);
     tableBody.append(newRow);
 
     closePopup();
     updateProgressBar();
     toggleEmptyMessage();
+
+    const userId = 1;
+    const transactionDto = {
+      CategoryId: categoriesMap[category],
+      UserId: userId,
+      Amount: Math.abs(finalAmount),
+      Type: isIncome ? "I" : "E",
+      Date: getFirstDayOfNextMonthISO(),
+    };
+
+    fetch("https://localhost:7121/api/futuretransaction", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(transactionDto),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((msg) => {
+            throw new Error(msg);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Successfully recorded!", data);
+        newRow.attr("data-id", data.id);
+      })
+      .catch((error) => {
+        console.error("Error loading", error.message);
+        alert("ERROR. CHECK CONSOLE");
+      });
+  }
+
+  function getFirstDayOfNextMonthISO() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
   }
 
   function closePopup() {
-    $("#popupForm").fadeOut();
+    $("#popupForm").removeClass("active");
     $("#inputCategory").val("");
     $("#inputAmount").val("");
   }
 
   $(document).on("click", ".delete-cell", function () {
-    $(this).closest("tr").remove();
-    updateProgressBar();
-    toggleEmptyMessage();
+    const row = $(this).closest("tr");
+    const id = row.attr("data-id");
+
+    if (id) {
+      fetch(`https://localhost:7121/api/futuretransaction/${id}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to delete");
+          return response.json();
+        })
+        .then(() => {
+          row.remove();
+          updateProgressBar();
+          toggleEmptyMessage();
+        })
+        .catch((err) => {
+          console.error("Delete error:", err);
+          alert("Could not delete from database.");
+        });
+    } else {
+      row.remove();
+      updateProgressBar();
+      toggleEmptyMessage();
+    }
   });
 
   $(document).on("click", ".edit-cell", function () {
@@ -108,22 +225,73 @@ $(document).ready(function () {
     const isEditable = row.attr("data-editing") === "true";
 
     if (!isEditable) {
-      row
-        .find("td")
-        .not(".edit-cell, .delete-cell")
-        .attr("contenteditable", "true")
-        .css("background-color", "#eef");
+      row.find("td").each(function (index) {
+        if (index === 1 || index === 2) {
+          $(this)
+            .attr("contenteditable", "true")
+            .css("background-color", "#eef");
+        }
+      });
       row.attr("data-editing", "true");
       $(this).text("💾");
     } else {
-      row.find("td").removeAttr("contenteditable").css("background-color", "");
+      row.find("td").each(function (index) {
+        if (index === 1 || index === 2) {
+          $(this).removeAttr("contenteditable").css("background-color", "");
+        }
+      });
       row.removeAttr("data-editing");
       $(this).text("✏️");
       updateProgressBar();
+
+      const id = row.attr("data-id");
+      const typeText = row.find("td:eq(0)").text().trim();
+      const categoryName = row.find("td:eq(1)").text().trim();
+      const amount = parseFloat(row.find("td:eq(2)").text().trim());
+      const isIncome = typeText === "Income";
+
+      if (!categoryName || isNaN(amount) || !id) return;
+
+      const updatedDto = {
+        CategoryId: categoriesMap[categoryName],
+        UserId: 1,
+        Amount: Math.abs(amount),
+        Type: isIncome ? "I" : "E",
+        Date: getFirstDayOfNextMonthISO(),
+      };
+
+      fetch(`https://localhost:7121/api/futuretransaction/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedDto),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to update");
+          return response.json();
+        })
+        .then(() => {
+          console.log("Updated successfully!");
+        })
+        .catch((err) => {
+          console.error("Update error:", err);
+          alert("Could not update in database.");
+        });
     }
   });
 
   $(document).on("blur", "#expensesTable td[contenteditable]", function () {
+    const $row = $(this).closest("tr");
+    const category = $row.find("td:eq(0)").text().trim();
+    const amount = parseFloat($row.find("td:eq(1)").text().trim());
+
+    if (!category || isNaN(amount)) return;
+
     updateProgressBar();
+  });
+
+  $("input[name='entryType']").on("change", function () {
+    const label = $(this).val();
+    $("#typeLabel").text(label);
+    loadCategories();
   });
 });

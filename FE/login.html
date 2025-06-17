@@ -11,8 +11,7 @@
 <body>
     <header>
         <div class="logo">
-            <img src="" alt="Logo">
-            <span></span>
+            Budget Tracker
         </div>
         <div class="nav-buttons">
             <div>📞 02 933 7 333</div>
@@ -22,20 +21,38 @@
 
     <main class="main-body">
         <div class="login-container">
-            <div class="login-header">Тракер на разходи</div>
-            <form method="post" id="userForm">
-                <label for="username">Потребителско име </label>
-                <input type="text" name="username" id="username" required>
+        <div class="login-header">Тракер на разходи</div>
 
-                <label for="password">Парола </label>
+        <button id="toggleForm" class="toggle-button" title="Превключи формата">⇄</button>
+
+        <div class="form-wrapper">
+            <form id="loginForm" class="form active">
+                <label for="email">Имейл</label>
+                <input type="text" name="email" id="email" required>
+
+                <label for="password">Парола</label>
                 <input type="password" name="password" id="password" required>
 
                 <a href="#" class="forgot">Забравена парола?</a>
 
-                <input type="submit" id="submit" value="ВХОД">
+                <input type="submit" value="ВХОД">
             </form>
-            <a href="#" class="idcode-link">Вход с електронно получен ID код</a>
+
+            <form id="registerForm" class="form">
+                <label for="name">Име</label>
+                <input type="text" name="name" id="name" required>
+
+                <label for="emailRegister">Имейл</label>
+                <input type="text" name="email" id="emailRegister" required>
+
+                <label for="passwordRegister">Парола</label>
+                <input type="password" name="password" id="passwordRegister" required>
+
+                <input type="submit" value="РЕГИСТРАЦИЯ">
+            </form>
         </div>
+    </div>
+
     </main>
 
     <footer>

@@ -16,12 +16,21 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    //options.Cookie.SameSite = SameSiteMode.Lax;
+});
 
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IFutureTransactionService, FutureTransactionService>();
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -31,16 +40,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()  // Allows any origin
-              .AllowAnyMethod()  // Allows any HTTP method
-              .AllowAnyHeader(); // Allows any headers
+        policy.WithOrigins("http://localhost:5500")
+         .AllowCredentials()
+         .AllowAnyHeader()
+         .AllowAnyMethod();
     });
 });
 
 
 
 
-//“ова казва на .NET: Д огато н€кой поиска ITransactionService Ц дай му TransactionService.У
 
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 

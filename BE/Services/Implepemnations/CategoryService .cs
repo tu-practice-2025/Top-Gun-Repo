@@ -119,7 +119,7 @@ namespace SummerPracticeWebApi.Services.Implepemnations
         {
 
             return await _context.Categories
-                .Where(c => c.name.Equals(categoryName)) 
+                .Where(c => c.name.Equals(categoryName))
                 .Select(c => new CategorieSpendingView
                 {
                     Code = c.code,
@@ -187,5 +187,36 @@ namespace SummerPracticeWebApi.Services.Implepemnations
             return await GetCategoryIncomeByUserForMonthAsync(userId, currentDate.Year, currentDate.Month);
         }
 
+        //user transactions by month
+        public async Task<object> GetUserTransactionsByMonthAsync(int userId, int categoryId, int year, int month)
+        {
+            var transactions = await _context.TransactionDetailsViews
+                .Where(t => t.UserId == userId &&
+                           t.TransactionYear == year &&
+                           t.TransactionMonth == month &&
+                           t.CategoryId == categoryId)
+                .Select(t => new
+                {
+                    TransactionId = t.TransactionId,
+                    TransactionCode = t.TransactionCode,
+                    CategoryName = t.CategoryName,
+                    MerchantName = t.MerchantName,
+                    MerchantDescription = t.MerchantDescription,
+                    CardNumber = t.CardNumber,
+                    Amount = t.Amount,
+                    Date = t.Date,
+                    Type = t.Type,
+                    iban = t.iban,
+                })
+                .OrderByDescending(t => t.Date)
+                .ToListAsync();
+
+            if (!transactions.Any())
+            {
+                return new { message = "No transactions found for the specified month", data = transactions };
+            }
+
+            return transactions;
+        }
     }
 }
