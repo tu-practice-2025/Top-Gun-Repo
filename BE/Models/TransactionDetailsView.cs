@@ -32,7 +32,7 @@ namespace SummerPracticeWebApi.Models
         public int UserId { get; set; }
 
         [Column("card_number")]
-        public string CardNumber { get; set; }
+        public string? CardNumber { get; set; }
 
         [Column("amount")]
         public double Amount { get; set; }

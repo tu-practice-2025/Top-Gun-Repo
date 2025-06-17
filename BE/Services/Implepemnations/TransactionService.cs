@@ -127,19 +127,38 @@ namespace SummerPracticeWebApi.Services.Implementations
             return await projected.ToListAsync();
         }
 
-        public async Task<List<Transaction>> GetTransactionsByMonth(int userId, DateTime date)
+        //api/transactions/5/by-month/5
+        public async Task<object> GetTransactionsByMonth(int userId, DateTime date)
         {
 
             var startDate = new DateTime(date.Year, date.Month, 1);
 
             var endDate = startDate.AddMonths(1).AddDays(-1);
 
-            var transactions = await _context.Transactions
-                .Where(t => t.user_id == userId && t.date.Month == date.Month)
-                .OrderByDescending(t => t.date)
+            var transactions = await _context.TransactionDetailsViews
+                .Where(t => t.UserId == userId && t.TransactionMonth == date.Month)
+                .Select(t => new
+                {
+                    TransactionId = t.TransactionId,
+                    TransactionCode = t.TransactionCode,
+                    CategoryName = t.CategoryName,
+                    MerchantName = t.MerchantName,
+                    MerchantDescription = t.MerchantDescription,
+                    CardNumber = t.CardNumber,
+                    Amount = t.Amount,
+                    Date = t.Date,
+                    Type = t.Type,
+                    iban = t.iban,
+                })
+                .OrderByDescending(t => t.Date)
                 .ToListAsync();
 
-            
+            if (!transactions.Any())
+            {
+                return new { message = "No transactions found for the specified month", data = transactions };
+            }
+
+
 
             return transactions;
         }
