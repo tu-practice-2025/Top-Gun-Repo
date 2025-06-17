@@ -101,23 +101,30 @@ namespace SummerPracticeWebApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        // DELETE: api/futuretransaction/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFutureTransaction(int id)
+        //PUT: api/futuretransaction/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFtureTransaction(int id, [FromBody] CreateFutureTransactionDto dto)
         {
             try
             {
-                var success = await _futureTransactionService.DeleteFutureTransactionAsync(id);
-                if (!success)
+                var transaction = await _context.Future_transactions.FindAsync(id);
+                if(transaction == null)
                 {
-                    return NotFound($"Future transaction with id {id} not found");
+                    return NotFound($"Transaction with ID {id} not found.");
                 }
 
+                transaction.category_id = dto.CategoryId;
+                transaction.user_id = dto.UserId;
+                transaction.amount = dto.Amount;
+                transaction.type = dto.Type;
+                transaction.date = dto.Date;
+
+                await _context.SaveChangesAsync();
                 return Ok(new
                 {
-                    message = "Future transaction deleted successfully",
-                    deletedId = id
+                    message = "Transaction updated successfully.",
+                    udpatedId = id
+
                 });
             }
             catch (Exception ex)
