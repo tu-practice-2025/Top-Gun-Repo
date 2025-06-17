@@ -11,12 +11,10 @@ namespace SummerPracticeWebApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        private readonly AppDbContext _context;
 
-        public CategoriesController(ICategoryService categoryService, AppDbContext context)
+        public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-            _context = context;
         }
 
         // GET: api/Categories
@@ -225,41 +223,14 @@ namespace SummerPracticeWebApi.Controllers
             }
         }
 
- // GET: api/Categories/transactions/month/5?year=2025&month=6
+        // GET: api/Categories/transactions/month/1/5?year=2025&month=6
         [HttpGet("transactions/month/{categoryId}/{userId}")]
-        public async Task<IActionResult> GetUserTransactionsByMonth(int userId, int categoryId,[FromQuery] int year, [FromQuery] int month)
+        public async Task<IActionResult> GetUserTransactionsByMonth(int userId, int categoryId, [FromQuery] int year, [FromQuery] int month)
         {
             try
             {
-
-                var transactions = await _context.TransactionDetailsViews
-    .Where(t => t.UserId == userId &&
-               t.TransactionYear == year &&
-               t.TransactionMonth == month &&
-               t.CategoryId == categoryId)
-    .Select(t => new
-    {
-        TransactionId = t.TransactionId,
-        TransactionCode = t.TransactionCode,
-        CategoryName = t.CategoryName,
-        MerchantName = t.MerchantName,
-        MerchantDescription = t.MerchantDescription,
-        CardNumber = t.CardNumber,
-        Amount = t.Amount,
-        Date = t.Date,
-        Type = t.Type,
-        iban=t.iban,
-        
-    })
-    .OrderByDescending(t => t.Date)
-    .ToListAsync();
-
-                if (!transactions.Any())
-                {
-                    return Ok(new { message = "No transactions found for the specified month", data = transactions });
-                }
-
-                return Ok(transactions);
+                var result = await _categoryService.GetUserTransactionsByMonthAsync(userId, categoryId, year, month);
+                return Ok(result);
             }
             catch (Exception ex)
             {
