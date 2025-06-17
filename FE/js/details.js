@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedMonth = `${year}-${month.toString().padStart(2, '0')}`;
     monthInput.value = formattedMonth;
 
-    const selectedCategory = localStorage.getItem("selectedCategory");
+    const selectedCategory = sessionStorage.getItem("selectedCategory");
 
     loadCategories();
 

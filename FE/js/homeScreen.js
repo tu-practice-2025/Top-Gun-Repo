@@ -1,256 +1,339 @@
-$(document).ready(function () {
-  const API_BASE_URL = 'https://localhost:7121'; 
-  
-  loadTransactionSummaryForCharts();
+// Dashboard Configuration
+const CONFIG = {
+  API_BASE_URL: 'https://localhost:7121',
+  USER_ID: 1, // TODO: Get this from authentication/session
+  CHART_COLORS: {
+    primary: [
+      'rgba(255, 99, 132, 0.7)',
+      'rgba(54, 162, 235, 0.7)', 
+      'rgba(255, 206, 86, 0.7)',
+      'rgba(75, 192, 192, 0.7)',
+      'rgba(153, 102, 255, 0.7)',
+      'rgba(255, 159, 64, 0.7)',
+      'rgba(201, 203, 207, 0.7)',
+      'rgba(255, 99, 255, 0.7)',
+      'rgba(99, 255, 132, 0.7)',
+      'rgba(132, 99, 255, 0.7)'
+    ],
+    borders: [
+      'rgba(255, 99, 132, 1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)',
+      'rgba(201, 203, 207, 1)',
+      'rgba(255, 99, 255, 1)',
+      'rgba(99, 255, 132, 1)',
+      'rgba(132, 99, 255, 1)'
+    ],
+    income: [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)'
+    ],
+    incomeBorders: [
+      'rgb(255, 99, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)'
+    ]
+  }
+};
 
-  async function loadTransactionSummaryForCharts() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/Categories/spending/current-month/3`);//id is harcoded 
-      const respone_income= await fetch(`${API_BASE_URL}/api/Categories/income/current-month/3`);
-      const categoryData = await response.json();
-      const incomeData=await respone_income.json();
-            const res  = await fetch(`${API_BASE_URL}/api/transactions/3`);
-      const data = await res.json();
-
-      // data.expenses идват от JSON-а mi
-      createDoughnutChart(data.expenses);
-      createBarChart(incomeData);
-      updateLegend(categoryData);
-      
-
-    } catch (error) {
-      console.error("Error loading combined data:", error);
-      createChartsWithFallbackData();
-    }
+// API Service
+class ApiService {
+  static async fetchExpenses(userId) {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/Categories/spending/current-month/${userId}`);
+    if (!response.ok) throw new Error('Failed to fetch expenses');
+    return response.json();
   }
 
-  function createDoughnutChart(apiData) {
-    // apiData е вече масив от { categoryName, percentageAmount }
-    const labels  = apiData.map(item => item.categoryName);
+  static async fetchIncome(userId) {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/Categories/income/current-month/${userId}`);
+    if (!response.ok) throw new Error('Failed to fetch income');
+    return response.json();
+  }
+
+  static async fetchTransactions(userId) {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/transactions/${userId}`);
+    if (!response.ok) throw new Error('Failed to fetch transactions');
+    return response.json();
+  }
+}
+
+// Chart Service
+class ChartService {
+  static createExpenseChart(apiData) {
+    const labels = apiData.map(item => item.categoryName);
+    const ids = apiData.map(item => item.categoryId);
     const amounts = apiData.map(item => item.percentageAmount);
-    const data = {
+
+    const chartData = {
       labels: labels,
       datasets: [{
-        label: "Expenses %",
+        label: 'Expenses %',
         data: amounts,
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.7)",
-          "rgba(54, 162, 235, 0.7)",
-          "rgba(255, 206, 86, 0.7)",
-          "rgba(75, 192, 192, 0.7)",
-          "rgba(153, 102, 255, 0.7)",
-          "rgba(255, 159, 64, 0.7)",
-          "rgba(201, 203, 207, 0.7)",
-          "rgba(255, 99, 255, 0.7)",
-          "rgba(99, 255, 132, 0.7)",
-          "rgba(132, 99, 255, 0.7)"
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(201, 203, 207, 1)",
-          "rgba(255, 99, 255, 1)",
-          "rgba(99, 255, 132, 1)",
-          "rgba(132, 99, 255, 1)"
-        ],
-        borderWidth: 1,
+        backgroundColor: CONFIG.CHART_COLORS.primary,
+        borderColor: CONFIG.CHART_COLORS.borders,
+        borderWidth: 1
       }]
     };
 
-
-    const config = {
-      type: "doughnut",
-      data: data,
+    const chartConfig = {
+      type: 'doughnut',
+      data: chartData,
       options: {
-        plugins: { legend: { display: false } },
-          onClick: function(evt, elements) {
-                if (elements.length > 0) {
-                    const index = elements[0].index;
-                    const selectedCategory = labels[index];
-                    localStorage.setItem("selectedCategory", selectedCategory);
-                    window.location.href = "details.html";
+        plugins: { 
+          legend: { display: false } 
+        },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            const selectedCategory = labels[index];
+            const selectedCategoryId = ids[index];
+            
+            // Store selection and navigate
+            sessionStorage.setItem('selectedCategory', selectedCategory);
+            sessionStorage.setItem('selectedCategoryId', selectedCategoryId);
+            window.location.href = 'details.html';
           }
         }
       }
     };
 
-    const ctx = document.getElementById("myChart").getContext("2d");
-    const myChart = new Chart(ctx, config);
-  }
-
-    function createBarChart(apiData) {
-    const topCategories = apiData
-      .filter(item => item.totalSpent > 0)
-      .slice(0, 10);
-    
-    const labels = topCategories.map(item => item.code);
-    const amounts = topCategories.map(item => item.totalSpent);
-
-     const dataBar = {
-    labels: labels,
-    datasets: [
-      {
-        label: "Category income",
-        data: amounts,
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 205, 86, 0.2)",
-        ],
-        borderColor: [
-          "rgb(255, 99, 132)",
-          "rgb(255, 159, 64)",
-          "rgb(255, 205, 86)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  document.getElementById("myChart").onclick = function(evt) {
-    const activePoints = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
-    if (activePoints.length > 0) {
-        const firstPoint = activePoints[0];
-        const label = myChart.data.labels[firstPoint.index];
-        
-        localStorage.setItem("selectedCategory", label);
-        
-        window.location.href = "details.html";
+    const ctx = document.getElementById('myChart');
+    if (!ctx) {
+      console.error('Canvas element with id "myChart" not found');
+      return null;
     }
-};
-
-
-    const configBar = {
-      type: "bar",
-      data: dataBar,
-      options: {
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    };
-
-    const ctxBar = document.getElementById("barChart").getContext("2d");
-    const barChart = new Chart(ctxBar, configBar);
+    
+    return new Chart(ctx.getContext('2d'), chartConfig);
   }
 
-  function updateLegend(apiData) {
-    const topCategories = apiData
-      .filter(item => item.totalSpent > 0)
-      .slice(0, 22);
-    const legendContainer = document.querySelector('.legend-box');
-    legendContainer.innerHTML = '';
+  static createIncomeChart(apiData) {
+    const validData = apiData.filter(item => item.totalSpent > 0).slice(0, 10);
+    const labels = validData.map(item => item.code);
+    const amounts = validData.map(item => item.totalSpent);
 
-    const colors = [
-      "rgba(255, 99, 132, 0.7)",
-      "rgba(54, 162, 235, 0.7)", 
-      "rgba(255, 206, 86, 0.7)",
-      "rgba(75, 192, 192, 0.7)",
-      "rgba(153, 102, 255, 0.7)"
-    ];
-
-    topCategories.forEach((category, index) => {
-      const legendItem = document.createElement('div');
-      legendItem.className = 'legend-item';
-      legendItem.innerHTML = `
-        <span class="color-dot" style="background-color: ${colors[index]}"></span>
-        <span class="label-text">${category.code} - $${category.totalSpent.toFixed(2)}</span>
-      `;
-      legendContainer.appendChild(legendItem);
-    });
-  }
-
-  function createChartsWithFallbackData() {
-    const data = {
-      labels: [
-        "Транспорт и авто услуги",
-        "Супермаркети", 
-        "Пътуване и ваканция",
-        "Шопинг",
-        "Ресторанти и барове"
-      ],
+    const chartData = {
+      labels: labels,
       datasets: [{
-        label: "Sample Dataset",
-        data: [69, 48, 324, 183, 217],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.7)",
-          "rgba(54, 162, 235, 0.7)",
-          "rgba(255, 206, 86, 0.7)",
-          "rgba(75, 192, 192, 0.7)",
-          "rgba(153, 102, 255, 0.7)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-        ],
-        borderWidth: 1,
+        label: 'Category Income',
+        data: amounts,
+        backgroundColor: CONFIG.CHART_COLORS.income,
+        borderColor: CONFIG.CHART_COLORS.incomeBorders,
+        borderWidth: 1
       }]
     };
 
-    const config = {
-      type: "doughnut",
-      data: data,
+    const chartConfig = {
+      type: 'bar',
+      data: chartData,
       options: {
         plugins: {
           legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            const selectedCategory = labels[index];
+            
+            sessionStorage.setItem('selectedCategory', selectedCategory);
+            window.location.href = 'details.html';
+          }
         }
       }
     };
 
-    const ctx = document.getElementById("myChart").getContext("2d");
-    const myChart = new Chart(ctx, config);
+    const ctx = document.getElementById('barChart');
+    if (!ctx) {
+      console.error('Canvas element with id "barChart" not found');
+      return null;
+    }
+    
+    return new Chart(ctx.getContext('2d'), chartConfig);
+  }
 
-    const dataBar = {
-      labels: ["Заплата", "Наем", "Разни"],
+  static createFallbackCharts() {
+    // Fallback expense chart
+    const expenseData = {
+      labels: ['Transport', 'Groceries', 'Travel', 'Shopping', 'Restaurants'],
       datasets: [{
-        data: [65, 59, 80],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 205, 86, 0.2)",
-        ],
-        borderColor: [
-          "rgb(255, 99, 132)",
-          "rgb(255, 159, 64)",
-          "rgb(255, 205, 86)",
-        ],
-        borderWidth: 1,
+        label: 'Sample Expenses',
+        data: [69, 48, 324, 183, 217],
+        backgroundColor: CONFIG.CHART_COLORS.primary.slice(0, 5),
+        borderColor: CONFIG.CHART_COLORS.borders.slice(0, 5),
+        borderWidth: 1
       }]
     };
 
-    const configBar = {
-      type: "bar",
-      data: dataBar,
+    const expenseConfig = {
+      type: 'doughnut',
+      data: expenseData,
+      options: {
+        plugins: { legend: { display: false } }
+      }
+    };
+
+    const expenseCtx = document.getElementById('myChart');
+    if (expenseCtx) {
+      new Chart(expenseCtx.getContext('2d'), expenseConfig);
+    }
+
+    // Fallback income chart
+    const incomeData = {
+      labels: ['Salary', 'Rent', 'Other'],
+      datasets: [{
+        label: 'Sample Income',
+        data: [65, 59, 80],
+        backgroundColor: CONFIG.CHART_COLORS.income,
+        borderColor: CONFIG.CHART_COLORS.incomeBorders,
+        borderWidth: 1
+      }]
+    };
+
+    const incomeConfig = {
+      type: 'bar',
+      data: incomeData,
       options: {
         plugins: { legend: { display: false } },
         scales: { y: { beginAtZero: true } }
       }
     };
 
-    const ctxBar = document.getElementById("barChart").getContext("2d");
-    const barChart = new Chart(ctxBar, configBar);
+    const incomeCtx = document.getElementById('barChart');
+    if (incomeCtx) {
+      new Chart(incomeCtx.getContext('2d'), incomeConfig);
+    }
   }
+}
+
+// Legend Service
+class LegendService {
+  static updateLegend(apiData) {
+    const topCategories = apiData
+      .filter(item => item.totalSpent > 0)
+      .slice(0, 22);
+    
+    const legendContainer = document.querySelector('.legend-box');
+    if (!legendContainer) {
+      console.error('Legend container with class "legend-box" not found');
+      return;
+    }
+
+    legendContainer.innerHTML = '';
+
+    topCategories.forEach((category, index) => {
+      const legendItem = document.createElement('div');
+      legendItem.className = 'legend-item';
+      
+      const colorIndex = index % CONFIG.CHART_COLORS.primary.length;
+      const backgroundColor = CONFIG.CHART_COLORS.primary[colorIndex];
+      
+      legendItem.innerHTML = `
+        <span class="color-dot" style="background-color: ${backgroundColor}"></span>
+        <span class="label-text">${category.code} - $${category.totalSpent.toFixed(2)}</span>
+      `;
+      
+      legendContainer.appendChild(legendItem);
+    });
+  }
+}
+
+// Navigation Service
+class NavigationService {
+  static initScrollEffect() {
+    const nav = document.querySelector('.nav-bar');
+    if (!nav) {
+      console.warn('Navigation bar with class "nav-bar" not found');
+      return;
+    }
+
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Return cleanup function
+    return () => window.removeEventListener('scroll', handleScroll);
+  }
+}
+
+// Main Dashboard Class
+class Dashboard {
+  constructor() {
+    this.charts = {
+      expense: null,
+      income: null
+    };
+  }
+
+  async init() {
+    try {
+      console.log('Initializing dashboard...');
+      
+      // Load data from API
+      const [expenseData, incomeData, transactionData] = await Promise.all([
+        ApiService.fetchExpenses(CONFIG.USER_ID),
+        ApiService.fetchIncome(CONFIG.USER_ID),
+        ApiService.fetchTransactions(CONFIG.USER_ID)
+      ]);
+
+      // Create charts
+      this.charts.expense = ChartService.createExpenseChart(transactionData.expenses);
+      this.charts.income = ChartService.createIncomeChart(incomeData);
+      
+      // Update legend
+      LegendService.updateLegend(expenseData);
+      
+      console.log('Dashboard initialized successfully');
+
+    } catch (error) {
+      console.error('Error initializing dashboard:', error);
+      console.log('Loading fallback data...');
+      ChartService.createFallbackCharts();
+    }
+  }
+
+  destroy() {
+    // Clean up charts
+    if (this.charts.expense) {
+      this.charts.expense.destroy();
+    }
+    if (this.charts.income) {
+      this.charts.income.destroy();
+    }
+  }
+}
+
+// Initialize when DOM is ready
+$(document).ready(function() {
+  const dashboard = new Dashboard();
+  
+  // Initialize dashboard
+  dashboard.init();
+  
+  // Initialize navigation effects
+  const cleanupNav = NavigationService.initScrollEffect();
+  
+  // Store cleanup functions for potential later use
+  window.dashboardCleanup = () => {
+    dashboard.destroy();
+    if (cleanupNav) cleanupNav();
+  };
 });
 
-window.addEventListener('scroll', function() {
-    const nav = document.querySelector('.nav-bar');
-    if (window.scrollY > 100) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
+// Optional: Clean up when page unloads
+window.addEventListener('beforeunload', () => {
+  if (window.dashboardCleanup) {
+    window.dashboardCleanup();
+  }
 });
