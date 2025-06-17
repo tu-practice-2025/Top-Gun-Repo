@@ -9,68 +9,52 @@
 
 </head>
 <body>
-    <header>
-        <div class="logo">
-            Budget Tracker
+    <header class="top-header">
+      <div class="top-bar">
+        <h1>Budget tracker</h1>
+        <div class="pulse-circles-top">
+          <div class="circle circle1"></div>
+          <div class="circle circle2"></div>
+          <div class="circle circle3"></div>
+          <div class="circle circle4"></div>
         </div>
-        <div class="nav-buttons">
-            <div>📞 02 933 7 333</div>
-            <div>📱 15 333</div>
-        </div>
+      </div> 
     </header>
 
     <main class="main-body">
         <div class="login-container">
-        <div class="login-header">Тракер на разходи</div>
+        <div class="login-header">Budget Tracker</div>
 
-        <button id="toggleForm" class="toggle-button" title="Превключи формата">⇄</button>
+        <button id="toggleForm" class="toggle-button" title="Switch form">⇄</button>
 
         <div class="form-wrapper">
             <form id="loginForm" class="form active">
-                <label for="email">Имейл</label>
+                <label for="email">Email</label>
                 <input type="text" name="email" id="email" required>
 
-                <label for="password">Парола</label>
+                <label for="password">Password</label>
                 <input type="password" name="password" id="password" required>
 
-                <a href="#" class="forgot">Забравена парола?</a>
+                <a href="#" class="forgot">Forgotten password?</a>
 
-                <input type="submit" value="ВХОД">
+                <input type="submit" value="Login">
             </form>
 
             <form id="registerForm" class="form">
-                <label for="name">Име</label>
+                <label for="name">Name</label>
                 <input type="text" name="name" id="name" required>
 
-                <label for="emailRegister">Имейл</label>
+                <label for="emailRegister">Email</label>
                 <input type="text" name="email" id="emailRegister" required>
 
-                <label for="passwordRegister">Парола</label>
+                <label for="passwordRegister">Password</label>
                 <input type="password" name="password" id="passwordRegister" required>
 
-                <input type="submit" value="РЕГИСТРАЦИЯ">
+                <input type="submit" value="Registration">
             </form>
         </div>
     </div>
 
     </main>
-
-    <footer>
-        <div class="footer-col">
-            <h4>Сигурност</h4>
-            <p><a href="#">Препоръки за сигурност</a></p>
-            <p><a href="#">Политика за бисквитки</a></p>
-        </div>
-        <div class="footer-col">
-            <h4>Новини</h4>
-            <p><a href="#">Важно! Годишно приключване 2024 г.</a></p>
-            <p><a href="#">Местни данъци и такси</a></p>
-        </div>
-        <div class="footer-col">
-            <h4>Документи</h4>
-            <p><a href="#">Общи условия</a></p>
-            <p><a href="#">Видео с възможности за работа</a></p>
-        </div>
-    </footer>
 </body>
 </html>

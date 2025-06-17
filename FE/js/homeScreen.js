@@ -1,7 +1,7 @@
 // Dashboard Configuration
 const CONFIG = {
   API_BASE_URL: 'https://localhost:7121',
-  USER_ID: 1, // TODO: Get this from authentication/session
+  USER_ID: sessionStorage.getItem("userId"),
   CHART_COLORS: {
     primary: [
       'rgba(255, 99, 132, 0.7)',
@@ -112,7 +112,7 @@ class ChartService {
 
   static createIncomeChart(apiData) {
     const validData = apiData.filter(item => item.totalSpent > 0).slice(0, 10);
-    const labels = validData.map(item => item.code);
+    const labels = validData.map(item => item.name);
     const amounts = validData.map(item => item.totalSpent);
 
     const chartData = {
@@ -235,7 +235,7 @@ class LegendService {
       
       legendItem.innerHTML = `
         <span class="color-dot" style="background-color: ${backgroundColor}"></span>
-        <span class="label-text">${category.code} - $${category.totalSpent.toFixed(2)}</span>
+        <span class="label-text">${category.name} - $${category.totalSpent.toFixed(2)}</span>
       `;
       
       legendContainer.appendChild(legendItem);
