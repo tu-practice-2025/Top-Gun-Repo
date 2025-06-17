@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.Models;
 using SummerPracticeWebApi.Services.Interfaces;
 
@@ -9,10 +10,13 @@ namespace SummerPracticeWebApi.Controllers
     public class FutureTransactionController : ControllerBase
     {
         private readonly IFutureTransactionService _futureTransactionService;
+        private readonly AppDbContext _context;
 
-        public FutureTransactionController(IFutureTransactionService futureTransactionService)
+        public FutureTransactionController(IFutureTransactionService futureTransactionService, AppDbContext context)
         {
             _futureTransactionService = futureTransactionService;
+            _context = context;
+
         }
 
         [HttpGet("test")]
@@ -125,6 +129,29 @@ namespace SummerPracticeWebApi.Controllers
                     message = "Transaction updated successfully.",
                     udpatedId = id
 
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        // DELETE: api/futuretransaction/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFutureTransaction(int id)
+        {
+            try
+            {
+                var success = await _futureTransactionService.DeleteFutureTransactionAsync(id);
+                if (!success)
+                {
+                    return NotFound($"Future transaction with id {id} not found");
+                }
+
+                return Ok(new
+                {
+                    message = "Future transaction deleted successfully",
+                    deletedId = id
                 });
             }
             catch (Exception ex)
