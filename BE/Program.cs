@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using SendGrid.Extensions.DependencyInjection;
 using SummerPracticeWebApi.DataAccess;
 using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.Services.Implementations;
 using SummerPracticeWebApi.Services.Implepemnations;
 using SummerPracticeWebApi.Services.Interfaces;
+using YourNamespace.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +39,17 @@ builder.Services.AddCors(options =>
 
 
 
+
 //“ова казва на .NET: Д огато н€кой поиска ITransactionService Ц дай му TransactionService.У
 
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 
+builder.Services.AddSendGrid(options =>
+{
+    options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
+});
+builder.Services.AddTransient<EmailService>();
 
 
 
