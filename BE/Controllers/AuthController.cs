@@ -26,7 +26,7 @@ namespace SummerPracticeWebApi.Controllers
             }
 
             HttpContext.Session.SetString("UserEmail", user.email);
-            return Ok("Login successful");
+            return Ok(new { userId = user.UserId , email = user.email , name = user.name});
 
 
         }

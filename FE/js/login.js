@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById("toggleForm");
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
-
     toggleButton.addEventListener("click", () => {
         loginForm.classList.toggle("active");
         registerForm.classList.toggle("active");
@@ -22,6 +21,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     if (response.ok) {
+        data = await response.json();
+        userId = data.userId;
+        userEmail = data.email;
+        userName = data.name;
+
+        sessionStorage.setItem('userId', userId);
+        sessionStorage.setItem('userEmail', userEmail);
+        sessionStorage.setItem('userName', userName);
+
+
         window.location.href = "homeScreen.html"; 
     } else {
         const result = await response.json();

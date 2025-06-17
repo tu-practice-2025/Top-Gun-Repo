@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.Models;
+using SummerPracticeWebApi.Services.Interfaces;
 
 namespace SummerPracticeWebApi.Controllers
 {
@@ -9,10 +8,11 @@ namespace SummerPracticeWebApi.Controllers
     [ApiController]
     public class FutureTransactionController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public FutureTransactionController(AppDbContext context)
+        private readonly IFutureTransactionService _futureTransactionService;
+
+        public FutureTransactionController(IFutureTransactionService futureTransactionService)
         {
-            _context = context;
+            _futureTransactionService = futureTransactionService;
         }
 
         [HttpGet("test")]
@@ -21,73 +21,25 @@ namespace SummerPracticeWebApi.Controllers
             return Ok(new { message = "FutureTransaction controller is working!", timestamp = DateTime.Now });
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFutureTransaction(int id)
-        {
-            try
-            {
-                var transaction = await _context.Future_transactions.FindAsync(id);
-                if (transaction == null)
-                {
-                    return NotFound($"Future transaction with id {id} not found");
-                }
-                _context.Future_transactions.Remove(transaction);
-                await _context.SaveChangesAsync();
-                return Ok(new
-                {
-                    message = "Future transaction deleted successfully",
-                    deletedId = id
-                });
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
         // GET: api/futuretransaction/1?year=2025&month=6
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserTransactionsByMonth(int userId, [FromQuery] int year, [FromQuery] int month)
         {
-
             try
             {
-                var transactions = await _context.FutureTransactionViews
-                    .Where(t => t.userId.HasValue &&
-                               t.userId.Value == userId &&
-                               t.TransactionYear == year &&
-                               t.TransactionMonth == month)
-                    .Select(t => new
-                    {
-                        userId = t.userId.Value,
-                        categoryName = t.categoryName,
-                        amount = t.amount,
-                        date = t.date,
-                        type = t.type,
-                    })
-                    .ToListAsync();
-
-
-                if (!transactions.Any())
-                {
-                    return Ok(new { message = "No transactions found for the specified month", data = transactions });
-                }
-
-                return Ok(transactions);
+                var result = await _futureTransactionService.GetUserTransactionsByMonthAsync(userId, year, month);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
         // POST: api/futuretransaction
         [HttpPost]
         public async Task<IActionResult> CreateFutureTransaction([FromBody] CreateFutureTransactionDto dto)
         {
-
             try
             {
                 if (dto == null)
@@ -115,30 +67,19 @@ namespace SummerPracticeWebApi.Controllers
                     return BadRequest("Type must be 'I' for income or 'E' for expense");
                 }
 
-                var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryId == dto.CategoryId);
+                var categoryExists = await _futureTransactionService.CategoryExistsAsync(dto.CategoryId);
                 if (!categoryExists)
                 {
                     return BadRequest("Category does not exist");
                 }
 
-                var userExists = await _context.Users.AnyAsync(u => u.UserId == dto.UserId);
+                var userExists = await _futureTransactionService.UserExistsAsync(dto.UserId);
                 if (!userExists)
                 {
                     return BadRequest("User does not exist");
                 }
 
-                var futureTransaction = new FutureTransaction
-                {
-                    category_id = dto.CategoryId,
-                    user_id = dto.UserId,
-                    amount = dto.Amount,
-                    type = dto.Type,
-                    date = dto.Date
-                };
-
-                _context.Future_transactions.Add(futureTransaction);
-                await _context.SaveChangesAsync();
-
+                var futureTransaction = await _futureTransactionService.CreateFutureTransactionAsync(dto);
 
                 var response = new
                 {
@@ -179,11 +120,11 @@ namespace SummerPracticeWebApi.Controllers
                 transaction.date = dto.Date;
 
                 await _context.SaveChangesAsync();
-
                 return Ok(new
                 {
                     message = "Transaction updated successfully.",
                     udpatedId = id
+
                 });
             }
             catch (Exception ex)
