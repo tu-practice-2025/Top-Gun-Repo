@@ -9,7 +9,7 @@ namespace SummerPracticeWebApi.Services.Interfaces
 
 
         Task<List<TransactionDetailDTO>> GetByCategoryAsync(int userId, int categoryId, DateTime month);
-        Task<List<Transaction>> GetTransactionsByMonth(int userId, DateTime date);
+        Task<object> GetTransactionsByMonth(int userId, DateTime date);
 
     }
 }
