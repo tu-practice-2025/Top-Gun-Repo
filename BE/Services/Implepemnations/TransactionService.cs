@@ -48,9 +48,9 @@ namespace SummerPracticeWebApi.Services.Implementations
             {
                 CategoryName = categoryNames.GetValueOrDefault(x.CatId,"Unknown"),
                 PercentageAmount = totalExpenses == 0
-                ? 0
-                : Math.Round(x.Sum / totalExpenses * 100, 2),
-                
+                    ? 0
+                    : Math.Round(x.Sum / totalExpenses * 100, 2),
+                TotalAmount = Math.Round(x.Sum, 2)
             }).ToList();
 
 
@@ -70,14 +70,16 @@ namespace SummerPracticeWebApi.Services.Implementations
                 PercentageAmount = totalIncome == 0
                     ? 0
                     : Math.Round(x.Sum / totalIncome * 100, 2),
-            })
-            .ToList();
+                TotalAmount = Math.Round(x.Sum, 2)
+            }).ToList();
 
 
             return new TransactionDTO
             {
                 Expenses = expenses,
-                Income = incomes
+                Income = incomes,
+                totalExpenses = totalExpenses, 
+                totalIncome = totalIncome
             };
 
         }
@@ -127,6 +129,30 @@ namespace SummerPracticeWebApi.Services.Implementations
 
             return await projected.ToListAsync();
         }
+
+
+       // public async Task<(double TotalExpense, double TotalIncome)>
+       //GetMonthlyTotalsAsync(int userId, int year, int month)
+       // {
+       //     var start = new DateTime(year, month, 1);
+       //     var end = start.AddMonths(1);
+
+       //     var expense = await _ctx.Transactions
+       //         .Where(t => t.user_id == userId
+       //                  && t.type == 'E'
+       //                  && t.date >= start
+       //                  && t.date < end)
+       //         .SumAsync(t => t.amount);
+
+       //     var income = await _ctx.Transactions
+       //         .Where(t => t.user_id == userId
+       //                  && t.type == 'I'
+       //                  && t.date >= start
+       //                  && t.date < end)
+       //         .SumAsync(t => t.amount);
+
+       //     return (expense, income);
+       // }
 
 
     }
