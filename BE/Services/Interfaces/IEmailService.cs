@@ -1,4 +1,9 @@
-﻿public interface IEmailService
+﻿using SummerPracticeWebApi.DTOs;
+
+namespace SummerPracticeWebApi.Services.Interfaces
 {
-    Task SendEmailAsync(string toEmail, string subject, string plainTextContent, string htmlContent);
+    public interface IEmailService
+    {
+        Task SendSimpleEmail(string toEmail, int userId);
+    }
 }

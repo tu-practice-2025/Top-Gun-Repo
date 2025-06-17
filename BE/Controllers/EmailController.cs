@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using YourNamespace.Services.Implementations;
+using SummerPracticeWebApi.Services.Implementations;
 
 [ApiController]
 [Route("api/[controller]")]
