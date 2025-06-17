@@ -24,6 +24,7 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                            t.TransactionMonth == month)
                 .Select(t => new
                 {
+                    tranId=t.TransactionId,
                     userId = t.userId.Value,
                     categoryName = t.categoryName,
                     amount = t.amount,
@@ -48,7 +49,7 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                 user_id = dto.UserId,
                 amount = dto.Amount,
                 type = dto.Type,
-                date = dto.Date
+                date = dto.Date,
             };
 
             _context.Future_transactions.Add(futureTransaction);

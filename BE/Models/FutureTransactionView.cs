@@ -25,5 +25,7 @@ namespace SummerPracticeWebApi.Models
 
         [Column("transaction_month")]
         public int TransactionMonth { get; set; }
+        [Column("id")]
+        public int? TransactionId { get; set; }
     }
 }
