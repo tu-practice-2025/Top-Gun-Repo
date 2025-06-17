@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.DTOs;
 using SummerPracticeWebApi.Models;
 using SummerPracticeWebApi.Services.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SummerPracticeWebApi.Services.Implementations
 {
@@ -19,34 +16,34 @@ namespace SummerPracticeWebApi.Services.Implementations
 
         public TransactionService(AppDbContext context)
         {
-                       _context = context;
+            _context = context;
         }
 
         public async Task<TransactionDTO> GetMonthlyTransactionAsync(int userID, DateTime date)
         {
-   
+
             var startDate = new DateTime(date.Year, date.Month, 1);
 
             var endDate = startDate.AddMonths(1).AddDays(-1);
 
-           // Dictionary<int, string> categoryNames = new Dictionary<int, string>();
+            // Dictionary<int, string> categoryNames = new Dictionary<int, string>();
 
-            var categoryNames = await _context.Categories 
-                .ToDictionaryAsync(c => c.CategoryId, c=> c.name);
+            var categoryNames = await _context.Categories
+                .ToDictionaryAsync(c => c.CategoryId, c => c.name);
 
             var expenseSum = await _context.Transactions
                 .Where(t => t.user_id == userID && t.type == 'E' && t.date >= startDate && t.date <= endDate)
                 .GroupBy(t => t.category_id)
 
                 //за всяка транзакция x в групата g извличаш x.amount и ги събираш.
-                .Select(g => new {CatId = g.Key, Sum = g.Sum(x=> x.amount)}).ToListAsync();
+                .Select(g => new { CatId = g.Key, Sum = g.Sum(x => x.amount) }).ToListAsync();
 
 
-            double totalExpenses = expenseSum.Sum(x=>x.Sum);
+            double totalExpenses = expenseSum.Sum(x => x.Sum);
 
             var expenses = expenseSum.Select(x => new TransactionListDTO
             {
-                CategoryName = categoryNames.GetValueOrDefault(x.CatId,"Unknown"),
+                CategoryName = categoryNames.GetValueOrDefault(x.CatId, "Unknown"),
                 PercentageAmount = totalExpenses == 0
                     ? 0
                     : Math.Round(x.Sum / totalExpenses * 100, 2),
@@ -78,7 +75,7 @@ namespace SummerPracticeWebApi.Services.Implementations
             {
                 Expenses = expenses,
                 Income = incomes,
-                totalExpenses = totalExpenses, 
+                totalExpenses = totalExpenses,
                 totalIncome = totalIncome
             };
 
@@ -90,7 +87,7 @@ namespace SummerPracticeWebApi.Services.Implementations
             var start = new DateTime(month.Year, month.Month, 1);
             var end = start.AddMonths(1);
 
-        
+
             var query = _context.Transactions
                 .Where(t => t.user_id == userId
                          && t.category_id == categoryId
@@ -103,11 +100,11 @@ namespace SummerPracticeWebApi.Services.Implementations
                       t => t.merchant_id,
                       m => m.MerchantId,
                       (t, m) => new { t, m });
-                //.Join(_context.Cards,
-                //      tm => tm.t.card_number,
-                //      c => c.card_number,
-                //      (tm, c) => new { tm.t, tm.m, c });
-                 
+            //.Join(_context.Cards,
+            //      tm => tm.t.card_number,
+            //      c => c.card_number,
+            //      (tm, c) => new { tm.t, tm.m, c });
+
 
 
 
@@ -119,7 +116,7 @@ namespace SummerPracticeWebApi.Services.Implementations
                     MerchantName = x.m.mcc_name,
                     Iban = x.t.iban,
                     Amount = x.t.type == 'E'
-                                     ? -x.t.amount    
+                                     ? -x.t.amount
                                      : x.t.amount,
                     CardNumber = x.t.type == 'E'
                                 ? x.t.card_number
@@ -130,65 +127,85 @@ namespace SummerPracticeWebApi.Services.Implementations
             return await projected.ToListAsync();
         }
 
+        public async Task<List<Transaction>> GetTransactionsByMonth(int userId, DateTime date)
+        {
 
-       // public async Task<(double TotalExpense, double TotalIncome)>
-       //GetMonthlyTotalsAsync(int userId, int year, int month)
-       // {
-       //     var start = new DateTime(year, month, 1);
-       //     var end = start.AddMonths(1);
+            var startDate = new DateTime(date.Year, date.Month, 1);
 
-       //     var expense = await _ctx.Transactions
-       //         .Where(t => t.user_id == userId
-       //                  && t.type == 'E'
-       //                  && t.date >= start
-       //                  && t.date < end)
-       //         .SumAsync(t => t.amount);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
 
-       //     var income = await _ctx.Transactions
-       //         .Where(t => t.user_id == userId
-       //                  && t.type == 'I'
-       //                  && t.date >= start
-       //                  && t.date < end)
-       //         .SumAsync(t => t.amount);
+            var transactions = await _context.Transactions
+                .Where(t => t.user_id == userId && t.date.Month == date.Month)
+                .OrderByDescending(t => t.date)
+                .ToListAsync();
 
-       //     return (expense, income);
-       // }
+            
+
+            return transactions;
+        }
+
+
+
+
+
+        // public async Task<(double TotalExpense, double TotalIncome)>
+        //GetMonthlyTotalsAsync(int userId, int year, int month)
+        // {
+        //     var start = new DateTime(year, month, 1);
+        //     var end = start.AddMonths(1);
+
+        //     var expense = await _ctx.Transactions
+        //         .Where(t => t.user_id == userId
+        //                  && t.type == 'E'
+        //                  && t.date >= start
+        //                  && t.date < end)
+        //         .SumAsync(t => t.amount);
+
+        //     var income = await _ctx.Transactions
+        //         .Where(t => t.user_id == userId
+        //                  && t.type == 'I'
+        //                  && t.date >= start
+        //                  && t.date < end)
+        //         .SumAsync(t => t.amount);
+
+        //     return (expense, income);
+        // }
 
 
     }
 
 
-//    public async Task<List<TransactionDetailDTO>> 
-//    GetTransactionDetailsAsync(int userId, int categoryId, DateTime month)
-//{
-//    var start = new DateTime(month.Year, month.Month, 1);
-//    var end   = start.AddMonths(1);
+    //    public async Task<List<TransactionDetailDTO>> 
+    //    GetTransactionDetailsAsync(int userId, int categoryId, DateTime month)
+    //{
+    //    var start = new DateTime(month.Year, month.Month, 1);
+    //    var end   = start.AddMonths(1);
 
-//    // Зареждаме мърчант-имена в речник (по merchant_id)
-//    var merchants = await _context.Merchants
-//        .ToDictionaryAsync(m => m.MerchantId, m => m.mcc_name);
+    //    // Зареждаме мърчант-имена в речник (по merchant_id)
+    //    var merchants = await _context.Merchants
+    //        .ToDictionaryAsync(m => m.MerchantId, m => m.mcc_name);
 
-//    // Query-раме транзакциите
-//    var txs = await _context.Transactions
-//        .Where(t => t.user_id == userId
-//                 && t.category_id == categoryId
-//                 && t.date >= start
-//                 && t.date < end)
-//        .OrderByDescending(t => t.date)
-//        .Select(t => new TransactionDetailDTO {
-//            Date     = t.date,
-//            Merchant = merchants.GetValueOrDefault(t.merchant_id, null),
-//            Category = _context.Categories
-//                              .Where(c => c.CategoryId == t.category_id)
-//                              .Select(c => c.name)
-//                              .FirstOrDefault(), 
-//            Amount   = t.amount,
-//            Type     = t.type == 'E' ? "expense" : "income"
-//        })
-//        .ToListAsync();
+    //    // Query-раме транзакциите
+    //    var txs = await _context.Transactions
+    //        .Where(t => t.user_id == userId
+    //                 && t.category_id == categoryId
+    //                 && t.date >= start
+    //                 && t.date < end)
+    //        .OrderByDescending(t => t.date)
+    //        .Select(t => new TransactionDetailDTO {
+    //            Date     = t.date,
+    //            Merchant = merchants.GetValueOrDefault(t.merchant_id, null),
+    //            Category = _context.Categories
+    //                              .Where(c => c.CategoryId == t.category_id)
+    //                              .Select(c => c.name)
+    //                              .FirstOrDefault(), 
+    //            Amount   = t.amount,
+    //            Type     = t.type == 'E' ? "expense" : "income"
+    //        })
+    //        .ToListAsync();
 
-//    return txs;
-//}
+    //    return txs;
+    //}
 
 
 

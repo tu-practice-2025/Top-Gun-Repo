@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SummerPracticeWebApi.DataAccess.Context;
 using SummerPracticeWebApi.DTOs;
 using SummerPracticeWebApi.Models;
+using SummerPracticeWebApi.Services.Implepemnations;
 using SummerPracticeWebApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -127,6 +128,24 @@ namespace SummerPracticeWebApi.Controllers
             return Ok(dto);
         }
 
+
+        [HttpGet("{userId}/by-month/{month}")]
+        public async Task<IActionResult> GetUserTransactionsByMonth(
+         int userId,
+         int month,
+        [FromQuery]  int? year)
+                {
+                    var y = year ?? DateTime.Today.Year;
+                    
+                    var date = new DateTime(y, month, 1);
+
+                   var result = await _transactionService.GetTransactionsByMonth(userId, date);
+                        return Ok(result);
+                   
+                
+                }
+
+        
         [HttpGet("{userId}/category/{categoryId}")]
         public async Task<ActionResult<List<TransactionDetailDTO>>>
                 GetByCategory(
@@ -145,6 +164,9 @@ namespace SummerPracticeWebApi.Controllers
 
             return Ok(result);
         }
+
+
+      
 
     }
 }

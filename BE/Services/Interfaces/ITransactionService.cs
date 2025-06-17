@@ -1,4 +1,5 @@
 ﻿using SummerPracticeWebApi.DTOs;
+using SummerPracticeWebApi.Models;
 
 namespace SummerPracticeWebApi.Services.Interfaces
 {
@@ -7,7 +8,8 @@ namespace SummerPracticeWebApi.Services.Interfaces
         Task<TransactionDTO> GetMonthlyTransactionAsync(int userID, DateTime date);
 
 
-        Task<List<TransactionDetailDTO>>
-        GetByCategoryAsync(int userId, int categoryId, DateTime month);
+        Task<List<TransactionDetailDTO>> GetByCategoryAsync(int userId, int categoryId, DateTime month);
+        Task<List<Transaction>> GetTransactionsByMonth(int userId, DateTime date);
+
     }
 }
