@@ -1,7 +1,7 @@
 // Dashboard Configuration
 const CONFIG = {
   API_BASE_URL: 'https://localhost:7121',
-  USER_ID: 1, // TODO: Get this from authentication/session
+  USER_ID: sessionStorage.getItem("userId"),
   CHART_COLORS: {
     primary: [
       'rgba(255, 99, 132, 0.7)',
