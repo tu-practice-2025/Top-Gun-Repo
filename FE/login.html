@@ -8,25 +8,31 @@
     <script src="js/login.js"></script>
   </head>
   <body>
+    <div class="particles" id="particles"></div>
+
     <header class="top-header">
       <div class="top-bar">
         <h1>Budget tracker</h1>
-        <div class="pulse-circles-top">
-          <div class="circle circle1"></div>
-          <div class="circle circle2"></div>
-          <div class="circle circle3"></div>
-          <div class="circle circle4"></div>
-        </div>
       </div>
     </header>
 
     <main class="main-body">
-      <div class="login-container">
-        <div class="login-header">Budget Tracker</div>
+      <div class="geometric-bg">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+      </div>
 
-        <button id="toggleForm" class="toggle-button" title="Switch form">
-          ⇄
-        </button>
+      <div class="login-container">
+        <div class="log-register">
+          <div class="login-header">Welcome</div>
+          <div class="login-header1">Log in to continue</div>
+
+          <button id="toggleForm" class="toggle-button" title="Switch form">
+            ⇄
+          </button>
+        </div>
 
         <div class="form-wrapper">
           <form id="loginForm" class="form active">
