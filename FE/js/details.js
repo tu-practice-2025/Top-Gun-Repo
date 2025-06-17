@@ -226,12 +226,44 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  function displayNoTransactions() {
-    const table = document.querySelector('.table-placeholder table');
-    
-    // Clear existing rows except header
-    while (table.rows.length > 1) {
-      table.deleteRow(1);
+    const selectedCategory = sessionStorage.getItem("selectedCategory");
+
+    loadCategories();
+
+    function loadCategories() {
+        fetch(`${API_BASE_URL}/api/Categories/spending/3`)
+            .then(response => response.json())
+            .then(data => {
+                categorySelect.innerHTML = ''; 
+
+                const allOption = document.createElement("option");
+                allOption.value = "All";
+                allOption.textContent = "All categories";
+                categorySelect.appendChild(allOption);
+
+                data.forEach(category => {
+                    const option = document.createElement("option");
+                    option.value = category.name;
+                    option.textContent = category.name;
+                    categorySelect.appendChild(option);
+                });
+
+                if (selectedCategory) {
+                    categorySelect.value = selectedCategory;
+                } else {
+                    categorySelect.value = "All";
+                }
+            })
+            .catch(error => {
+                console.error("Error with loading of categories:", error);
+            });
+
+            categorySelect.addEventListener("change", () => {
+                const selected = categorySelect.value;
+                localStorage.setItem("selectedCategory", selected);
+                console.log("Selected category:", selected);
+                loadAndRenderBalance();
+            });
     }
     
     const row = table.insertRow();
