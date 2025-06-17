@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="bg">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/login.css" />
     <script src="js/login.js"></script>
-
-</head>
-<body>
+  </head>
+  <body>
     <header class="top-header">
       <div class="top-bar">
         <h1>Budget tracker</h1>
@@ -18,43 +17,49 @@
           <div class="circle circle3"></div>
           <div class="circle circle4"></div>
         </div>
-      </div> 
+      </div>
     </header>
 
     <main class="main-body">
-        <div class="login-container">
+      <div class="login-container">
         <div class="login-header">Budget Tracker</div>
 
-        <button id="toggleForm" class="toggle-button" title="Switch form">⇄</button>
+        <button id="toggleForm" class="toggle-button" title="Switch form">
+          ⇄
+        </button>
 
         <div class="form-wrapper">
-            <form id="loginForm" class="form active">
-                <label for="email">Email</label>
-                <input type="text" name="email" id="email" required>
+          <form id="loginForm" class="form active">
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" required />
 
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required />
 
-                <a href="#" class="forgot">Forgotten password?</a>
+            <a href="#" class="forgot">Forgotten password?</a>
 
-                <input type="submit" value="Login">
-            </form>
+            <input type="submit" value="Login" />
+          </form>
 
-            <form id="registerForm" class="form">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" required>
+          <form id="registerForm" class="form">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" required />
 
-                <label for="emailRegister">Email</label>
-                <input type="text" name="email" id="emailRegister" required>
+            <label for="emailRegister">Email</label>
+            <input type="text" name="email" id="emailRegister" required />
 
-                <label for="passwordRegister">Password</label>
-                <input type="password" name="password" id="passwordRegister" required>
+            <label for="passwordRegister">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="passwordRegister"
+              required
+            />
 
-                <input type="submit" value="Registration">
-            </form>
+            <input type="submit" value="Registration" />
+          </form>
         </div>
-    </div>
-
+      </div>
     </main>
-</body>
+  </body>
 </html>
