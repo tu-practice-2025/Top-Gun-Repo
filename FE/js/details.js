@@ -32,11 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadCategories() {
     try {
+      // Extract month from the month input for API call
+      const selectedMonth = monthInput.value;
+      const monthNumber = selectedMonth.split('-')[1];
+      
       // Fetch transaction data to get available categories
       const response = await fetch(
-        `${API_BASE_URL}/api/Transactions/${userId}`
+        `${API_BASE_URL}/api/transactions/${userId}/by-month/${monthNumber}`
       );
-      const data = await response.json();
+      const transactions = await response.json();
 
       categorySelect.innerHTML = "";
 
@@ -45,15 +49,15 @@ document.addEventListener("DOMContentLoaded", () => {
       allOption.textContent = "All categories";
       categorySelect.appendChild(allOption);
 
-      // Add categories from expenses data
-      if (data.expenses && data.expenses.length > 0) {
-        data.expenses.forEach((expense) => {
-          const option = document.createElement("option");
-          option.value = expense.categoryName;
-          option.textContent = expense.categoryName;
-          categorySelect.appendChild(option);
-        });
-      }
+      // Get unique categories from transactions
+      const uniqueCategories = [...new Set(transactions.map(t => t.categoryName))];
+      
+      uniqueCategories.forEach((categoryName) => {
+        const option = document.createElement("option");
+        option.value = categoryName;
+        option.textContent = categoryName;
+        categorySelect.appendChild(option);
+      });
 
       // Set selected category
       if (selectedCategory && selectedCategory !== "All") {
@@ -81,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMonthChange() {
-    loadTransactionData();
+    loadCategories(); // Reload categories for the new month
   }
 
   async function loadTransactionData() {
@@ -89,38 +93,32 @@ document.addEventListener("DOMContentLoaded", () => {
       showLoading();
 
       const category = categorySelect.value;
+      const selectedMonth = monthInput.value;
+      const monthNumber = selectedMonth.split('-')[1];
 
-      // Fetch transaction data
+      // Fetch transaction data for the selected month
       const response = await fetch(
-        `${API_BASE_URL}/api/Transactions/${userId}`
+        `${API_BASE_URL}/api/transactions/${userId}/by-month/${monthNumber}`
       );
-      const data = await response.json();
+      const transactions = await response.json();
 
-      // Filter and display data
-      let displayData = [];
-
-      if (category === "All") {
-        displayData = data.expenses || [];
-      } else {
-        const selectedCategoryData = data.expenses?.find(
-          (expense) => expense.categoryName === category
-        );
-        if (selectedCategoryData) {
-          displayData = [selectedCategoryData];
-        }
+      // Filter transactions by category if not "All"
+      let filteredTransactions = transactions;
+      if (category !== "All") {
+        filteredTransactions = transactions.filter(t => t.categoryName === category);
       }
 
       // Update UI
-      updateTransactionTable(displayData, category);
-      updateBalanceDisplay(data, category);
-      loadAndRenderBalance(data);
+      updateTransactionTable(filteredTransactions, category);
+      updateBalanceDisplay(transactions, filteredTransactions, category);
+      loadAndRenderBalance(transactions, filteredTransactions);
     } catch (error) {
       console.error("Error loading transaction data:", error);
       showError("Failed to load transaction data");
     }
   }
 
-  function updateTransactionTable(categoryData, selectedCategory) {
+  function updateTransactionTable(transactions, selectedCategory) {
     const tableBody = document.querySelector(".table-placeholder table tbody");
     if (!tableBody) {
       // Create tbody if it doesn't exist
@@ -132,86 +130,93 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.querySelector(".table-placeholder table tbody");
     tbody.innerHTML = "";
 
-    if (categoryData.length === 0) {
+    if (transactions.length === 0) {
       const row = document.createElement("tr");
       row.innerHTML =
-        '<td colspan="3" style="text-align: center; color: #666;">No transactions found for this category</td>';
+        '<td colspan="5" style="text-align: center; color: #666;">No transactions found for this category</td>';
       tbody.appendChild(row);
       return;
     }
 
-    // Since we have category summaries, not individual transactions,
-    // we'll display the category summary information
-    categoryData.forEach((category) => {
+    // Display individual transactions
+    transactions.forEach((transaction) => {
       const row = document.createElement("tr");
-      const currentDate = new Date().toLocaleDateString();
+      const transactionDate = new Date(transaction.date).toLocaleDateString();
+      
+      // Format card number (show last 4 digits)
+      const maskedCardNumber = `****-****-****-${transaction.cardNumber.slice(-4)}`;
+      
+      // Format IBAN (show first 4 and last 4 characters)
+      const maskedIban = `${transaction.iban.slice(0, 4)}****${transaction.iban.slice(-4)}`;
 
       row.innerHTML = `
-                <td>${currentDate}</td>
-                <td>${category.categoryName}</td>
-                <td>$${category.totalAmount.toFixed(2)}</td>
-            `;
+        <td>${transactionDate}</td>
+        <td>
+          <div><strong>${transaction.merchantName}</strong></div>
+          <div style="font-size: 0.8em; color: #666;">${transaction.merchantDescription}</div>
+          <div style="font-size: 0.8em; color: #888;">${transaction.categoryName}</div>
+        </td>
+        <td>
+          <div style="font-size: 0.9em; color: #555;">Card: ${maskedCardNumber}</div>
+          <div style="font-size: 0.9em; color: #555;">IBAN: ${maskedIban}</div>
+        </td>
+        <td style="font-weight: bold; color: ${transaction.type === 'E' ? 'red' : 'green'};">
+          ${transaction.type === 'E' ? '-' : '+'}$${transaction.amount.toFixed(2)}
+        </td>
+      `;
 
       // Add styling based on amount
-      if (category.totalAmount > 500) {
+      if (transaction.amount > 500) {
         row.style.backgroundColor = "#ffebee";
       }
 
       tbody.appendChild(row);
     });
 
-    // Add a summary row if showing all categories
-    if (selectedCategory === "All" && categoryData.length > 1) {
-      const totalAmount = categoryData.reduce(
-        (sum, cat) => sum + cat.totalAmount,
-        0
-      );
+    // Add a summary row if showing multiple transactions
+    if (transactions.length > 1) {
+      const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0);
       const summaryRow = document.createElement("tr");
       summaryRow.style.borderTop = "2px solid black";
       summaryRow.style.fontWeight = "bold";
       summaryRow.innerHTML = `
-                <td colspan="2" style="text-align: right;">TOTAL:</td>
-                <td>$${totalAmount.toFixed(2)}</td>
-            `;
+        <td colspan="3" style="text-align: right;">TOTAL:</td>
+        <td style="color: red;">-$${totalAmount.toFixed(2)}</td>
+      `;
       tbody.appendChild(summaryRow);
     }
   }
 
-  function updateBalanceDisplay(data, selectedCategory) {
+  function updateBalanceDisplay(allTransactions, filteredTransactions, selectedCategory) {
     if (selectedCategory === "All") {
-      const totalExpenses = data.totalExpenses || 0;
-      const totalIncome = data.totalIncome || 0;
+      const totalExpenses = allTransactions.reduce((sum, t) => sum + (t.type === 'E' ? t.amount : 0), 0);
+      const totalIncome = allTransactions.reduce((sum, t) => sum + (t.type === 'I' ? t.amount : 0), 0);
       const balance = totalIncome - totalExpenses;
 
       balanceText.innerHTML = `
-                <div style="color: black; font-weight: bold; font-size: 1.2em;">Overall Summary</div>
-                <div>Total Income: $${totalIncome.toFixed(2)}</div>
-                <div>Total Expenses: $${totalExpenses.toFixed(2)}</div>
-                <div style="color: ${
-                  balance >= 0 ? "green" : "black"
-                }; font-weight: bold;">
-                    Balance: $${balance.toFixed(2)}
-                </div>
-            `;
+        <div style="color: black; font-weight: bold; font-size: 1.2em;">Overall Summary</div>
+        <div>Total Income: $${totalIncome.toFixed(2)}</div>
+        <div>Total Expenses: $${totalExpenses.toFixed(2)}</div>
+        <div style="color: ${balance >= 0 ? "green" : "red"}; font-weight: bold;">
+          Balance: $${balance.toFixed(2)}
+        </div>
+        <div style="color: #666; font-size: 0.9em;">
+          Transactions: ${allTransactions.length}
+        </div>
+      `;
     } else {
-      const categoryInfo = data.expenses?.find(
-        (expense) => expense.categoryName === selectedCategory
-      );
-      if (categoryInfo) {
-        balanceText.innerHTML = `
-                    <div style="color: black; font-weight: bold; font-size: 1.2em;">${selectedCategory}</div>
-                    <div>Total Spent: $${categoryInfo.totalAmount.toFixed(
-                      2
-                    )}</div>
-                    <div>Percentage of Total: ${categoryInfo.percentageAmount.toFixed(
-                      2
-                    )}%</div>
-                `;
-      } else {
-        balanceText.innerHTML = `
-                    <div style="color: black; font-weight: bold;">No data found for ${selectedCategory}</div>
-                `;
-      }
+      const categoryTotal = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
+      const totalExpenses = allTransactions.reduce((sum, t) => sum + (t.type === 'E' ? t.amount : 0), 0);
+      const percentage = totalExpenses > 0 ? (categoryTotal / totalExpenses) * 100 : 0;
+
+      balanceText.innerHTML = `
+        <div style="color: black; font-weight: bold; font-size: 1.2em;">${selectedCategory}</div>
+        <div>Total Spent: $${categoryTotal.toFixed(2)}</div>
+        <div>Percentage of Total: ${percentage.toFixed(2)}%</div>
+        <div style="color: #666; font-size: 0.9em;">
+          Transactions: ${filteredTransactions.length}
+        </div>
+      `;
     }
   }
 
@@ -219,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.querySelector(".table-placeholder table tbody");
     if (tbody) {
       tbody.innerHTML =
-        '<tr><td colspan="3" style="text-align: center;">Loading...</td></tr>';
+        '<tr><td colspan="4" style="text-align: center;">Loading...</td></tr>';
     }
 
     balanceText.innerHTML =
@@ -229,58 +234,64 @@ document.addEventListener("DOMContentLoaded", () => {
   function showError(message) {
     const tbody = document.querySelector(".table-placeholder table tbody");
     if (tbody) {
-      tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: black;">${message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: black;">${message}</td></tr>`;
     }
 
     balanceText.innerHTML = `<div style="color: black;">${message}</div>`;
   }
 
-  // Updated balance bars functionality to work with the new data structure
-  async function loadAndRenderBalance(data = null) {
+  // Updated balance bars functionality to work with individual transactions
+  async function loadAndRenderBalance(allTransactions = null, filteredTransactions = null) {
     try {
       const category = categorySelect.value;
-      let displayData = [];
 
       // Use passed data or fetch new data
-      if (!data) {
+      if (!allTransactions) {
+        const selectedMonth = monthInput.value;
+        const monthNumber = selectedMonth.split('-')[1];
         const response = await fetch(
-          `${API_BASE_URL}/api/Transactions/${userId}`
+          `${API_BASE_URL}/api/transactions/${userId}/by-month/${monthNumber}`
         );
-        data = await response.json();
-      }
-
-      if (category === "All") {
-        displayData = data.expenses || [];
-      } else {
-        const selectedCategoryData = data.expenses?.find(
-          (expense) => expense.categoryName === category
-        );
-        if (selectedCategoryData) {
-          displayData = [selectedCategoryData];
+        allTransactions = await response.json();
+        
+        if (category !== "All") {
+          filteredTransactions = allTransactions.filter(t => t.categoryName === category);
+        } else {
+          filteredTransactions = allTransactions;
         }
       }
 
       const container = document.getElementById("balance-bars");
       container.innerHTML = "";
 
-      displayData.forEach((item) => {
+      // Group transactions by category for visualization
+      const categoryTotals = {};
+      const transactionsToShow = category === "All" ? allTransactions : filteredTransactions;
+      
+      transactionsToShow.forEach(transaction => {
+        if (!categoryTotals[transaction.categoryName]) {
+          categoryTotals[transaction.categoryName] = 0;
+        }
+        categoryTotals[transaction.categoryName] += transaction.amount;
+      });
+
+      const totalExpenses = allTransactions.reduce((sum, t) => sum + (t.type === 'E' ? t.amount : 0), 0);
+
+      Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
         // Calculate percentage based on total expenses
-        const percent =
-          data.totalExpenses > 0
-            ? (item.totalAmount / data.totalExpenses) * 100
-            : 0;
+        const percent = totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0;
 
         const barWrapper = document.createElement("div");
         barWrapper.style.marginBottom = "20px";
 
         const label = document.createElement("div");
-        label.textContent = `${item.categoryName} - ${percent.toFixed(1)}%`;
+        label.textContent = `${categoryName} - ${percent.toFixed(1)}%`;
         label.style.marginBottom = "5px";
         label.style.color = "black";
         label.style.fontWeight = "bold";
 
         const amountLabel = document.createElement("div");
-        amountLabel.textContent = `$${item.totalAmount.toFixed(2)}`;
+        amountLabel.textContent = `$${amount.toFixed(2)}`;
         amountLabel.style.marginBottom = "5px";
         amountLabel.style.color = "#666";
         amountLabel.style.fontSize = "0.9em";
