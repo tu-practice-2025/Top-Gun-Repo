@@ -178,9 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <td style="font-weight: bold; color: ${
           transaction.type === "E" ? "red" : "green"
         };">
-          ${transaction.type === "E" ? "-" : "+"}$${transaction.amount.toFixed(
+          ${transaction.type === "E" ? "-" : "+"}${transaction.amount.toFixed(
         2
-      )}
+      )} лв.
         </td>
       `;
 
@@ -194,15 +194,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add a summary row if showing multiple transactions
     if (transactions.length > 1) {
-      const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0);
-      const summaryRow = document.createElement("tr");
-      summaryRow.style.borderTop = "2px solid black";
-      summaryRow.style.fontWeight = "bold";
-      summaryRow.innerHTML = `
-        <td colspan="3" style="text-align: right;">TOTAL:</td>
-        <td style="color: green;">+$${totalAmount.toFixed(2)}</td>
-      `;
-      tbody.appendChild(summaryRow);
+  const totalAmount = transactions.reduce((sum, t) => {
+    const signedAmount = t.type === "E" ? -t.amount : t.amount;
+    return sum + signedAmount;
+  }, 0);
+  const summaryRow = document.createElement("tr");
+  summaryRow.style.borderTop = "2px solid black";
+  summaryRow.style.fontWeight = "bold";
+
+  const color = totalAmount < 0 ? "red" : "green";
+  const sign = totalAmount < 0 ? "-" : "+";
+
+  summaryRow.innerHTML = `
+    <td colspan="3" style="text-align: right;">TOTAL:</td>
+    <td style="color: ${color};">${(totalAmount).toFixed(2)} лв.</td>
+  `;
+  tbody.appendChild(summaryRow);
     }
   }
 

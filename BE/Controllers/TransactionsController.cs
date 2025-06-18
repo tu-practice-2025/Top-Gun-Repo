@@ -80,16 +80,7 @@ namespace SummerPracticeWebApi.Controllers
             return Ok("Transaction updated");
         }
 
-        // POST: api/Transactions
- 
-        [HttpPost]
-        public async Task<IActionResult> Post(Transaction transaction)
-        {
-            _context.Transactions.Add(transaction);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Get), new { id = transaction.TransactionId }, transaction);
-        }
+       
 
         // DELETE: api/Transactions/5
         [HttpDelete("{id}")]
