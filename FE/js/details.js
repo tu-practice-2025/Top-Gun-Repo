@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   summaryRow.innerHTML = `
     <td colspan="3" style="text-align: right;">TOTAL:</td>
-    <td style="color: ${color};">${(totalAmount).toFixed(2)} лв.</td>
+    <td style="color: ${color};">${(totalAmount).toFixed(2)} BGN</td>
   `;
   tbody.appendChild(summaryRow);
 
