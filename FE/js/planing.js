@@ -39,7 +39,7 @@ $(document).ready(function () {
 
     $(".progress-bar")
       .css("width", percent + "%")
-      .text(Math.round(percent) + "%");
+      .text(percent !== 0 ? Math.round(percent) + "%" : "");
 
     $("#totalDisplay").text(`Total: ${totalExpense.toFixed(2)}BGN`);
     $("#maxValueDisplay").text(`${totalIncome.toFixed(2)}BGN`);
@@ -106,14 +106,20 @@ $(document).ready(function () {
         transactions.forEach((t) => {
           const type = t.type === "I" ? "Income" : "Expense";
           const amount =
-            t.type === "I" ? t.amount.toFixed(2) : `-${t.amount.toFixed(2)}`;
+            t.type === "I"
+              ? t.amount.toFixed(2) + "BGN"
+              : `-${t.amount.toFixed(2)}` + "BGN";
           const row = $("<tr></tr>").attr("id", `${t.tranId}`);
           row.append(
             $("<td></td>").text(type),
             $("<td></td>").text(t.categoryName),
             $("<td></td>").text(amount),
-            $("<td class='edit-cell'>✏️</td>"),
-            $("<td class='delete-cell'>🗑️</td>")
+            $(
+              "<td class='edit-cell'><svg  xmlns='http://www.w3.org/2000/svg'  width='24'  height='24'  viewBox='0 0 24 24'  fill='none'  stroke='currentColor'  stroke-width='2'  stroke-linecap='round'  stroke-linejoin='round'  class='icon icon-tabler icons-tabler-outline icon-tabler-pencil'><path stroke='none' d='M0 0h24v24H0z' fill='none'/><path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' /><path d='M13.5 6.5l4 4' /></svg></td>"
+            ),
+            $(
+              "<td class='delete-cell'><svg  xmlns='http://www.w3.org/2000/svg'  width='24'  height='24' viewBox='0 0 24 24'  fill='none'  stroke='currentColor'  stroke-width='2'  stroke-linecap='round'  stroke-linejoin='round'  class='icon icon-tabler icons-tabler-outline icon-tabler-trash'><path stroke='none' d='M0 0h24v24H0z' fill='none'/><path d='M4 7l16 0' /><path d='M10 11l0 6' /><path d='M14 11l0 6' /><path d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12' /><path d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' /></svg></td>"
+            )
           );
           $tableBody.append(row);
         });
@@ -160,6 +166,7 @@ $(document).ready(function () {
 
   function toggleEmptyMessage() {
     const hasRows = $("#expensesTable tbody tr").length > 0;
+    console.log(hasRows);
     $("#emptyMessage").toggle(!hasRows);
   }
 
@@ -181,19 +188,19 @@ $(document).ready(function () {
     const typeCell = $("<td></td>").text(type);
     const categoryCell = $("<td></td>").text(category);
     const displayAmount = isIncome
-      ? finalAmount.toFixed(2)
+      ? finalAmount.toFixed(2) + "BGN"
       : `-${Math.abs(finalAmount).toFixed(2)}`;
 
     const valueCell = $("<td></td>").text(displayAmount);
 
-    const editCell = $("<td class='edit-cell'>✏️</td>");
-    const deleteCell = $("<td class='delete-cell'>🗑️</td>");
+    const editCell = $(
+      "<td class='edit-cell'><svg  xmlns='http://www.w3.org/2000/svg'  width='24'  height='24'  viewBox='0 0 24 24'  fill='none'  stroke='currentColor'  stroke-width='2'  stroke-linecap='round'  stroke-linejoin='round'  class='icon icon-tabler icons-tabler-outline icon-tabler-pencil'><path stroke='none' d='M0 0h24v24H0z' fill='none'/><path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' /><path d='M13.5 6.5l4 4' /></svg></td>"
+    );
+    const deleteCell = $(
+      "<td class='delete-cell'><svg  xmlns='http://www.w3.org/2000/svg'  width='24'  height='24' viewBox='0 0 24 24'  fill='none'  stroke='currentColor'  stroke-width='2'  stroke-linecap='round'  stroke-linejoin='round'  class='icon icon-tabler icons-tabler-outline icon-tabler-trash'><path stroke='none' d='M0 0h24v24H0z' fill='none'/><path d='M4 7l16 0' /><path d='M10 11l0 6' /><path d='M14 11l0 6' /><path d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12' /><path d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' /></svg></td>"
+    );
 
     newRow.append(typeCell, categoryCell, valueCell, editCell, deleteCell);
-
-    closePopup();
-    updateProgressBar();
-    toggleEmptyMessage();
 
     const transactionDto = {
       CategoryId: categoriesMap[category],
@@ -221,6 +228,9 @@ $(document).ready(function () {
       .then((data) => {
         newRow.attr("id", `${data.id}`);
         tableBody.append(newRow);
+        closePopup();
+        updateProgressBar();
+        toggleEmptyMessage();
       })
       .catch((error) => {
         console.error("Error loading", error.message);
@@ -275,7 +285,9 @@ $(document).ready(function () {
         }
       });
       row.attr("data-editing", "true");
-      $(this).text("💾");
+      $(this).html(
+        "<svg  xmlns='http://www.w3.org/2000/svg'  width='24'  height='24'  viewBox='0 0 24 24'  fill='none'  stroke='currentColor'  stroke-width='2'  stroke-linecap='round'  stroke-linejoin='round'  class='icon icon-tabler icons-tabler-outline icon-tabler-device-floppy'><path stroke='none' d='M0 0h24v24H0z' fill='none'/><path d='M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2' /><path d='M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0' /><path d='M14 4l0 4l-6 0l0 -4' /></svg>"
+      );
     } else {
       row.find("td").each(function (index) {
         if (index === 1 || index === 2) {
@@ -283,7 +295,9 @@ $(document).ready(function () {
         }
       });
       row.removeAttr("data-editing");
-      $(this).text("✏️");
+      $(this).html(
+        "<svg  xmlns='http://www.w3.org/2000/svg'  width='24'  height='24'  viewBox='0 0 24 24'  fill='none'  stroke='currentColor'  stroke-width='2'  stroke-linecap='round'  stroke-linejoin='round'  class='icon icon-tabler icons-tabler-outline icon-tabler-pencil'><path stroke='none' d='M0 0h24v24H0z' fill='none'/><path d='M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4' /><path d='M13.5 6.5l4 4' /></svg>"
+      );
       updateProgressBar();
 
       const id = row.attr("id");
