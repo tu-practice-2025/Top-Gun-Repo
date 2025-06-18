@@ -22,8 +22,6 @@ namespace SummerPracticeWebApi.Controllers
         private readonly AppDbContext _context;
         private readonly ITransactionService _transactionService;
 
-
-
         public TransactionsController(AppDbContext context, ITransactionService transactionService)
         {
             _context = context;
@@ -38,18 +36,7 @@ namespace SummerPracticeWebApi.Controllers
             return Ok(transactions);
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> Get(int id)
-        //{
-        //    var transaction = await _context.Transactions
-        //        .Where(x => x.TransactionId == id)
-        //        .OrderBy(x => x.TransactionId)
-        //        .FirstOrDefaultAsync();
-
-        //    return Ok(transaction);
-        //}
-
-            // PUT: api/Transactions/5
+         // PUT: api/Transactions/5
            
          [HttpPut("{id}")]
         public async Task<IActionResult> PutTransaction(int id, Transaction transaction)
@@ -104,6 +91,8 @@ namespace SummerPracticeWebApi.Controllers
         }
 
 
+        // GET: /api/transactions/1/?date=2025-06-01
+        //return list of dictionaries { category : income/ expenses }  + TotalAmount of expenses and income
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetMonthlyTransactionAsync(int userId, DateTime date)
@@ -119,24 +108,25 @@ namespace SummerPracticeWebApi.Controllers
             return Ok(dto);
         }
 
+        //api/transactions/7/by-month/06
 
         [HttpGet("{userId}/by-month/{month}")]
-        public async Task<IActionResult> GetUserTransactionsByMonth(
-         int userId,
-         int month,
-        [FromQuery]  int? year)
-                {
-                    var y = year ?? DateTime.Today.Year;
-                    
-                    var date = new DateTime(y, month, 1);
+        public async Task<IActionResult> GetUserTransactionsByMonth(int userId, int month, [FromQuery]  int? year)
 
-                   var result = await _transactionService.GetTransactionsByMonth(userId, date);
-                        return Ok(result);
-                   
-                
-                }
+        {
+            var y = year ?? DateTime.Today.Year;
 
-        
+            var date = new DateTime(y, month, 1);
+
+            var result = await _transactionService.GetTransactionsByMonth(userId, date);
+            return Ok(result);
+
+
+        }
+
+
+        //GET: /api/transactions/1/category/8
+
         [HttpGet("{userId}/category/{categoryId}")]
         public async Task<ActionResult<List<TransactionDetailDTO>>>
                 GetByCategory(
