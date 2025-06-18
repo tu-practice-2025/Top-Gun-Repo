@@ -180,7 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
         };">
           ${transaction.type === "E" ? "-" : "+"}${transaction.amount.toFixed(
         2
-      )} лв.
+
+      )} BGN
+
         </td>
       `;
 
@@ -194,6 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add a summary row if showing multiple transactions
     if (transactions.length > 1) {
+
   const totalAmount = transactions.reduce((sum, t) => {
     const signedAmount = t.type === "E" ? -t.amount : t.amount;
     return sum + signedAmount;
@@ -210,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <td style="color: ${color};">${(totalAmount).toFixed(2)} лв.</td>
   `;
   tbody.appendChild(summaryRow);
+
     }
   }
 
@@ -231,13 +235,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       balanceText.innerHTML = `
         <div style="color: black; font-weight: bold; font-size: 1.2em;">Overall Summary</div>
-        <div>Total Income: $${totalIncome.toFixed(2)}</div>
-        <div>Total Expenses: $${totalExpenses.toFixed(2)}</div>
+        <div>Total Income: ${totalIncome.toFixed(2)} BGN</div>
+        <div>Total Expenses: ${totalExpenses.toFixed(2)} BGN</div>
         <div style="color: ${
           balance >= 0 ? "green" : "red"
         }; font-weight: bold;">
-          Balance: $${balance.toFixed(2)}
-        </div>
+          Balance: ${balance.toFixed(2)} BGN</div>
         <div style="color: #666; font-size: 0.9em;">
           Transactions: ${allTransactions.length}
         </div>
@@ -256,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       balanceText.innerHTML = `
         <div style="color: black; font-weight: bold; font-size: 1.2em;">${selectedCategory}</div>
-        <div>Total Spent: $${categoryTotal.toFixed(2)}</div>
+        <div>Total Spent: ${categoryTotal.toFixed(2)} BGN</div>
         <div>Percentage of Total: ${percentage.toFixed(2)}%</div>
         <div style="color: #666; font-size: 0.9em;">
           Transactions: ${filteredTransactions.length}
@@ -345,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
         label.style.fontWeight = "bold";
 
         const amountLabel = document.createElement("div");
-        amountLabel.textContent = `$${amount.toFixed(2)}`;
+        amountLabel.textContent = `${amount.toFixed(2)} BGN`;
         amountLabel.style.marginBottom = "5px";
         amountLabel.style.color = "#666";
         amountLabel.style.fontSize = "0.9em";

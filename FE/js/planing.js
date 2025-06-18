@@ -41,8 +41,8 @@ $(document).ready(function () {
       .css("width", percent + "%")
       .text(Math.round(percent) + "%");
 
-    $("#totalDisplay").text(`Total: ${totalExpense.toFixed(2)}$`);
-    $("#maxValueDisplay").text(`${totalIncome.toFixed(2)}$`);
+    $("#totalDisplay").text(`Total: ${totalExpense.toFixed(2)}BGN`);
+    $("#maxValueDisplay").text(`${totalIncome.toFixed(2)}BGN`);
 
     if (totalExpense > totalIncome) {
       $("#maxValueDisplay").addClass("overbudget");

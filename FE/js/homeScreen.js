@@ -2,43 +2,107 @@
 const CONFIG = {
   API_BASE_URL: "https://localhost:7121",
   USER_ID: sessionStorage.getItem("userId"),
-  CHART_COLORS: {
-    primary: [
-      "rgba(255, 99, 132, 0.7)",
-      "rgba(54, 162, 235, 0.7)",
-      "rgba(255, 206, 86, 0.7)",
-      "rgba(75, 192, 192, 0.7)",
-      "rgba(153, 102, 255, 0.7)",
-      "rgba(255, 159, 64, 0.7)",
-      "rgba(201, 203, 207, 0.7)",
-      "rgba(255, 99, 255, 0.7)",
-      "rgba(99, 255, 132, 0.7)",
-      "rgba(132, 99, 255, 0.7)",
+  
+  
+  CATEGORY_COLORS: {
+    "Transport": { bg: "rgba(255, 99, 132, 0.7)", border: "rgba(255, 99, 132, 1)" },
+    "Supermarkets": { bg: "rgba(54, 162, 235, 0.7)", border: "rgba(54, 162, 235, 1)" },
+    "Traveling and holidays": { bg: "rgba(255, 206, 86, 0.7)", border: "rgba(255, 206, 86, 1)" },
+    "Shopping": { bg: "rgba(75, 192, 192, 0.7)", border: "rgba(75, 192, 192, 1)" },
+    "Restaurants and bars": { bg: "rgba(153, 102, 255, 0.7)", border: "rgba(153, 102, 255, 1)" },
+    "Financial services": { bg: "rgba(255, 159, 64, 0.7)", border: "rgba(255, 159, 64, 1)" },
+    "Investments": { bg: "rgba(201, 203, 207, 0.7)", border: "rgba(201, 203, 207, 1)" },
+    "Entertainment and Sport": { bg: "rgba(255, 99, 255, 0.7)", border: "rgba(255, 99, 255, 1)" },
+    "Health and beauty": { bg: "rgba(99, 255, 132, 0.7)", border: "rgba(99, 255, 132, 1)" },
+    "Clothing": { bg: "rgba(132, 99, 255, 0.7)", border: "rgba(132, 99, 255, 1)" },
+    "Cash": { bg: "rgba(255, 192, 203, 0.7)", border: "rgba(255, 192, 203, 1)" },
+    "Home": { bg: "rgba(144, 238, 144, 0.7)", border: "rgba(144, 238, 144, 1)" },
+    "Public services": { bg: "rgba(255, 165, 0, 0.7)", border: "rgba(255, 165, 0, 1)" },
+    "Business services": { bg: "rgba(106, 90, 205, 0.7)", border: "rgba(106, 90, 205, 1)" },
+    "Utility payments": { bg: "rgba(220, 20, 60, 0.7)", border: "rgba(220, 20, 60, 1)" },
+    "Training & Education": { bg: "rgba(0, 191, 255, 0.7)", border: "rgba(0, 191, 255, 1)" },
+    "Debt repayments and fees": { bg: "rgba(50, 205, 50, 0.7)", border: "rgba(50, 205, 50, 1)" },
+    "Outgoing payments": { bg: "rgba(255, 20, 147, 0.7)", border: "rgba(255, 20, 147, 1)" },
+    "Others": { bg: "rgba(255, 140, 0, 0.7)", border: "rgba(255, 140, 0, 1)" },
+    "Loan or Credit Card Repaymets": { bg: "rgba(138, 43, 226, 0.7)", border: "rgba(138, 43, 226, 1)" },
+    "Income": { bg: "rgba(32, 178, 170, 0.7)", border: "rgba(32, 178, 170, 1)" },
+    "Income ATM": { bg: "rgba(128, 128, 128, 0.7)", border: "rgba(128, 128, 128, 1)" }
+  },
+
+  // Fallback colors ако категорията не е намерена в CATEGORY_COLORS
+  FALLBACK_COLORS: {
+    backgrounds: [
+      "rgba(255, 99, 132, 0.7)", "rgba(54, 162, 235, 0.7)", "rgba(255, 206, 86, 0.7)",
+      "rgba(75, 192, 192, 0.7)", "rgba(153, 102, 255, 0.7)", "rgba(255, 159, 64, 0.7)",
+      "rgba(201, 203, 207, 0.7)", "rgba(255, 99, 255, 0.7)", "rgba(99, 255, 132, 0.7)",
+      "rgba(132, 99, 255, 0.7)", "rgba(255, 192, 203, 0.7)", "rgba(144, 238, 144, 0.7)",
+      "rgba(255, 165, 0, 0.7)", "rgba(106, 90, 205, 0.7)", "rgba(220, 20, 60, 0.7)",
+      "rgba(0, 191, 255, 0.7)", "rgba(50, 205, 50, 0.7)", "rgba(255, 20, 147, 0.7)",
+      "rgba(255, 140, 0, 0.7)", "rgba(138, 43, 226, 0.7)", "rgba(32, 178, 170, 0.7)",
+      "rgba(128, 128, 128, 0.7)"
     ],
     borders: [
-      "rgba(255, 99, 132, 1)",
-      "rgba(54, 162, 235, 1)",
-      "rgba(255, 206, 86, 1)",
-      "rgba(75, 192, 192, 1)",
-      "rgba(153, 102, 255, 1)",
-      "rgba(255, 159, 64, 1)",
-      "rgba(201, 203, 207, 1)",
-      "rgba(255, 99, 255, 1)",
-      "rgba(99, 255, 132, 1)",
-      "rgba(132, 99, 255, 1)",
-    ],
-    income: [
-      "rgba(255, 99, 132, 0.2)",
-      "rgba(255, 159, 64, 0.2)",
-      "rgba(255, 205, 86, 0.2)",
-    ],
-    incomeBorders: [
-      "rgb(255, 99, 132)",
-      "rgb(255, 159, 64)",
-      "rgb(255, 205, 86)",
-    ],
+      "rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)", "rgba(255, 206, 86, 1)",
+      "rgba(75, 192, 192, 1)", "rgba(153, 102, 255, 1)", "rgba(255, 159, 64, 1)",
+      "rgba(201, 203, 207, 1)", "rgba(255, 99, 255, 1)", "rgba(99, 255, 132, 1)",
+      "rgba(132, 99, 255, 1)", "rgba(255, 192, 203, 1)", "rgba(144, 238, 144, 1)",
+      "rgba(255, 165, 0, 1)", "rgba(106, 90, 205, 1)", "rgba(220, 20, 60, 1)",
+      "rgba(0, 191, 255, 1)", "rgba(50, 205, 50, 1)", "rgba(255, 20, 147, 1)",
+      "rgba(255, 140, 0, 1)", "rgba(138, 43, 226, 1)", "rgba(32, 178, 170, 1)",
+      "rgba(128, 128, 128, 1)"
+    ]
   },
+
+  // Income colors (за bar chart-а)
+  INCOME_COLORS: {
+    backgrounds: ["rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)"],
+    borders: ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)"]
+  }
 };
+
+// Color Service - централизирано управление на цветовете
+class ColorService {
+  /**
+   * Получава цвят за конкретна категория
+   * @param {string} categoryName - Име на категорията
+   * @param {number} fallbackIndex - Fallback индекс ако категорията не е намерена
+   * @returns {Object} - Обект с background и border цветове
+   */
+  static getCategoryColor(categoryName, fallbackIndex = 0) {
+    // Първо проверяваме дали има фиксиран цвят за тази категория
+    if (CONFIG.CATEGORY_COLORS[categoryName]) {
+      return CONFIG.CATEGORY_COLORS[categoryName];
+    }
+    
+    // Ако няма, използваме fallback цветовете
+    const bgIndex = fallbackIndex % CONFIG.FALLBACK_COLORS.backgrounds.length;
+    const borderIndex = fallbackIndex % CONFIG.FALLBACK_COLORS.borders.length;
+    
+    return {
+      bg: CONFIG.FALLBACK_COLORS.backgrounds[bgIndex],
+      border: CONFIG.FALLBACK_COLORS.borders[borderIndex]
+    };
+  }
+
+  /**
+   * Получава цветове за масив от категории
+   * @param {Array} categories - Масив от категории
+   * @returns {Object} - Обект с backgrounds и borders масиви
+   */
+  static getColorsForCategories(categories) {
+    const backgrounds = [];
+    const borders = [];
+    
+    categories.forEach((category, index) => {
+      const categoryName = category.categoryName || category.name || category;
+      const colors = this.getCategoryColor(categoryName, index);
+      backgrounds.push(colors.bg);
+      borders.push(colors.border);
+    });
+    
+    return { backgrounds, borders };
+  }
+}
 
 // API Service
 class ApiService {
@@ -97,7 +161,7 @@ const centerTextPlugin = {
     // Заглавие "Total:"
     ctx.font = "bold 16px Arial";
     ctx.fillStyle = "#333";
-    ctx.fillText("Total: BNG", centerX, centerY - 15);
+    ctx.fillText("Total: BGN", centerX, centerY - 15);
 
     // Сума
     ctx.font = "bold 20px Arial";
@@ -124,14 +188,16 @@ class ChartService {
 
     const totalSpent = realAmounts.reduce((sum, value) => sum + value, 0);
 
+    const colors = ColorService.getColorsForCategories(apiData);
+
     const chartData = {
       labels: labels,
       datasets: [
         {
           label: "Expenses %",
           data: amounts,
-          backgroundColor: CONFIG.CHART_COLORS.primary,
-          borderColor: CONFIG.CHART_COLORS.borders,
+          backgroundColor: colors.backgrounds,
+          borderColor: colors.borders,
           borderWidth: 1,
         },
       ],
@@ -193,8 +259,8 @@ class ChartService {
         {
           label: "Category Income",
           data: amounts,
-          backgroundColor: CONFIG.CHART_COLORS.income,
-          borderColor: CONFIG.CHART_COLORS.incomeBorders,
+          backgroundColor: CONFIG.INCOME_COLORS.backgrounds,
+          borderColor: CONFIG.INCOME_COLORS.borders,
           borderWidth: 1,
         },
       ],
@@ -210,7 +276,7 @@ class ChartService {
             callbacks: {
               label: function (context) {
                 const value = context.parsed.y || context.raw;
-                return `Category Income: BNG ${value.toFixed(2)}`;
+                return `Category Income: ${value.toFixed(2)} BGN`;
               },
             },
           },
@@ -319,14 +385,12 @@ class LegendService {
       const legendItem = document.createElement("div");
       legendItem.className = "legend-item";
 
-      const colorIndex = index % CONFIG.CHART_COLORS.primary.length;
-      const backgroundColor = CONFIG.CHART_COLORS.primary[colorIndex];
+      const categoryName = category.name || category.categoryName;
+      const colors = ColorService.getCategoryColor(categoryName, index);
 
       legendItem.innerHTML = `
-        <span class="color-dot" style="background-color: ${backgroundColor}"></span>
-        <span class="label-text">${
-          category.name
-        } - BNG ${category.totalSpent.toFixed(2)}</span>
+        <span class="color-dot" style="background-color: ${colors.bg}"></span>
+        <span class="label-text">${categoryName} - ${category.totalSpent.toFixed(2)} BGN</span>
       `;
 
       legendContainer.appendChild(legendItem);
