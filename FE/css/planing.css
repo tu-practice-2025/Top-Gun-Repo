@@ -266,7 +266,7 @@ body {
 
 .nav-bar a.active {
   background-color: rgba(226, 0, 26, 0.12);
-  color: #e2001a;
+  color: red;
   font-weight: bold;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(2px);

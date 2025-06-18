@@ -67,12 +67,62 @@ class ApiService {
   }
 }
 
+// Plugin за показване на текст в центъра на дъгообразната диаграма
+const centerTextPlugin = {
+  id: "centerText",
+  beforeDraw: function (chart) {
+    if (chart.config.type !== "doughnut") return;
+
+    const { ctx, width, height } = chart;
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    // Изчисляване на общата сума от реалните данни
+    let total = 0;
+    if (
+      chart.config.options.plugins.centerText &&
+      chart.config.options.plugins.centerText.totalAmount
+    ) {
+      total = chart.config.options.plugins.centerText.totalAmount;
+    } else {
+      // Fallback - използваме данните от диаграмата
+      const data = chart.data.datasets[0].data;
+      total = data.reduce((sum, value) => sum + value, 0);
+    }
+
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // Заглавие "Total:"
+    ctx.font = "bold 16px Arial";
+    ctx.fillStyle = "#333";
+    ctx.fillText("Total: BNG", centerX, centerY - 15);
+
+    // Сума
+    ctx.font = "bold 20px Arial";
+    ctx.fillStyle = "#000";
+    ctx.fillText(`${total.toFixed(2)}`, centerX, centerY + 10);
+
+    ctx.restore();
+  },
+};
+
+// Регистриране на plugin-а
+Chart.register(centerTextPlugin);
+
 // Chart Service
 class ChartService {
   static createExpenseChart(apiData) {
     const labels = apiData.map((item) => item.categoryName);
     const ids = apiData.map((item) => item.categoryId);
     const amounts = apiData.map((item) => item.percentageAmount);
+
+    const realAmounts = apiData.map(
+      (item) => item.totalAmount || item.totalSpent || item.amount || 0
+    );
+
+    const totalSpent = realAmounts.reduce((sum, value) => sum + value, 0);
 
     const chartData = {
       labels: labels,
@@ -93,6 +143,18 @@ class ChartService {
       options: {
         plugins: {
           legend: { display: false },
+          centerText: {
+            totalAmount: totalSpent,
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const label = context.dataset.label || "";
+                const value = context.parsed;
+                return `Expenses: ${value.toFixed(2)}%`;
+              },
+            },
+          },
         },
         onClick: (event, elements) => {
           if (elements.length > 0) {
@@ -144,6 +206,14 @@ class ChartService {
       options: {
         plugins: {
           legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const value = context.parsed.y || context.raw;
+                return `Category Income: BNG ${value.toFixed(2)}`;
+              },
+            },
+          },
         },
         scales: {
           y: { beginAtZero: true },
@@ -189,6 +259,9 @@ class ChartService {
       data: expenseData,
       options: {
         plugins: { legend: { display: false } },
+        centerText: {
+          realAmounts: [69, 48, 324, 183, 217],
+        },
       },
     };
 
@@ -253,7 +326,7 @@ class LegendService {
         <span class="color-dot" style="background-color: ${backgroundColor}"></span>
         <span class="label-text">${
           category.name
-        } - $${category.totalSpent.toFixed(2)}</span>
+        } - BNG ${category.totalSpent.toFixed(2)}</span>
       `;
 
       legendContainer.appendChild(legendItem);
