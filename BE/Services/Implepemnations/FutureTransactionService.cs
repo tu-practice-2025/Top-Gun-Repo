@@ -33,11 +33,6 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                 })
                 .ToListAsync();
 
-            if (!transactions.Any())
-            {
-                return new { message = "No transactions found for the specified month", data = transactions };
-            }
-
             return transactions;
         }
 
