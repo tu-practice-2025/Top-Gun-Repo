@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const transactionDate = new Date(transaction.date).toLocaleDateString();
 
       // Format card number (show last 4 digits)
-      let maskedCardNumber;
+      let maskedCardNumber = "None";
       if (transaction.cardNumber !== null) {
         maskedCardNumber = `****-****-****-${transaction.cardNumber.slice(-4)}`;
       }
@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
       summaryRow.style.fontWeight = "bold";
       summaryRow.innerHTML = `
         <td colspan="3" style="text-align: right;">TOTAL:</td>
-        <td style="color: red;">-$${totalAmount.toFixed(2)}</td>
+        <td style="color: green;">+$${totalAmount.toFixed(2)}</td>
       `;
       tbody.appendChild(summaryRow);
     }
