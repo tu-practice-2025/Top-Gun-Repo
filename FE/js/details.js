@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       // Extract month from the month input for API call
       const selectedMonth = monthInput.value;
-      const monthNumber = selectedMonth.split('-')[1];
-      
+      const monthNumber = selectedMonth.split("-")[1];
+
       // Fetch transaction data to get available categories
       const response = await fetch(
         `${API_BASE_URL}/api/transactions/${userId}/by-month/${monthNumber}`
@@ -50,8 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
       categorySelect.appendChild(allOption);
 
       // Get unique categories from transactions
-      const uniqueCategories = [...new Set(transactions.map(t => t.categoryName))];
-      
+      const uniqueCategories = [
+        ...new Set(transactions.map((t) => t.categoryName)),
+      ];
+
       uniqueCategories.forEach((categoryName) => {
         const option = document.createElement("option");
         option.value = categoryName;
@@ -94,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const category = categorySelect.value;
       const selectedMonth = monthInput.value;
-      const monthNumber = selectedMonth.split('-')[1];
+      const monthNumber = selectedMonth.split("-")[1];
 
       // Fetch transaction data for the selected month
       const response = await fetch(
@@ -105,11 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // Filter transactions by category if not "All"
       let filteredTransactions = transactions;
       if (category !== "All") {
-        filteredTransactions = transactions.filter(t => t.categoryName === category);
+        filteredTransactions = transactions.filter(
+          (t) => t.categoryName === category
+        );
       }
+      console.log(filteredTransactions);
 
       // Update UI
-      updateTransactionTable(filteredTransactions, category);
+      updateTransactionTable(filteredTransactions);
       updateBalanceDisplay(transactions, filteredTransactions, category);
       loadAndRenderBalance(transactions, filteredTransactions);
     } catch (error) {
@@ -118,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function updateTransactionTable(transactions, selectedCategory) {
+  function updateTransactionTable(transactions) {
     const tableBody = document.querySelector(".table-placeholder table tbody");
     if (!tableBody) {
       // Create tbody if it doesn't exist
@@ -142,26 +147,40 @@ document.addEventListener("DOMContentLoaded", () => {
     transactions.forEach((transaction) => {
       const row = document.createElement("tr");
       const transactionDate = new Date(transaction.date).toLocaleDateString();
-      
+
       // Format card number (show last 4 digits)
-      const maskedCardNumber = `****-****-****-${transaction.cardNumber.slice(-4)}`;
-      
+      let maskedCardNumber;
+      if (transaction.cardNumber !== null) {
+        maskedCardNumber = `****-****-****-${transaction.cardNumber.slice(-4)}`;
+      }
+
       // Format IBAN (show first 4 and last 4 characters)
-      const maskedIban = `${transaction.iban.slice(0, 4)}****${transaction.iban.slice(-4)}`;
+      const maskedIban = `${transaction.iban.slice(
+        0,
+        4
+      )}****${transaction.iban.slice(-4)}`;
 
       row.innerHTML = `
         <td>${transactionDate}</td>
         <td>
           <div><strong>${transaction.merchantName}</strong></div>
-          <div style="font-size: 0.8em; color: #666;">${transaction.merchantDescription}</div>
-          <div style="font-size: 0.8em; color: #888;">${transaction.categoryName}</div>
+          <div style="font-size: 0.8em; color: #666;">${
+            transaction.merchantDescription
+          }</div>
+          <div style="font-size: 0.8em; color: #888;">${
+            transaction.categoryName
+          }</div>
         </td>
         <td>
           <div style="font-size: 0.9em; color: #555;">Card: ${maskedCardNumber}</div>
           <div style="font-size: 0.9em; color: #555;">IBAN: ${maskedIban}</div>
         </td>
-        <td style="font-weight: bold; color: ${transaction.type === 'E' ? 'red' : 'green'};">
-          ${transaction.type === 'E' ? '-' : '+'}$${transaction.amount.toFixed(2)}
+        <td style="font-weight: bold; color: ${
+          transaction.type === "E" ? "red" : "green"
+        };">
+          ${transaction.type === "E" ? "-" : "+"}$${transaction.amount.toFixed(
+        2
+      )}
         </td>
       `;
 
@@ -187,17 +206,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function updateBalanceDisplay(allTransactions, filteredTransactions, selectedCategory) {
+  function updateBalanceDisplay(
+    allTransactions,
+    filteredTransactions,
+    selectedCategory
+  ) {
     if (selectedCategory === "All") {
-      const totalExpenses = allTransactions.reduce((sum, t) => sum + (t.type === 'E' ? t.amount : 0), 0);
-      const totalIncome = allTransactions.reduce((sum, t) => sum + (t.type === 'I' ? t.amount : 0), 0);
+      const totalExpenses = allTransactions.reduce(
+        (sum, t) => sum + (t.type === "E" ? t.amount : 0),
+        0
+      );
+      const totalIncome = allTransactions.reduce(
+        (sum, t) => sum + (t.type === "I" ? t.amount : 0),
+        0
+      );
       const balance = totalIncome - totalExpenses;
 
       balanceText.innerHTML = `
         <div style="color: black; font-weight: bold; font-size: 1.2em;">Overall Summary</div>
         <div>Total Income: $${totalIncome.toFixed(2)}</div>
         <div>Total Expenses: $${totalExpenses.toFixed(2)}</div>
-        <div style="color: ${balance >= 0 ? "green" : "red"}; font-weight: bold;">
+        <div style="color: ${
+          balance >= 0 ? "green" : "red"
+        }; font-weight: bold;">
           Balance: $${balance.toFixed(2)}
         </div>
         <div style="color: #666; font-size: 0.9em;">
@@ -205,9 +236,16 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
     } else {
-      const categoryTotal = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
-      const totalExpenses = allTransactions.reduce((sum, t) => sum + (t.type === 'E' ? t.amount : 0), 0);
-      const percentage = totalExpenses > 0 ? (categoryTotal / totalExpenses) * 100 : 0;
+      const categoryTotal = filteredTransactions.reduce(
+        (sum, t) => sum + t.amount,
+        0
+      );
+      const totalExpenses = allTransactions.reduce(
+        (sum, t) => sum + (t.type === "E" ? t.amount : 0),
+        0
+      );
+      const percentage =
+        totalExpenses > 0 ? (categoryTotal / totalExpenses) * 100 : 0;
 
       balanceText.innerHTML = `
         <div style="color: black; font-weight: bold; font-size: 1.2em;">${selectedCategory}</div>
@@ -241,21 +279,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Updated balance bars functionality to work with individual transactions
-  async function loadAndRenderBalance(allTransactions = null, filteredTransactions = null) {
+  async function loadAndRenderBalance(
+    allTransactions = null,
+    filteredTransactions = null
+  ) {
     try {
       const category = categorySelect.value;
 
       // Use passed data or fetch new data
       if (!allTransactions) {
         const selectedMonth = monthInput.value;
-        const monthNumber = selectedMonth.split('-')[1];
+        const monthNumber = selectedMonth.split("-")[1];
         const response = await fetch(
           `${API_BASE_URL}/api/transactions/${userId}/by-month/${monthNumber}`
         );
         allTransactions = await response.json();
-        
+
         if (category !== "All") {
-          filteredTransactions = allTransactions.filter(t => t.categoryName === category);
+          filteredTransactions = allTransactions.filter(
+            (t) => t.categoryName === category
+          );
         } else {
           filteredTransactions = allTransactions;
         }
@@ -266,16 +309,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Group transactions by category for visualization
       const categoryTotals = {};
-      const transactionsToShow = category === "All" ? allTransactions : filteredTransactions;
-      
-      transactionsToShow.forEach(transaction => {
+      const transactionsToShow =
+        category === "All" ? allTransactions : filteredTransactions;
+
+      transactionsToShow.forEach((transaction) => {
         if (!categoryTotals[transaction.categoryName]) {
           categoryTotals[transaction.categoryName] = 0;
         }
         categoryTotals[transaction.categoryName] += transaction.amount;
       });
 
-      const totalExpenses = allTransactions.reduce((sum, t) => sum + (t.type === 'E' ? t.amount : 0), 0);
+      const totalExpenses = allTransactions.reduce(
+        (sum, t) => sum + (t.type === "E" ? t.amount : 0),
+        0
+      );
 
       Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
         // Calculate percentage based on total expenses
