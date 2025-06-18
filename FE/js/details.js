@@ -1,8 +1,54 @@
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const API_BASE_URL = "https://localhost:7121";
   const categorySelect = document.getElementById("category-select");
   const monthInput = document.getElementById("month");
   const balanceText = document.getElementById("balance-text");
+
+
+  // AI feature
+const toggleBtn = document.getElementById("chat-toggle");
+const chatWindow = document.getElementById("chat-window");
+const closeBtn = document.getElementById("closeBtn");
+const getTipsBtn = document.getElementById("getTipsBtn");
+const output = document.getElementById('tipsOutput');
+
+// opens chat window removes toggle btn
+toggleBtn.addEventListener("click", () => {
+  chatWindow.classList.toggle("show-chat");
+  toggleBtn.style.display = "none";
+});
+
+// closes chat window brings toggle btn back
+closeBtn.addEventListener("click", () => {
+  chatWindow.classList.toggle("show-chat");
+  toggleBtn.style.display = "block  ";
+});
+
+// sends request to the llm chat endpoint and displays the text
+getTipsBtn.addEventListener("click", async function(){
+  getTipsBtn.textContent= "Loading Tips...";
+  const id = sessionStorage.getItem("userId");
+  const url = `https://localhost:7121/api/llmchat/${id}`;
+  let text;
+  try {
+    const response = await fetch(url,{method: "POST"});
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    text = await response.text();
+  } catch (error) {
+    console.error(error.message);
+  }
+  console.log(text)
+  getTipsBtn.style.display = "none";
+  output.innerHTML = marked.parse(text);
+
+})
+
+
 
   // Get user ID from session storage
   const userId = sessionStorage.getItem("userId") || "1"; // Default to 1 if not set
