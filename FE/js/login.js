@@ -2,10 +2,41 @@ document.addEventListener("DOMContentLoaded", function () {
   const toggleButton = document.getElementById("toggleForm");
   const loginForm = document.getElementById("loginForm");
   const registerForm = document.getElementById("registerForm");
-  toggleButton.addEventListener("click", () => {
-    loginForm.classList.toggle("active");
-    registerForm.classList.toggle("active");
-    toggleButton.classList.toggle("rotate");
+
+  const formTitle = document.getElementById("formTitle");
+  const formSubtitle = document.getElementById("formSubtitle");
+
+  let isLoginMode = true;
+
+  toggleButton.addEventListener("click", function () {
+    isLoginMode = !isLoginMode;
+
+    if (isLoginMode) {
+      // Switch to login
+      loginForm.classList.add("active");
+      registerForm.classList.remove("active");
+      formTitle.textContent = "Welcome";
+      formSubtitle.textContent = "Log in to continue";
+    } else {
+      // Switch to register
+      registerForm.classList.add("active");
+      loginForm.classList.remove("active");
+      formTitle.textContent = "Welcome";
+      formSubtitle.textContent = "Create your account";
+    }
+  });
+
+  // Form submissions
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    console.log("Login submitted");
+    // Add your login logic here
+  });
+
+  registerForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    console.log("Registration submitted");
+    // Add your registration logic here
   });
 
   document
