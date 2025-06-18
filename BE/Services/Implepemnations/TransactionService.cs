@@ -18,7 +18,8 @@ namespace SummerPracticeWebApi.Services.Implementations
         {
             _context = context;
         }
-
+       
+        //return list of dictionaries { category : income/ expenses }  + TotalAmount of expenses and income!!!!!!
         public async Task<TransactionDTO> GetMonthlyTransactionAsync(int userID, DateTime date)
         {
 
@@ -26,7 +27,7 @@ namespace SummerPracticeWebApi.Services.Implementations
 
             var endDate = startDate.AddMonths(1).AddDays(-1);
 
-            // Dictionary<int, string> categoryNames = new Dictionary<int, string>();
+           
 
             var categoryNames = await _context.Categories
                 .ToDictionaryAsync(c => c.CategoryId, c => c.name);
@@ -81,8 +82,12 @@ namespace SummerPracticeWebApi.Services.Implementations
 
         }
 
-        public async Task<List<TransactionDetailDTO>> GetByCategoryAsync(
-      int userId, int categoryId, DateTime month)
+
+
+        //for detailspage - returns by given category Date, MerchanrName, Iban and CardNumber, Amount
+        //api/transactions/1/by-month/6
+
+        public async Task<List<TransactionDetailDTO>> GetByCategoryAsync(int userId, int categoryId, DateTime month)
         {
             var start = new DateTime(month.Year, month.Month, 1);
             var end = start.AddMonths(1);
@@ -127,7 +132,11 @@ namespace SummerPracticeWebApi.Services.Implementations
             return await projected.ToListAsync();
         }
 
-        //api/transactions/5/by-month/5
+
+
+
+        //returns by given userid and month all transactions of user
+       
         public async Task<object> GetTransactionsByMonth(int userId, DateTime date)
         {
 
@@ -164,68 +173,7 @@ namespace SummerPracticeWebApi.Services.Implementations
         }
 
 
-
-
-
-        // public async Task<(double TotalExpense, double TotalIncome)>
-        //GetMonthlyTotalsAsync(int userId, int year, int month)
-        // {
-        //     var start = new DateTime(year, month, 1);
-        //     var end = start.AddMonths(1);
-
-        //     var expense = await _ctx.Transactions
-        //         .Where(t => t.user_id == userId
-        //                  && t.type == 'E'
-        //                  && t.date >= start
-        //                  && t.date < end)
-        //         .SumAsync(t => t.amount);
-
-        //     var income = await _ctx.Transactions
-        //         .Where(t => t.user_id == userId
-        //                  && t.type == 'I'
-        //                  && t.date >= start
-        //                  && t.date < end)
-        //         .SumAsync(t => t.amount);
-
-        //     return (expense, income);
-        // }
-
-
     }
-
-
-    //    public async Task<List<TransactionDetailDTO>> 
-    //    GetTransactionDetailsAsync(int userId, int categoryId, DateTime month)
-    //{
-    //    var start = new DateTime(month.Year, month.Month, 1);
-    //    var end   = start.AddMonths(1);
-
-    //    // Зареждаме мърчант-имена в речник (по merchant_id)
-    //    var merchants = await _context.Merchants
-    //        .ToDictionaryAsync(m => m.MerchantId, m => m.mcc_name);
-
-    //    // Query-раме транзакциите
-    //    var txs = await _context.Transactions
-    //        .Where(t => t.user_id == userId
-    //                 && t.category_id == categoryId
-    //                 && t.date >= start
-    //                 && t.date < end)
-    //        .OrderByDescending(t => t.date)
-    //        .Select(t => new TransactionDetailDTO {
-    //            Date     = t.date,
-    //            Merchant = merchants.GetValueOrDefault(t.merchant_id, null),
-    //            Category = _context.Categories
-    //                              .Where(c => c.CategoryId == t.category_id)
-    //                              .Select(c => c.name)
-    //                              .FirstOrDefault(), 
-    //            Amount   = t.amount,
-    //            Type     = t.type == 'E' ? "expense" : "income"
-    //        })
-    //        .ToListAsync();
-
-    //    return txs;
-    //}
-
 
 
 }

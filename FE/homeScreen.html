@@ -20,6 +20,7 @@
           <div class="circle circle3"></div>
           <div class="circle circle4"></div>
         </div>
+
       </div>
     </header>
 
@@ -27,6 +28,11 @@
       <a class="active" href="homeScreen.html">Home</a>
       <a href="details.html">Details</a>
       <a href="planing.html">Planning</a>
+      <a href="account.html" class="profile-button">
+        <div class="profile-icon">
+          👤
+        </div>
+      </a>
     </div>
 
     <div class="content">
@@ -45,16 +51,32 @@
           </div>
         </div>
 
-        <div class="bar-section">
-          <div class="bar-chart-box">
-            <div class="chart-title">Income</div>
+        <div class="right-column">
+          <div class="summary-boxes">
+            <div class="summary-box">
+              <h2>Expenses</h2>
+              <p id="total-expenses" class="summary-amount">BGN 0.00</p>
+            </div>
 
-            <div class="bar-chart">
-              <canvas id="barChart"></canvas>
+            <div class="summary-box">
+              <h2>Income</h2>
+              <p id="total-income" class="summary-amount">BGN 0.00</p>
+            </div>
+          </div>
+
+          <div class="bar-section">
+            <div class="bar-chart-box">
+              <div class="chart-title">Income</div>
+
+              <div class="bar-chart">
+                <canvas id="barChart"></canvas>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+
   </body>
 </html>
