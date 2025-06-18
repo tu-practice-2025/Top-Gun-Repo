@@ -18,10 +18,8 @@ namespace SummerPracticeWebApi.Services.Implementations
         {
             _context = context;
         }
-
-
-        
-        //return list of dictionaries { category : income/ expenses }  + TotalAmount of expenses and income
+       
+        //return list of dictionaries { category : income/ expenses }  + TotalAmount of expenses and income!!!!!!
         public async Task<TransactionDTO> GetMonthlyTransactionAsync(int userID, DateTime date)
         {
 
@@ -87,7 +85,7 @@ namespace SummerPracticeWebApi.Services.Implementations
 
 
         //for detailspage - returns by given category Date, MerchanrName, Iban and CardNumber, Amount
-        
+        //api/transactions/1/by-month/6
 
         public async Task<List<TransactionDetailDTO>> GetByCategoryAsync(int userId, int categoryId, DateTime month)
         {
@@ -138,7 +136,7 @@ namespace SummerPracticeWebApi.Services.Implementations
 
 
         //returns by given userid and month all transactions of user
-        //api/transactions/5/by-month/5
+       
         public async Task<object> GetTransactionsByMonth(int userId, DateTime date)
         {
 

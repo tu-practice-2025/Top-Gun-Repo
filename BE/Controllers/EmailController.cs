@@ -11,7 +11,8 @@ public class EmailController : ControllerBase
     {
         _emailService = emailService;
     }
-
+    ///api/email/send?email=ves.georgiev99@gmail.com&userId=1   
+    
     [HttpPost("send")]
     public async Task<IActionResult> SendTestEmail(string email, int userId )
     {
