@@ -70,9 +70,9 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                 .GetProperty("content")
                 .GetString();
 
-            var tips = content.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+           
 
-            return new OkObjectResult(tips);
+            return new OkObjectResult(content);
         }
 
 
