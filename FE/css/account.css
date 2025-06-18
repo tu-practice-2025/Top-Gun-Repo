@@ -3,7 +3,62 @@
     padding: 0;
     box-sizing: border-box;
 }
+/* Profile Icon Styles - Add this to your homeScreen.css file */
 
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-bar .profile-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #e53e3e; /* Red border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e53e3e; /* Red emoji/icon color */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(229, 62, 62, 0.2); /* Red shadow */
+  font-size: 20px; /* For emoji sizing */
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4); /* Red hover shadow */
+  background: #f7fafc; /* Light gray background on hover */
+}
+
+.profile-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 16px; /* Smaller emoji on mobile */
+  }
+  
+  .profile-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-y: scroll;
