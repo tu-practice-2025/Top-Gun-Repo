@@ -295,22 +295,35 @@ body {
 .chart-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: stretch;
   gap: 50px;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  align-items: center;
   justify-content: center;
   padding: 40px 20px;
 }
 
-.left-column {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-columns: auto auto;
+.left-column,
+.right-column {
+  flex: 1;
+  display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 30px;
+  justify-content: space-evenly;
+}
+
+.right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.doughnut-legend-box,
+.bar-section,
+.summary-boxes {
+  flex-grow: 1;
+  height: 100%;
 }
 
 .doughnut-legend-box {
@@ -363,24 +376,6 @@ body {
   text-transform: uppercase;
   letter-spacing: 2px;
 }
-
-.bar-chart-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px; /* Ограничаваме максималната ширина */
-  margin: 0 auto;
-}
-
-.bar-chart {
-  width: 100%;
-}
-
 .legend-item {
   display: flex;
   align-items: center;
@@ -401,9 +396,61 @@ body {
   display: inline-block;
 }
 
+.bar-chart-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px; /* Ограничаваме максималната ширина */
+  margin: 0 auto;
+}
+
+.bar-chart {
+  width: 100%;
+}
+
 .label-text {
   font-size: 10px;
   color: #333;
+}
+
+.summary-boxes {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.summary-box {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.summary-box h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  text-transform: uppercase;
+  color: black;
+}
+
+.summary-amount {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.income-positive {
+  color: green;
+}
+
+.expense-negative {
+  color: red;
 }
 
 @media (max-width: 1024px) {
