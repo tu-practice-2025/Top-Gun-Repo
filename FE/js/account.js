@@ -1,7 +1,13 @@
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
 document.addEventListener('DOMContentLoaded', function() {
+    const userId = parseInt(sessionStorage.getItem("userId"));
+    if (!userId) {
+        window.location.href = "login.html";
+        return;
+    }
     const name = sessionStorage.getItem('userName') || 'Неизвестен';
     const email = sessionStorage.getItem('userEmail') || 'Няма имейл';
-    const userId = sessionStorage.getItem('userId');
 
 
     document.getElementById('userInfo').innerHTML = `

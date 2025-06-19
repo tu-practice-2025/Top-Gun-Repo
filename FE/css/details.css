@@ -330,6 +330,7 @@ body {
   align-items: center;
   gap: 20px;
   padding: 20px;
+  padding-top: 0px;
   width: 100%;
 }
 
@@ -711,6 +712,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .show-chat {
@@ -737,10 +739,25 @@ body {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   color: #000000;
-  font-size: 14px;
+  font-size: 16px;
   white-space: pre-wrap;
   max-height: 100%;
   padding: 10px 25px;
+  }
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #e91e63;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Responsive adjustments */

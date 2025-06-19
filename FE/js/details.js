@@ -1,6 +1,12 @@
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  const userId = parseInt(sessionStorage.getItem("userId"));
+  if (!userId) {
+    window.location.href = "login.html";
+    return;
+  }
+  
   const API_BASE_URL = "https://localhost:7121";
   const categorySelect = document.getElementById("category-select");
   const monthInput = document.getElementById("month");
@@ -11,24 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("chat-toggle");
   const chatWindow = document.getElementById("chat-window");
   const closeBtn = document.getElementById("closeBtn");
-  const getTipsBtn = document.getElementById("getTipsBtn");
-  const output = document.getElementById("tipsOutput");
+  const output = document.getElementById('tipsOutput');
 
   // opens chat window removes toggle btn
-  toggleBtn.addEventListener("click", () => {
+  toggleBtn.addEventListener("click", async function(){
+    document.getElementById("loader").style.display = "block";
+    output.style.display = "none";
+
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "none";
-  });
-
-  // closes chat window brings toggle btn back
-  closeBtn.addEventListener("click", () => {
-    chatWindow.classList.toggle("show-chat");
-    toggleBtn.style.display = "block  ";
-  });
-
-  // sends request to the llm chat endpoint and displays the text
-  getTipsBtn.addEventListener("click", async function () {
-    getTipsBtn.textContent = "Loading Tips...";
     const id = sessionStorage.getItem("userId");
     const url = `https://localhost:7121/api/llmchat/${id}`;
     let text;
@@ -42,13 +39,24 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error(error.message);
     }
-    console.log(text);
-    getTipsBtn.style.display = "none";
+    console.log(text)
+    output.style.display = "block";
     output.innerHTML = marked.parse(text);
+    document.getElementById("loader").style.display = "none";
   });
 
+  // closes chat window brings toggle btn back
+  closeBtn.addEventListener("click", () => {
+    chatWindow.classList.toggle("show-chat");
+    toggleBtn.style.display = "block  ";
+    output.innerHTML = ""
+  });
+
+  
+
+
+
   // Get user ID from session storage
-  const userId = sessionStorage.getItem("userId") || "1"; // Default to 1 if not set
 
   // Set current month
   const today = new Date();
@@ -399,49 +407,115 @@ document.addEventListener("DOMContentLoaded", () => {
         categoryTotals[transaction.categoryName] += transaction.amount;
       });
 
-      const totalExpenses = allTransactions.reduce(
-        (sum, t) => sum + (t.type === "E" ? t.amount : 0),
-        0
-      );
+let budgets = [];
+const categoryNameToId = {
+  "Транспорт и авто услуги": 1,
+  "Супермаркети": 2,
+  "Пътуване и ваканция": 3,
+  "Шопинг": 4,
+  "Ресторанти и барове": 5,
+  "Финансови услуги": 6,
+  "Инвестиции": 7,
+  "Забавление и спорт": 8,
+  "Здраве и красота": 9,
+  "Дрехи": 10,
+  "Кеш": 11,
+  "За дома": 12,
+  "Публични услуги": 13,
+  "Бизнес услуги": 14,
+  "Битови сметки": 15,
+  "Образование": 16,
+  "Задължения и такси": 17,
+  "Преводи": 18,
+  "Други": 19,
+  "Погасяване по кредитни продукти": 20,
+  "Приход": 21,
+  "Приход ATM": 22
+};
 
-      Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
-        // Calculate percentage based on total expenses
-        const percent = totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0;
+try {
+  const res = await fetch(`https://localhost:7121/api/Budgets/${userId}`, { method: "GET" });
+  if (!res.ok) throw new Error(`Response status: ${res.status}`);
+  budgets = await res.json();
+} catch (error) {
+  console.error("Error fetching budgets:", error.message);
+  return;
+}
 
-        const barWrapper = document.createElement("div");
-        barWrapper.style.marginBottom = "20px";
+// Create map for quick lookup: category_id -> limit
+const categoryBudgets = {};
+budgets.forEach(b => {
+  categoryBudgets[b.category_id] = b.limit;
+});
 
-        const label = document.createElement("div");
-        label.textContent = `${categoryName} - ${percent.toFixed(1)}%`;
-        label.style.marginBottom = "5px";
-        label.style.color = "black";
-        label.style.fontWeight = "bold";
+// Render bars
+Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
+  const categoryId = categoryNameToId[categoryName];
+  const categoryLimit = categoryBudgets[categoryId] || 0;
+  const percent = categoryLimit > 0 ? (amount / categoryLimit) * 100 : 0;
 
-        const amountLabel = document.createElement("div");
-        amountLabel.textContent = `${amount.toFixed(2)} лв.`;
-        amountLabel.style.marginBottom = "5px";
-        amountLabel.style.color = "#666";
-        amountLabel.style.fontSize = "0.9em";
+  const barWrapper = document.createElement("div");
+  barWrapper.style.marginBottom = "20px";
 
-        const barContainer = document.createElement("div");
-        barContainer.style.height = "30px";
-        barContainer.style.width = "100%";
-        barContainer.style.backgroundColor = "#fce4ec";
-        barContainer.style.borderRadius = "20px";
-        barContainer.style.overflow = "hidden";
+  const label = document.createElement("div");
+  label.textContent = `${categoryName} - ${percent.toFixed(1)}%`;
+  label.style.marginBottom = "5px";
+  label.style.color = "black";
+  label.style.fontWeight = "bold";
 
-        const filledBar = document.createElement("div");
-        filledBar.style.height = "100%";
-        filledBar.style.width = `${Math.min(100, percent)}%`;
-        filledBar.style.backgroundColor = "red";
-        filledBar.style.borderRadius = "20px";
-        filledBar.style.transition = "width 0.3s ease";
+  const amountLabel = document.createElement("div");
+  amountLabel.textContent = `${amount.toFixed(2)} BGN от ${categoryLimit.toFixed(2)} BGN`;
+  amountLabel.style.marginBottom = "5px";
+  amountLabel.style.color = "#666";
+  amountLabel.style.fontSize = "0.9em";
 
-        barContainer.appendChild(filledBar);
-        barWrapper.appendChild(label);
-        barWrapper.appendChild(amountLabel);
-        barWrapper.appendChild(barContainer);
-        container.appendChild(barWrapper);
+  const barContainer = document.createElement("div");
+  barContainer.style.height = "30px";
+  barContainer.style.width = "100%";
+  barContainer.style.backgroundColor = "#fce4ec";
+  barContainer.style.borderRadius = "20px";
+  barContainer.style.overflow = "hidden";
+  barContainer.style.cursor = "pointer";
+
+  const filledBar = document.createElement("div");
+  filledBar.style.height = "100%";
+  filledBar.style.width = `${Math.min(100, percent)}%`;
+  filledBar.style.backgroundColor = "red";
+  filledBar.style.borderRadius = "20px";
+  filledBar.style.transition = "width 0.3s ease";
+
+  // ➕ Add click-to-edit budget logic
+  barContainer.addEventListener("click", async () => {
+    const newLimit = prompt(`Въведете нов бюджет за "${categoryName}":`);
+    if (newLimit === null || isNaN(parseFloat(newLimit))) {
+      alert("Невалидна стойност.");
+      return;
+    }
+
+    const limit = parseFloat(newLimit);
+    const existing = budgets.find(b => b.category_id === categoryId);
+    const method = existing ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(`https://localhost:7121/api/Budgets/${userId}?cat_id=${categoryId}&limit=${limit}`, {
+        method,
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+
+      loadAndRenderBalance();
+    } catch (err) {
+      console.error(err);
+      alert("Грешка при записване на бюджета.");
+    }
+  });
+
+  barContainer.appendChild(filledBar);
+  barWrapper.appendChild(label);
+  barWrapper.appendChild(amountLabel);
+  barWrapper.appendChild(barContainer);
+  container.appendChild(barWrapper);
       });
     } catch (error) {
       console.error("Error loading balance data:", error);
