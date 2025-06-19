@@ -551,6 +551,28 @@ Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
     });
   });
 
+  function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.classList.toggle("show");
+
+    const name = sessionStorage.getItem("userName") || "Неизвестен";
+    const email = sessionStorage.getItem("userEmail") || "Няма имейл";
+    const userId = sessionStorage.getItem("userId");
+
+    document.getElementById("dropdownUserName").innerText = `Име: ${name}`;
+    document.getElementById("dropdownUserEmail").innerText = `Имейл: ${email}`;
+
+    const logoutBtn = document.getElementById("dropdownLogoutBtn");
+
+    if (logoutBtn) {
+      logoutBtn.onclick = () => {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+      };
+    }
+  }
+
+  window.toggleDropdown = toggleDropdown;
   createParticles();
 
   document
@@ -560,4 +582,20 @@ Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
         this.style.transform = "translateY(0) scale(1)";
       });
     });
+});
+
+window.addEventListener("click", function (event) {
+  const dropdown = document.getElementById("profileDropdown");
+  const dropdownButton = document.querySelector(".dropbtn");
+
+  // Check if the click is outside both the dropdown and the button
+  if (
+    !dropdown.contains(event.target) &&
+    !dropdownButton.contains(event.target)
+  ) {
+    dropdown.style.display = "none";
+  } else {
+    const isVisible = dropdown.style.display === "block";
+    dropdown.style.display = isVisible ? "none" : "block";
+  }
 });

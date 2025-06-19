@@ -245,20 +245,20 @@
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  background: white; /* Red border */
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #e53e3e; /* Red emoji/icon color */
+  color: #e53e3e;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.2); /* Red shadow */
-  font-size: 20px; /* For emoji sizing */
+  box-shadow: 0 4px 15px rgba(230, 38, 38, 0.2);
+  font-size: 20px;
 }
 
 .profile-icon:hover {
   transform: scale(1.1);
-  box-shadow: 0 1px 1px rgba(229, 62, 62, 0.4); /* Red hover shadow */
-  background: #f7fafc; /* Light gray background on hover */
+  box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+  background: #f7fafc;
 }
 
 .profile-icon svg {
@@ -321,7 +321,7 @@ body {
   min-height: calc (100vh-120px);
   border-radius: 30px 30px 0 0;
   padding-top: 70px;
-  box-shadow: none
+  box-shadow: none;
 }
 
 .top-controls {
@@ -553,7 +553,7 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   overflow: auto;
   height: auto;
-  max-height: 300px; 
+  max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -596,7 +596,7 @@ body {
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  max-height: 300px; 
+  max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -672,7 +672,6 @@ body {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   border-radius: 100%;
-
 }
 
 .ai-icon {
@@ -698,11 +697,10 @@ body {
 }
 
 .chat-header {
-  background: linear-gradient(45deg, #ff1313,#4f6ffe);
+  background: linear-gradient(45deg, #ff1313, #4f6ffe);
   color: white;
   padding: 12px;
   font-weight: bold;
-  
 }
 
 .chat-body {
@@ -731,7 +729,7 @@ body {
 }
 
 .get-tips-button:hover {
-    background: linear-gradient(70deg, #ff1313,#4f6ffe);
+  background: linear-gradient(70deg, #ff1313, #4f6ffe);
 }
 
 .tips-output {
@@ -767,7 +765,7 @@ body {
     height: 35px;
     font-size: 16px; /* Smaller emoji on mobile */
   }
-  
+
   .profile-icon svg {
     width: 18px;
     height: 18px;
@@ -796,4 +794,72 @@ body {
     grid-column: 1;
     grid-row: 5;
   }
+}
+
+.profile-container {
+  position: relative;
+  margin-left: auto;
+}
+
+.dropdown.profile-dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 105px;
+  right: 0;
+  background-color: white;
+  min-width: 240px;
+  padding: 25px;
+  border-radius: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  font-size: 14px;
+  text-align: center;
+  transform: translateX(-25px);
+}
+
+.profile-dropdown .dropdown-content.show {
+  display: block;
+}
+
+.profile-info {
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.dropdown-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dropdown-buttons .action-btn {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.dropbtn {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.logout-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
