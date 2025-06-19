@@ -1,7 +1,11 @@
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  
+  const userId = parseInt(sessionStorage.getItem("userId"));
+  if (!userId) {
+    window.location.href = "login.html";
+    return;
+  }
   
   const API_BASE_URL = "https://localhost:7121";
   const categorySelect = document.getElementById("category-select");
@@ -54,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Get user ID from session storage
-  const userId = sessionStorage.getItem("userId") || "1"; // Default to 1 if not set
 
   // Set current month
   const today = new Date();

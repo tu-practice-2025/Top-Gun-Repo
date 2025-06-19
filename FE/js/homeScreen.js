@@ -1,4 +1,11 @@
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
 document.addEventListener('DOMContentLoaded', function() {
+  const userId = parseInt(sessionStorage.getItem("userId"));
+  if (!userId) {
+    window.location.href = "login.html";
+    return;
+  }
   // AI feature
 const toggleBtn = document.getElementById("chat-toggle");
 const chatWindow = document.getElementById("chat-window");

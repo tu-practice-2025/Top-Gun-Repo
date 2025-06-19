@@ -1,3 +1,5 @@
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
 $(document).ready(function () {
   const userId = parseInt(sessionStorage.getItem("userId"));
   if (!userId) {
