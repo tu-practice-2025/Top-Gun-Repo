@@ -3,107 +3,6 @@
   padding: 0;
   box-sizing: border-box;
 }
-/* Profile Icon Styles - Add this to your homeScreen.css file */
-
-.nav-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-bar .profile-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  margin-left: auto;
-}
-
-.profile-icon {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background: white; /* Red border */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #e53e3e; /* Red emoji/icon color */
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.2); /* Red shadow */
-  font-size: 20px; /* For emoji sizing */
-}
-
-.profile-icon:hover {
-  transform: scale(1.1);
-  box-shadow: 0 1px 1px rgba(229, 62, 62, 0.4); /* Red hover shadow */
-  background: #f7fafc; /* Light gray background on hover */
-}
-
-.profile-icon svg {
-  width: 100%;
-  height: 100%;
-  fill: stroke;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .profile-icon {
-    width: 35px;
-    height: 35px;
-    font-size: 16px; /* Smaller emoji on mobile */
-  }
-  
-  .profile-icon svg {
-    width: 18px;
-    height: 18px;
-  }
-}
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
-  background-color: #ffffff !important;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.particles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  animation: float 15s infinite linear;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(100vh) rotate(0deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) rotate(360deg);
-    opacity: 0;
-  }
-}
 
 .top-bar {
   position: fixed;
@@ -240,6 +139,12 @@ body {
   }
 }
 
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .nav-bar a.active {
   background-color: rgba(226, 0, 26, 0.12);
   color: red;
@@ -327,14 +232,95 @@ body {
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
+.nav-bar .profile-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.profile-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: white; /* Red border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e53e3e; /* Red emoji/icon color */
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.2); /* Red shadow */
+  font-size: 20px; /* For emoji sizing */
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 1px 1px rgba(229, 62, 62, 0.4); /* Red hover shadow */
+  background: #f7fafc; /* Light gray background on hover */
+}
+
+.profile-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: stroke;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  background-color: #ffffff !important;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: float 15s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
 .content {
   flex: 1;
   position: relative;
   z-index: 1;
   background: #fff;
-  min-height: 100vh;
+  min-height: calc (100vh-120px);
   border-radius: 30px 30px 0 0;
-  padding-top: 90px;
+  padding-top: 70px;
   box-shadow: none
 }
 
@@ -409,7 +395,6 @@ body {
 
 .category-display select {
   padding: 10px 40px 10px 20px;
-  border-radius: 20px;
   font-size: 18px;
   font-weight: 600;
   color: black;
@@ -423,7 +408,6 @@ body {
 }
 
 .category-display::after {
-  content: "\25BC";
   position: absolute;
   right: 25px;
   top: 50%;
@@ -438,6 +422,48 @@ body {
   box-shadow: 0 15px 15px rgba(226, 0, 26, 0.4);
 }
 
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-select-wrapper select {
+  padding: 10px 40px 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: black;
+  border: none;
+  background: #fff;
+  appearance: none;
+  cursor: pointer;
+  width: auto;
+  box-sizing: border-box;
+  border-radius: 40px;
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.1);
+}
+
+.custom-select-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: black;
+}
+
+.custom-select-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: black;
+}
+
+.category-display select:focus,
+.category-display select:active {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
 .balance-box {
   padding: 20px 15px;
   border-radius: 20px;
@@ -447,7 +473,7 @@ body {
   position: relative;
   overflow: hidden;
   align-items: center;
-  width: auto;
+  width: 300px;
 }
 
 .balance-box {
@@ -550,7 +576,7 @@ body {
 .table-placeholder td {
   padding: 12px;
   text-align: center;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #fff;
   transition: background-color 0.3s ease;
   color: #333;
 }
@@ -563,7 +589,6 @@ body {
   border-bottom: none;
 }
 
-/* Fixed Balance Bars Styling */
 .balance-bars {
   flex: 1;
   background: #fff;
@@ -631,30 +656,6 @@ body {
   }
   100% {
     left: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .content {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    padding: 20px 15px;
-  }
-
-  .month-picker {
-    grid-column: 1;
-    grid-row: 3;
-    justify-self: center;
-  }
-
-  .balance-bars {
-    grid-column: 1;
-    grid-row: 4;
-  }
-
-  .table-placeholder {
-    grid-column: 1;
-    grid-row: 5;
   }
 }
 
@@ -740,4 +741,42 @@ body {
   white-space: pre-wrap;
   max-height: 100%;
   padding: 10px 25px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 16px; /* Smaller emoji on mobile */
+  }
+  
+  .profile-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 20px 15px;
+  }
+
+  .month-picker {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: center;
+  }
+
+  .balance-bars {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  .table-placeholder {
+    grid-column: 1;
+    grid-row: 5;
+  }
 }

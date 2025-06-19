@@ -1,21 +1,18 @@
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  
-  
   const API_BASE_URL = "https://localhost:7121";
   const categorySelect = document.getElementById("category-select");
   const monthInput = document.getElementById("month");
   if (!monthInput) return;
   const balanceText = document.getElementById("balance-text");
 
-
-    // AI feature
+  // AI feature
   const toggleBtn = document.getElementById("chat-toggle");
   const chatWindow = document.getElementById("chat-window");
   const closeBtn = document.getElementById("closeBtn");
   const getTipsBtn = document.getElementById("getTipsBtn");
-  const output = document.getElementById('tipsOutput');
+  const output = document.getElementById("tipsOutput");
 
   // opens chat window removes toggle btn
   toggleBtn.addEventListener("click", () => {
@@ -30,13 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // sends request to the llm chat endpoint and displays the text
-  getTipsBtn.addEventListener("click", async function(){
-    getTipsBtn.textContent= "Loading Tips...";
+  getTipsBtn.addEventListener("click", async function () {
+    getTipsBtn.textContent = "Loading Tips...";
     const id = sessionStorage.getItem("userId");
     const url = `https://localhost:7121/api/llmchat/${id}`;
     let text;
     try {
-      const response = await fetch(url,{method: "POST"});
+      const response = await fetch(url, { method: "POST" });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
@@ -45,13 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error(error.message);
     }
-    console.log(text)
+    console.log(text);
     getTipsBtn.style.display = "none";
     output.innerHTML = marked.parse(text);
-
-  })
-
-
+  });
 
   // Get user ID from session storage
   const userId = sessionStorage.getItem("userId") || "1"; // Default to 1 if not set
@@ -229,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };">
           ${transaction.type === "E" ? "-" : "+"}${transaction.amount.toFixed(
         2
-
       )} BGN
 
         </td>
@@ -237,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Add styling based on amount
       if (transaction.amount > 500) {
-        row.style.backgroundColor = "#ffebee";
+        row.style.backgroundColor = "#white";
       }
 
       tbody.appendChild(row);
@@ -245,24 +238,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add a summary row if showing multiple transactions
     if (transactions.length > 1) {
+      const totalAmount = transactions.reduce((sum, t) => {
+        const signedAmount = t.type === "E" ? -t.amount : t.amount;
+        return sum + signedAmount;
+      }, 0);
+      const summaryRow = document.createElement("tr");
+      summaryRow.style.borderTop = "2px solid black";
+      summaryRow.style.fontWeight = "bold";
 
-  const totalAmount = transactions.reduce((sum, t) => {
-    const signedAmount = t.type === "E" ? -t.amount : t.amount;
-    return sum + signedAmount;
-  }, 0);
-  const summaryRow = document.createElement("tr");
-  summaryRow.style.borderTop = "2px solid black";
-  summaryRow.style.fontWeight = "bold";
+      const color = totalAmount < 0 ? "red" : "green";
+      const sign = totalAmount < 0 ? "-" : "+";
 
-  const color = totalAmount < 0 ? "red" : "green";
-  const sign = totalAmount < 0 ? "-" : "+";
-
-  summaryRow.innerHTML = `
+      summaryRow.innerHTML = `
     <td colspan="3" style="text-align: right;">TOTAL:</td>
-    <td style="color: ${color};">${(totalAmount).toFixed(2)} BGN</td>
+    <td style="color: ${color};">${totalAmount.toFixed(2)} BGN</td>
   `;
-  tbody.appendChild(summaryRow);
-
+      tbody.appendChild(summaryRow);
     }
   }
 
@@ -283,16 +274,33 @@ document.addEventListener("DOMContentLoaded", () => {
       const balance = totalIncome - totalExpenses;
 
       balanceText.innerHTML = `
-        <div style="color: black; font-weight: bold; font-size: 1.2em;">Overall Summary</div>
-        <div>Total Income: ${totalIncome.toFixed(2)} BGN</div>
-        <div>Total Expenses: ${totalExpenses.toFixed(2)} BGN</div>
-        <div style="color: ${
-          balance >= 0 ? "green" : "red"
-        }; font-weight: bold;">
-          Balance: ${balance.toFixed(2)} BGN</div>
+        <div style="color: black; font-weight: bold; font-size: 1.2em; text-decoration: underline;">Overall Summary</div>
+        
+        <div>
+          <span style="color: black;">Total Expenses:</span>
+          <span style="color: red; font-weight: bold;">${totalExpenses.toFixed(
+            2
+          )} BGN</span>
+        </div>
+
+        <div>
+          <span style="color: black;">Total Income:</span>
+          <span style="color: green; font-weight: bold;">${totalIncome.toFixed(
+            2
+          )} BGN</span>
+        </div>
+
+        <div>
+          <span style="color: black;">Balance:</span>
+          <span style="color: ${
+            balance >= 0 ? "green" : "red"
+          }; font-weight: bold;">
+          ${balance.toFixed(2)} BGN</div>
         <div style="color: #666; font-size: 0.9em;">
           Transactions: ${allTransactions.length}
+        <span
         </div>
+
       `;
     } else {
       const categoryTotal = filteredTransactions.reduce(
@@ -306,9 +314,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const percentage =
         totalExpenses > 0 ? (categoryTotal / totalExpenses) * 100 : 0;
 
+      const isIncomeCategory =
+        selectedCategory === "Income" || selectedCategory === "Income ATM";
+      const spentOrIncomeLabel = isIncomeCategory
+        ? "Total Income"
+        : "Total Spent";
+      const amountColor = isIncomeCategory ? "green" : "red";
+
       balanceText.innerHTML = `
         <div style="color: black; font-weight: bold; font-size: 1.2em;">${selectedCategory}</div>
-        <div>Total Spent: ${categoryTotal.toFixed(2)} BGN</div>
+        
+
+        <div>
+          <span style="color: black;">${spentOrIncomeLabel}:</span>
+          <span style="color: ${amountColor}; font-weight: bold;">${categoryTotal.toFixed(
+        2
+      )} BGN</span>
+        </div>
+
         <div>Percentage of Total: ${percentage.toFixed(2)}%</div>
         <div style="color: #666; font-size: 0.9em;">
           Transactions: ${filteredTransactions.length}
@@ -427,42 +450,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   // Keep existing particle and animation functions
-function createParticles() {
-  const particles = document.getElementById("particles");
-  if (!particles) return;
+  function createParticles() {
+    const particles = document.getElementById("particles");
+    if (!particles) return;
 
-  const particleCount = 50;
+    const particleCount = 50;
 
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement("div");
-    particle.className = "particle";
-    particle.style.left = Math.random() * 100 + "%";
-    particle.style.animationDelay = Math.random() * 15 + "s";
-    particle.style.animationDuration = Math.random() * 10 + 10 + "s";
-    particles.appendChild(particle);
-  }
-}
-
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-  anchor.addEventListener("click", function (e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute("href"));
-    if (target) {
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement("div");
+      particle.className = "particle";
+      particle.style.left = Math.random() * 100 + "%";
+      particle.style.animationDelay = Math.random() * 15 + "s";
+      particle.style.animationDuration = Math.random() * 10 + 10 + "s";
+      particles.appendChild(particle);
     }
-  });
-});
+  }
 
-createParticles();
-
-document
-  .querySelectorAll(".category-display, .balance-box")
-  .forEach((element) => {
-    element.addEventListener("mouseleave", function () {
-      this.style.transform = "translateY(0) scale(1)";
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
     });
   });
+
+  createParticles();
+
+  document
+    .querySelectorAll(".category-display, .balance-box")
+    .forEach((element) => {
+      element.addEventListener("mouseleave", function () {
+        this.style.transform = "translateY(0) scale(1)";
+      });
+    });
 });
