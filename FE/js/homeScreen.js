@@ -52,8 +52,6 @@ const CONFIG = {
   API_BASE_URL: "https://localhost:7121",
   USER_ID: sessionStorage.getItem("userId"),
 
-  
-
   CATEGORY_COLORS: {
     Transport: {
       bg: "rgba(255, 99, 132, 0.7)",
@@ -297,7 +295,7 @@ const centerTextPlugin = {
     // Заглавие "Total:"
     ctx.font = "bold 16px Arial";
     ctx.fillStyle = "#333";
-    ctx.fillText("Total: BGN", centerX, centerY - 15);
+    ctx.fillText("Общо: лв.", centerX, centerY - 15);
 
     // Сума
     ctx.font = "bold 20px Arial";
@@ -353,7 +351,7 @@ class ChartService {
               label: function (context) {
                 const label = context.dataset.label || "";
                 const value = context.parsed;
-                return `Expenses: ${value.toFixed(2)}%`;
+                return `Разходи: ${value.toFixed(2)}%`;
               },
             },
           },
@@ -412,7 +410,7 @@ class ChartService {
             callbacks: {
               label: function (context) {
                 const value = context.parsed.y || context.raw;
-                return `Category Income: ${value.toFixed(2)} BGN`;
+                return `Приходи: ${value.toFixed(2)} лв.`;
               },
             },
           },
@@ -528,7 +526,7 @@ class LegendService {
         <span class="color-dot" style="background-color: ${colors.bg}"></span>
         <span class="label-text">${categoryName} - ${category.totalSpent.toFixed(
         2
-      )} BGN</span>
+      )} лв.</span>
       `;
 
       legendContainer.appendChild(legendItem);
@@ -632,19 +630,19 @@ $(document).ready(function () {
       );
 
       const expenseEl = document.getElementById("total-expenses");
-    const incomeEl = document.getElementById("total-income");
+      const incomeEl = document.getElementById("total-income");
 
-    // Обнови текста
-    expenseEl.textContent = `- ${totalExpenses.toFixed(2)} BGN`;
-    incomeEl.textContent = `+ ${totalIncome.toFixed(2)} BGN`;
+      // Обнови текста
+      expenseEl.textContent = `- ${totalExpenses.toFixed(2)} лв.`;
+      incomeEl.textContent = `+ ${totalIncome.toFixed(2)} лв.`;
 
-    // Премахни стари класове (ако има)
-    expenseEl.classList.remove("income-positive", "expense-negative");
-    incomeEl.classList.remove("income-positive", "expense-negative");
+      // Премахни стари класове (ако има)
+      expenseEl.classList.remove("income-positive", "expense-negative");
+      incomeEl.classList.remove("income-positive", "expense-negative");
 
-    // Добави нужните цветове
-    expenseEl.classList.add("expense-negative");
-    incomeEl.classList.add("income-positive");
+      // Добави нужните цветове
+      expenseEl.classList.add("expense-negative");
+      incomeEl.classList.add("income-positive");
     } catch (e) {
       console.error("Failed to fetch totals:", e);
     }

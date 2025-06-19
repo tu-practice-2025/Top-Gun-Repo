@@ -237,5 +237,20 @@ namespace SummerPracticeWebApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // GET: api/Categories/transactions/month/5?year=2025&month=6
+        [HttpGet("transactions/month/{userId}")]
+        public async Task<IActionResult> GetUserTransactions(int userId, [FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                var result = await _categoryService.GetUserTransactionsAsync(userId, year, month);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

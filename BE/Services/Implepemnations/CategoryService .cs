@@ -90,7 +90,7 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                     Code = c.code,
                     Name = c.name,
                     TotalSpent = _context.Transactions
-                        .Where(t => t.category_id == c.CategoryId && t.user_id == userId && !c.name.Contains("Income"))
+                        .Where(t => t.category_id == c.CategoryId && t.user_id == userId && !c.name.Contains("Приход"))
                         .Sum(t => (decimal?)t.amount) ?? 0,
                     UserId = userId
                 })
@@ -106,7 +106,7 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                     Code = c.code,
                     Name = c.name,
                     TotalSpent = _context.Transactions
-                        .Where(t => t.category_id == c.CategoryId && t.user_id == userId && c.name.Contains("Income"))
+                        .Where(t => t.category_id == c.CategoryId && t.user_id == userId && c.name.Contains("Приход"))
                         .Sum(t => (decimal?)t.amount) ?? 0,
                     UserId = userId
                 })
@@ -142,7 +142,7 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                     TotalSpent = _context.Transactions
                         .Where(t => t.category_id == c.CategoryId &&
                                    t.user_id == userId &&
-                                   !c.name.Contains("Income") &&
+                                   !c.name.Contains("Приход") &&
                                    t.date.Year == year &&
                                    t.date.Month == month)
                         .Sum(t => (decimal?)t.amount) ?? 0,
@@ -163,7 +163,7 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                     TotalSpent = _context.Transactions
                         .Where(t => t.category_id == c.CategoryId &&
                                    t.user_id == userId &&
-                                   c.name.Contains("Income") &&
+                                   c.name.Contains("Приход") &&
                                    t.date.Year == year &&
                                    t.date.Month == month)
                         .Sum(t => (decimal?)t.amount) ?? 0,
@@ -195,6 +195,36 @@ namespace SummerPracticeWebApi.Services.Implepemnations
                            t.TransactionYear == year &&
                            t.TransactionMonth == month &&
                            t.CategoryId == categoryId)
+                .Select(t => new
+                {
+                    TransactionId = t.TransactionId,
+                    TransactionCode = t.TransactionCode,
+                    CategoryName = t.CategoryName,
+                    MerchantName = t.MerchantName,
+                    MerchantDescription = t.MerchantDescription,
+                    CardNumber = t.CardNumber,
+                    Amount = t.Amount,
+                    Date = t.Date,
+                    Type = t.Type,
+                    iban = t.iban,
+                })
+                .OrderByDescending(t => t.Date)
+                .ToListAsync();
+
+            if (!transactions.Any())
+            {
+                return new { message = "No transactions found for the specified month", data = transactions };
+            }
+
+            return transactions;
+        }
+        //user transactions 
+        public async Task<object> GetUserTransactionsAsync(int userId, int year, int month)
+        {
+            var transactions = await _context.TransactionDetailsViews
+                .Where(t => t.UserId == userId &&
+                           t.TransactionYear == year &&
+                           t.TransactionMonth == month)
                 .Select(t => new
                 {
                     TransactionId = t.TransactionId,

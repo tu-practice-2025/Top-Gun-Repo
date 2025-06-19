@@ -15,27 +15,27 @@ document.addEventListener("DOMContentLoaded", function () {
       // Switch to login
       loginForm.classList.add("active");
       registerForm.classList.remove("active");
-      formTitle.textContent = "Welcome";
-      formSubtitle.textContent = "Log in to continue";
+      formTitle.textContent = "Добре дошли!";
+      formSubtitle.textContent = "";
     } else {
       // Switch to register
       registerForm.classList.add("active");
       loginForm.classList.remove("active");
-      formTitle.textContent = "Welcome";
-      formSubtitle.textContent = "Create your account";
+      formTitle.textContent = "Присъедини с към нас!";
+      formSubtitle.textContent = "Създай своя акаунт";
     }
   });
 
   // Form submissions
   loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    console.log("Login submitted");
+    console.log("Успешен вход");
     // Add your login logic here
   });
 
   registerForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    console.log("Registration submitted");
+    console.log("Успешна регистрация");
     // Add your registration logic here
   });
 
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "homeScreen.html";
       } else {
         const result = await response.json();
-        alert(result.message || "Login failed");
+        alert(result.message || "Грешка при вход");
       }
     });
 
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "login.html";
       } else {
         const result = await response.json();
-        alert(result.message || "Registration failed");
+        alert(result.message || "Грешка при регистрация");
       }
     });
 });
