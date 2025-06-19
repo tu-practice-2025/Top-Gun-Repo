@@ -741,7 +741,7 @@ body {
   white-space: pre-wrap;
   max-height: 100%;
   padding: 10px 25px;
-  }
+}
 
 .loader {
   border: 8px solid #f3f3f3;
@@ -754,8 +754,12 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive adjustments */
@@ -797,8 +801,11 @@ body {
 }
 
 .profile-container {
+  display: flex;
+  align-items: center;
   position: relative;
   margin-left: auto;
+  gap: 25px;
 }
 
 .dropdown.profile-dropdown {
@@ -862,4 +869,28 @@ body {
   background: #dc2626;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.email-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.email-btn {
+  background-color: white;
+  border: 2px solid #e60000;
+  color: #e60000;
+  padding: 6px 10px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.email-btn:hover {
+  background-color: #e60000;
+  color: white;
 }
