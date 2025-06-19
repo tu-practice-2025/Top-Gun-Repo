@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
       loginForm.classList.add("active");
       registerForm.classList.remove("active");
       formTitle.textContent = "Добре дошли!";
-      formSubtitle.textContent = "Вход";
+      formSubtitle.textContent = "";
     } else {
       // Switch to register
       registerForm.classList.add("active");

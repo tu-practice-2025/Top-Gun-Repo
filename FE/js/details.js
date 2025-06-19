@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const balance = totalIncome - totalExpenses;
 
       balanceText.innerHTML = `
-        <div style="color: black; font-weight: bold; font-size: 1.2em; text-decoration: underline;">Overall Summary</div>
+        <div style="color: black; font-weight: bold; font-size: 1.2em; text-decoration: underline;">Статистика</div>
         
         <div>
           <span style="color: black;">Общ разход:</span>
