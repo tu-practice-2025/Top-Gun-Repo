@@ -10,41 +10,40 @@ $(document).ready(function () {
   const chatWindow = document.getElementById("chat-window");
   const closeBtn = document.getElementById("closeBtn");
   const getTipsBtn = document.getElementById("getTipsBtn");
-  const output = document.getElementById('tipsOutput');
-  
+  const output = document.getElementById("tipsOutput");
+
   // opens chat window removes toggle btn
   toggleBtn.addEventListener("click", () => {
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "none";
   });
-  
+
   // closes chat window brings toggle btn back
   closeBtn.addEventListener("click", () => {
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "block  ";
   });
-  
+
   // sends request to the llm chat endpoint and displays the text
-  getTipsBtn.addEventListener("click", async function(){
-    getTipsBtn.textContent= "Loading Tips...";
+  getTipsBtn.addEventListener("click", async function () {
+    getTipsBtn.textContent = "Loading Tips...";
     const id = sessionStorage.getItem("userId");
     const url = `https://localhost:7121/api/llmchat/${id}`;
     let text;
     try {
-      const response = await fetch(url,{method: "POST"});
+      const response = await fetch(url, { method: "POST" });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
-  
+
       text = await response.text();
     } catch (error) {
       console.error(error.message);
     }
-    console.log(text)
+    console.log(text);
     getTipsBtn.style.display = "none";
     output.innerHTML = marked.parse(text);
-  
-  })
+  });
 
   let categoriesMap = {};
   loadUserTransactions();
@@ -83,7 +82,7 @@ $(document).ready(function () {
       .css("width", percent + "%")
       .text(percent !== 0 ? Math.round(percent) + "%" : "");
 
-    $("#totalDisplay").text(`Total: ${totalExpense.toFixed(2)}BGN`);
+    $("#totalDisplay").text(`Общо: ${totalExpense.toFixed(2)}BGN`);
     $("#maxValueDisplay").text(`${totalIncome.toFixed(2)}BGN`);
 
     if (totalExpense > totalIncome) {
@@ -109,12 +108,12 @@ $(document).ready(function () {
         categoriesMap = {};
         const $select = $("#inputCategory");
         $select.empty();
-        $select.append('<option value="">-- Choose category --</option>');
+        $select.append('<option value="">-- Избери категория --</option>');
 
         if (selectedType === "Income") {
           categories.sort((a, b) => {
-            const aIsIncome = a.name.toLowerCase().includes("income") ? -1 : 1;
-            const bIsIncome = b.name.toLowerCase().includes("income") ? -1 : 1;
+            const aIsIncome = a.name.toLowerCase().includes("приход") ? -1 : 1;
+            const bIsIncome = b.name.toLowerCase().includes("приход") ? -1 : 1;
             return aIsIncome - bIsIncome;
           });
         }
@@ -231,7 +230,7 @@ $(document).ready(function () {
     const categoryCell = $("<td></td>").text(category);
     const displayAmount = isIncome
       ? finalAmount.toFixed(2) + "BGN"
-      : `-${Math.abs(finalAmount).toFixed(2)}`;
+      : `-${Math.abs(finalAmount).toFixed(2) + "BGN"}`;
 
     const valueCell = $("<td></td>").text(displayAmount);
 
@@ -392,4 +391,45 @@ $(document).ready(function () {
     $("#typeLabel").text(label);
     loadCategories();
   });
+
+  function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.classList.toggle("show");
+
+    const name = sessionStorage.getItem("userName") || "Неизвестен";
+    const email = sessionStorage.getItem("userEmail") || "Няма имейл";
+    const userId = sessionStorage.getItem("userId");
+
+    document.getElementById("dropdownUserName").innerText = `Име: ${name}`;
+    document.getElementById("dropdownUserEmail").innerText = `Имейл: ${email}`;
+
+    const logoutBtn = document.getElementById("dropdownLogoutBtn");
+
+    if (logoutBtn) {
+      logoutBtn.onclick = () => {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+      };
+    }
+  }
+
+  window.toggleDropdown = toggleDropdown;
+});
+
+window.addEventListener("click", function (event) {
+  const dropdown = document.getElementById("profileDropdown");
+  const dropdownButton = document.querySelector(".dropbtn");
+
+  // Check if the click is outside both the dropdown and the button
+  if (
+    !dropdown.contains(event.target) &&
+    !dropdownButton.contains(event.target)
+  ) {
+    dropdown.style.display = "none";
+  } else {
+    const isVisible = dropdown.style.display === "block";
+    dropdown.style.display = isVisible
+      ? "none  !important"
+      : "block !important";
+  }
 });
