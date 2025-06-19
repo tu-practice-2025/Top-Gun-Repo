@@ -6,7 +6,7 @@ namespace SummerPracticeWebApi.Services.Interfaces
     {
         Task<List<Budget>> GetAllBudgetsForUserAsync(int userId);
         Task<Budget> CreateBudgetAsync(Budget budget);
-        Task<bool> UpdateBudgetAsync(int userId, double new_limit);
+        Task<bool> UpdateBudgetAsync(int userId, int cat_id, double limit);
         Task<int> GetBudgetByIdAsync(int id);
     }
 }

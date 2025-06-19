@@ -31,14 +31,14 @@ namespace SummerPracticeWebApi.Services.Implepemnations
             return await _context.Budgets.AnyAsync(e => e.user_id == userId);
         }
 
-        public async Task<bool> UpdateBudgetAsync(int userId, double new_limit)
+        public async Task<bool> UpdateBudgetAsync(int userId, int cat_id, double limit)
         {
-            var budget = await _context.Budgets.FirstOrDefaultAsync(b => b.user_id == userId);
+            var budget = await _context.Budgets.FirstOrDefaultAsync(b => b.user_id == userId && b.category_id == cat_id);
             if (budget == null)
             {
                 return false;
             }
-            budget.limit = new_limit;
+            budget.limit = limit;
             _context.Entry(budget).State = EntityState.Modified;
             try
             {

@@ -738,11 +738,11 @@ body {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   color: #000000;
-  font-size: 14px;
+  font-size: 16px;
   white-space: pre-wrap;
   max-height: 100%;
   padding: 10px 25px;
-}
+  }
 
 .loader {
   border: 8px solid #f3f3f3;

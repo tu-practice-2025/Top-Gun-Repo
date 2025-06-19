@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // opens chat window removes toggle btn
   toggleBtn.addEventListener("click", async function(){
-    document.getElementById("loader").style.display = "block"; 
+    document.getElementById("loader").style.display = "block";
+    output.style.display = "none";
 
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "none";
@@ -40,15 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(error.message);
     }
     console.log(text)
+    output.style.display = "block";
     output.innerHTML = marked.parse(text);
     document.getElementById("loader").style.display = "none";
-
   });
 
   // closes chat window brings toggle btn back
   closeBtn.addEventListener("click", () => {
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "block  ";
+    output.innerHTML = ""
   });
 
   
@@ -476,7 +478,7 @@ Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
 
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
-      alert("Бюджетът е записан успешно! Презаредете страницата за да видите промяната.");
+      loadAndRenderBalance();
     } catch (err) {
       console.error(err);
       alert("Грешка при записване на бюджета.");

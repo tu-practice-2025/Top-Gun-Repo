@@ -6,46 +6,44 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = "login.html";
     return;
   }
-  // AI feature
-const toggleBtn = document.getElementById("chat-toggle");
-const chatWindow = document.getElementById("chat-window");
-const closeBtn = document.getElementById("closeBtn");
-const getTipsBtn = document.getElementById("getTipsBtn");
-const output = document.getElementById('tipsOutput');
+    // AI feature
+  const toggleBtn = document.getElementById("chat-toggle");
+  const chatWindow = document.getElementById("chat-window");
+  const closeBtn = document.getElementById("closeBtn");
+  const output = document.getElementById('tipsOutput');
 
-// opens chat window removes toggle btn
-toggleBtn.addEventListener("click", () => {
-  chatWindow.classList.toggle("show-chat");
-  toggleBtn.style.display = "none";
-});
+  // opens chat window removes toggle btn
+  toggleBtn.addEventListener("click", async function(){
+    document.getElementById("loader").style.display = "block";
+    output.style.display = "none";
 
-// closes chat window brings toggle btn back
-closeBtn.addEventListener("click", () => {
-  chatWindow.classList.toggle("show-chat");
-  toggleBtn.style.display = "block  ";
-});
+    chatWindow.classList.toggle("show-chat");
+    toggleBtn.style.display = "none";
+    const id = sessionStorage.getItem("userId");
+    const url = `https://localhost:7121/api/llmchat/${id}`;
+    let text;
+    try {
+      const response = await fetch(url,{method: "POST"});
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
 
-// sends request to the llm chat endpoint and displays the text
-getTipsBtn.addEventListener("click", async function(){
-  getTipsBtn.textContent= "Loading Tips...";
-  const id = sessionStorage.getItem("userId");
-  const url = `https://localhost:7121/api/llmchat/${id}`;
-  let text;
-  try {
-    const response = await fetch(url,{method: "POST"});
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      text = await response.text();
+    } catch (error) {
+      console.error(error.message);
     }
+    console.log(text)
+    output.style.display = "block";
+    output.innerHTML = marked.parse(text);
+    document.getElementById("loader").style.display = "none";
+  });
 
-    text = await response.text();
-  } catch (error) {
-    console.error(error.message);
-  }
-  console.log(text)
-  getTipsBtn.style.display = "none";
-  output.innerHTML = marked.parse(text);
-
-})
+  // closes chat window brings toggle btn back
+  closeBtn.addEventListener("click", () => {
+    chatWindow.classList.toggle("show-chat");
+    toggleBtn.style.display = "block  ";
+    output.innerHTML = ""
+  });
 })
 
 

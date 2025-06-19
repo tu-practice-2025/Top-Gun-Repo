@@ -17,34 +17,6 @@ namespace SummerPracticeWebApi.Controllers
             _budgetsService = budgetsService;
         }
 
-        int cat_id;
-
-
-        private List<string> categories = new List<string>
-        {
-            "Транспорт и авто услуги",
-            "Супермаркети",
-            "Пътуване и ваканция",
-            "Шопинг",
-            "Ресторанти и барове",
-            "Финансови услуги",
-            "Инвестиции",
-            "Забавление и спорт",
-            "Здраве и красота",
-            "Дрехи",
-            "Кеш",
-            "За дома",
-            "Публични услуги",
-            "Бизнес услуги",
-            "Битови сметки",
-            "Образование",
-            "Задължения и такси",
-            "Преводи",
-            "Други",
-            "Погасяване по кредитни продукти",
-            "Приход",
-            "Приход ATM"
-        };
 
 
         // GET api/<BudgetsController>/5
@@ -65,16 +37,8 @@ namespace SummerPracticeWebApi.Controllers
 
         // POST api/<BudgetsController>
         [HttpPost("{userId}")]
-        public async Task<IActionResult> Post(int userId, [FromQuery] string cat_name, [FromQuery] double limit)
+        public async Task<IActionResult> Post(int userId, [FromQuery] int cat_id, [FromQuery] double limit)
         {
-            foreach (var category in categories)
-            {
-                if (category == cat_name)
-                {
-                    cat_id = categories.IndexOf(category) + 1; 
-                    break;
-                }
-            }
             try
             {
                 var date = DateTime.Now;
@@ -98,20 +62,13 @@ namespace SummerPracticeWebApi.Controllers
         }
 
         // PUT api/<BudgetsController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string cat_name, [FromQuery]double new_limit)
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> Put(int userId,[FromQuery] int cat_id, [FromQuery]double limit)
         {
-            foreach (var category in categories)
-            {
-                if (category == cat_name)
-                {
-                    cat_id = categories.IndexOf(category) + 1;
-                    break;
-                }
-            }
+            
             try
             {
-                var budget = await _budgetsService.UpdateBudgetAsync(cat_id, new_limit);
+                var budget = await _budgetsService.UpdateBudgetAsync(userId, cat_id, limit);
                 if (budget == null)
                 {
                     return NotFound($"Budget with ID {cat_id} not found.");
