@@ -1,53 +1,49 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   // AI feature
-const toggleBtn = document.getElementById("chat-toggle");
-const chatWindow = document.getElementById("chat-window");
-const closeBtn = document.getElementById("closeBtn");
-const getTipsBtn = document.getElementById("getTipsBtn");
-const output = document.getElementById('tipsOutput');
+  const toggleBtn = document.getElementById("chat-toggle");
+  const chatWindow = document.getElementById("chat-window");
+  const closeBtn = document.getElementById("closeBtn");
+  const getTipsBtn = document.getElementById("getTipsBtn");
+  const output = document.getElementById("tipsOutput");
 
-// opens chat window removes toggle btn
-toggleBtn.addEventListener("click", () => {
-  chatWindow.classList.toggle("show-chat");
-  toggleBtn.style.display = "none";
-});
+  // opens chat window removes toggle btn
+  toggleBtn.addEventListener("click", () => {
+    chatWindow.classList.toggle("show-chat");
+    toggleBtn.style.display = "none";
+  });
 
-// closes chat window brings toggle btn back
-closeBtn.addEventListener("click", () => {
-  chatWindow.classList.toggle("show-chat");
-  toggleBtn.style.display = "block  ";
-});
+  // closes chat window brings toggle btn back
+  closeBtn.addEventListener("click", () => {
+    chatWindow.classList.toggle("show-chat");
+    toggleBtn.style.display = "block  ";
+  });
 
-// sends request to the llm chat endpoint and displays the text
-getTipsBtn.addEventListener("click", async function(){
-  getTipsBtn.textContent= "Loading Tips...";
-  const id = sessionStorage.getItem("userId");
-  const url = `https://localhost:7121/api/llmchat/${id}`;
-  let text;
-  try {
-    const response = await fetch(url,{method: "POST"});
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+  // sends request to the llm chat endpoint and displays the text
+  getTipsBtn.addEventListener("click", async function () {
+    getTipsBtn.textContent = "Loading Tips...";
+    const id = sessionStorage.getItem("userId");
+    const url = `https://localhost:7121/api/llmchat/${id}`;
+    let text;
+    try {
+      const response = await fetch(url, { method: "POST" });
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+
+      text = await response.text();
+    } catch (error) {
+      console.error(error.message);
     }
-
-    text = await response.text();
-  } catch (error) {
-    console.error(error.message);
-  }
-  console.log(text)
-  getTipsBtn.style.display = "none";
-  output.innerHTML = marked.parse(text);
-
-})
-})
-
+    console.log(text);
+    getTipsBtn.style.display = "none";
+    output.innerHTML = marked.parse(text);
+  });
+});
 
 // Dashboard Configuration
 const CONFIG = {
   API_BASE_URL: "https://localhost:7121",
   USER_ID: sessionStorage.getItem("userId"),
-
-  
 
   CATEGORY_COLORS: {
     Transport: {
@@ -292,7 +288,7 @@ const centerTextPlugin = {
     // Заглавие "Total:"
     ctx.font = "bold 16px Arial";
     ctx.fillStyle = "#333";
-    ctx.fillText("Total: BGN", centerX, centerY - 15);
+    ctx.fillText("Общо: лв.", centerX, centerY - 15);
 
     // Сума
     ctx.font = "bold 20px Arial";
@@ -348,7 +344,7 @@ class ChartService {
               label: function (context) {
                 const label = context.dataset.label || "";
                 const value = context.parsed;
-                return `Expenses: ${value.toFixed(2)}%`;
+                return `Разходи: ${value.toFixed(2)}%`;
               },
             },
           },
@@ -407,7 +403,7 @@ class ChartService {
             callbacks: {
               label: function (context) {
                 const value = context.parsed.y || context.raw;
-                return `Category Income: ${value.toFixed(2)} BGN`;
+                return `Приходи: ${value.toFixed(2)} лв.`;
               },
             },
           },
@@ -523,7 +519,7 @@ class LegendService {
         <span class="color-dot" style="background-color: ${colors.bg}"></span>
         <span class="label-text">${categoryName} - ${category.totalSpent.toFixed(
         2
-      )} BGN</span>
+      )} лв.</span>
       `;
 
       legendContainer.appendChild(legendItem);
@@ -627,19 +623,19 @@ $(document).ready(function () {
       );
 
       const expenseEl = document.getElementById("total-expenses");
-    const incomeEl = document.getElementById("total-income");
+      const incomeEl = document.getElementById("total-income");
 
-    // Обнови текста
-    expenseEl.textContent = `- ${totalExpenses.toFixed(2)} BGN`;
-    incomeEl.textContent = `+ ${totalIncome.toFixed(2)} BGN`;
+      // Обнови текста
+      expenseEl.textContent = `- ${totalExpenses.toFixed(2)} лв.`;
+      incomeEl.textContent = `+ ${totalIncome.toFixed(2)} лв.`;
 
-    // Премахни стари класове (ако има)
-    expenseEl.classList.remove("income-positive", "expense-negative");
-    incomeEl.classList.remove("income-positive", "expense-negative");
+      // Премахни стари класове (ако има)
+      expenseEl.classList.remove("income-positive", "expense-negative");
+      incomeEl.classList.remove("income-positive", "expense-negative");
 
-    // Добави нужните цветове
-    expenseEl.classList.add("expense-negative");
-    incomeEl.classList.add("income-positive");
+      // Добави нужните цветове
+      expenseEl.classList.add("expense-negative");
+      incomeEl.classList.add("income-positive");
     } catch (e) {
       console.error("Failed to fetch totals:", e);
     }
