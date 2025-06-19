@@ -105,7 +105,7 @@ namespace SummerPracticeWebApi.DataAccess
                         user_id = user.UserId,
                         iban = account,
                         card_number = type == 'E' ? cardNumbers[random.Next(0, numCards - 1)] : null,
-                        amount = Math.Round(random.NextDouble() * (1000 - 5) + 5, 2),
+                        amount = type == 'E' ? Math.Round(random.NextDouble() * (100 - 5) + 5, 2) : Math.Round(random.NextDouble() * (1000 - 5) + 5, 2),
                         date = DateTime.Today.AddDays(-random.Next(0, 30)),
                         type = type
                     });

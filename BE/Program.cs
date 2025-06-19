@@ -62,6 +62,7 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IReportGeneratorService, ReportGeneratorService>();
 builder.Services.AddScoped<ILLMChatService, LLMChatService>();
+builder.Services.AddScoped<IBudgetsService, BudgetsService>();
 
 
 builder.Services.AddHttpClient();

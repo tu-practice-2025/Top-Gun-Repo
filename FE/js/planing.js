@@ -1,3 +1,5 @@
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
 $(document).ready(function () {
   const userId = parseInt(sessionStorage.getItem("userId"));
   if (!userId) {
@@ -5,28 +7,21 @@ $(document).ready(function () {
     return;
   }
 
-  // AI feature
+    // AI feature
   const toggleBtn = document.getElementById("chat-toggle");
   const chatWindow = document.getElementById("chat-window");
   const closeBtn = document.getElementById("closeBtn");
-  const getTipsBtn = document.getElementById("getTipsBtn");
-  const output = document.getElementById("tipsOutput");
+  const output = document.getElementById('tipsOutput');
+
 
   // opens chat window removes toggle btn
-  toggleBtn.addEventListener("click", () => {
+  toggleBtn.addEventListener("click", async function(){
+    document.getElementById("loader").style.display = "block";
+    output.style.display = "none";
+
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "none";
-  });
-
-  // closes chat window brings toggle btn back
-  closeBtn.addEventListener("click", () => {
-    chatWindow.classList.toggle("show-chat");
-    toggleBtn.style.display = "block  ";
-  });
-
-  // sends request to the llm chat endpoint and displays the text
-  getTipsBtn.addEventListener("click", async function () {
-    getTipsBtn.textContent = "Loading Tips...";
+    
     const id = sessionStorage.getItem("userId");
     const url = `https://localhost:7121/api/llmchat/${id}`;
     let text;
@@ -40,9 +35,18 @@ $(document).ready(function () {
     } catch (error) {
       console.error(error.message);
     }
-    console.log(text);
-    getTipsBtn.style.display = "none";
+
+    output.style.display = "block";
     output.innerHTML = marked.parse(text);
+    document.getElementById("loader").style.display = "none";
+  });
+
+  // closes chat window brings toggle btn back
+  closeBtn.addEventListener("click", () => {
+    chatWindow.classList.toggle("show-chat");
+    toggleBtn.style.display = "block  ";
+    output.innerHTML = ""
+
   });
 
   let categoriesMap = {};

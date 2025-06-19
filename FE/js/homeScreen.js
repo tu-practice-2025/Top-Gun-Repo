@@ -1,31 +1,29 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // AI feature
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
+document.addEventListener('DOMContentLoaded', function() {
+  const userId = parseInt(sessionStorage.getItem("userId"));
+  if (!userId) {
+    window.location.href = "login.html";
+    return;
+  }
+    // AI feature
   const toggleBtn = document.getElementById("chat-toggle");
   const chatWindow = document.getElementById("chat-window");
   const closeBtn = document.getElementById("closeBtn");
-  const getTipsBtn = document.getElementById("getTipsBtn");
-  const output = document.getElementById("tipsOutput");
+  const output = document.getElementById('tipsOutput');
 
   // opens chat window removes toggle btn
-  toggleBtn.addEventListener("click", () => {
+  toggleBtn.addEventListener("click", async function(){
+    document.getElementById("loader").style.display = "block";
+    output.style.display = "none";
+
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "none";
-  });
-
-  // closes chat window brings toggle btn back
-  closeBtn.addEventListener("click", () => {
-    chatWindow.classList.toggle("show-chat");
-    toggleBtn.style.display = "block  ";
-  });
-
-  // sends request to the llm chat endpoint and displays the text
-  getTipsBtn.addEventListener("click", async function () {
-    getTipsBtn.textContent = "Loading Tips...";
     const id = sessionStorage.getItem("userId");
     const url = `https://localhost:7121/api/llmchat/${id}`;
     let text;
     try {
-      const response = await fetch(url, { method: "POST" });
+      const response = await fetch(url,{method: "POST"});
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
@@ -34,10 +32,12 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.error(error.message);
     }
-    console.log(text);
-    getTipsBtn.style.display = "none";
+    console.log(text)
+    output.style.display = "block";
     output.innerHTML = marked.parse(text);
+    document.getElementById("loader").style.display = "none";
   });
+
   function toggleDropdown() {
     const dropdown = document.getElementById("profileDropdown");
     dropdown.classList.toggle("show");
@@ -79,6 +79,17 @@ window.addEventListener("click", function (event) {
       : "block !important";
   }
 });
+
+
+  // closes chat window brings toggle btn back
+  closeBtn.addEventListener("click", () => {
+    chatWindow.classList.toggle("show-chat");
+    toggleBtn.style.display = "block  ";
+    output.innerHTML = ""
+  });
+})
+
+
 
 // Dashboard Configuration
 const CONFIG = {
