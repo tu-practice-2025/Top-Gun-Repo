@@ -21,29 +21,29 @@
 }
 
 .profile-icon {
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  background: white;
-  border: 2px solid #e53e3e; /* Red border */
+  background: white; /* Red border */
   display: flex;
   align-items: center;
   justify-content: center;
   color: #e53e3e; /* Red emoji/icon color */
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(229, 62, 62, 0.2); /* Red shadow */
+  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.2); /* Red shadow */
   font-size: 20px; /* For emoji sizing */
 }
 
 .profile-icon:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4); /* Red hover shadow */
+  box-shadow: 0 1px 1px rgba(229, 62, 62, 0.4); /* Red hover shadow */
   background: #f7fafc; /* Light gray background on hover */
 }
 
 .profile-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 100%;
+  height: 100%;
+  fill: stroke;
 }
 
 /* Responsive adjustments */
@@ -328,22 +328,39 @@ body {
 }
 
 .content {
+  flex: 1;
   position: relative;
   z-index: 1;
   background: #fff;
-  min-height: calc(100vh - 120px);
+  min-height: 100vh;
   border-radius: 30px 30px 0 0;
   padding-top: 90px;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: none
 }
 
 .top-controls {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 20px;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+.left-summary {
+  flex: 1;
+  max-width: 500px;
+  order: 1;
+}
+
+.right-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 20px;
+  order: 2;
+  min-width: 250px;
 }
 
 .category-display {
@@ -384,7 +401,7 @@ body {
   width: inline-flex;
   max-width: 90%;
   padding: 2px 9px;
-  border-radius: 40px;
+  border-radius: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -398,7 +415,6 @@ body {
   color: black;
   border: none;
   background: #fff;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   appearance: none;
   cursor: pointer;
   width: auto;
@@ -411,26 +427,27 @@ body {
   position: absolute;
   right: 25px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-10%);
   font-size: 16px;
   color: black;
   pointer-events: none;
 }
 
 .category-display:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(226, 0, 26, 0.4);
+  transform: translateY(5px);
+  box-shadow: 0 15px 15px rgba(226, 0, 26, 0.4);
 }
 
 .balance-box {
   padding: 20px 15px;
-  border-radius: 80px;
+  border-radius: 20px;
   font-size: 18px;
   font-weight: 600;
-  text-align: center;
+  text-align: left;
   position: relative;
   overflow: hidden;
   align-items: center;
+  width: auto;
 }
 
 .balance-box {
@@ -438,21 +455,14 @@ body {
   color: black;
   grid-column: 1;
   grid-row: 2;
-  justify-self: start;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.month-picker {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  justify-self: end;
-  align-self: center;
 }
 
 .month-picker input[type="month"] {
   padding: 15px 20px;
   font-size: 16px;
-  border-radius: 20px;
+  font-weight: 600;
+  border-radius: 30px;
   border: none;
   background: #fff;
   backdrop-filter: blur(10px);
@@ -467,16 +477,44 @@ body {
   box-shadow: 0 4px 12px rgba(226, 0, 26, 0.3);
 }
 
+.month-picker {
+  border-radius: 80px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 5px 15px rgba(226, 0, 26, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.month-picker::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  transition: left 0.6s;
+}
+
+.month-picker:hover::before {
+  left: 100%;
+}
+
 .month-picker:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(226, 0, 26, 0.4);
+  transform: translateY(5px);
+  box-shadow: 0 15px 15px rgba(226, 0, 26, 0.4);
 }
 
 .table-bars {
   display: flex;
   flex-direction: row;
   gap: 30px;
-  margin-top: 20px;
   padding: 0 20px;
   align-items: flex-start;
 }
@@ -488,6 +526,9 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   overflow: auto;
   height: auto;
+  max-height: 300px; 
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .table-placeholder table {
@@ -529,7 +570,9 @@ body {
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  min-height: 400px;
+  max-height: 300px; 
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .bar-item {

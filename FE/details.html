@@ -27,32 +27,55 @@
       <a href="homeScreen.html">Home</a>
       <a class="active" href="details.html">Details</a>
       <a href="planing.html">Planning</a>
-         <a href="account.html" class="profile-button">
+      <a href="account.html" class="profile-button">
         <div class="profile-icon">
-          👤
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="35"
+            height="35"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-user-circle"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+            <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+            <path
+              d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"
+            />
+          </svg>
         </div>
       </a>
     </div>
 
     <main class="content">
       <div class="top-controls">
-        <div class="category-display">
-          <select id="category-select"></select>
+        <div class="right-controls">
+          <div class="category-display">
+            <select id="category-select"></select>
+            
+          </div>
+
+          <div class="month-picker">
+            <input
+              id="month"
+              type="month"
+              name="month"
+              required
+              pattern="[0-9]{4}-[0-9]{2}"
+            />
+          </div>
         </div>
 
-        <div class="month-picker">
-          <input
-            id="month"
-            type="month"
-            name="month"
-            required
-            pattern="[0-9]{4}-[0-9]{2}"
-          />
+        <div class="left-summary">
+        <div class="balance-box">
+          <span id="balance-text">Balance</span>
         </div>
       </div>
-
-      <div class="balance-box">
-        <span id="balance-text">Balance</span>
       </div>
 
       <div class="table-bars">
@@ -82,19 +105,42 @@
         </div>
 
         <button class="ai-button" id="chat-toggle">
-          <svg xmlns="http://www.w3.org/2000/svg" class="ai-icon" version="1.0" width="158pt" height="148pt" viewBox="0 0 158 148" preserveAspectRatio="xMidYMid meet">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="ai-icon"
+            version="1.0"
+            width="158pt"
+            height="148pt"
+            viewBox="0 0 158 148"
+            preserveAspectRatio="xMidYMid meet"
+          >
             <defs>
-              <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff0000" />      
-                <stop offset="40%" stop-color="#ff5e5e" />      
-                <stop offset="100%" stop-color="#4facfe" />     
+              <linearGradient
+                id="redGradient"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stop-color="#ff0000" />
+                <stop offset="40%" stop-color="#ff5e5e" />
+                <stop offset="100%" stop-color="#4facfe" />
               </linearGradient>
-
             </defs>
-            <g transform="translate(0,148) scale(0.1,-0.1)" fill="url(#redGradient)" stroke="none">
-              <path d="M646 1288 c-3 -7 -7 -29 -10 -48 -13 -76 -70 -132 -148 -145 -51 -9 -44 -28 13 -37 24 -4 55 -16 69 -26 33 -24 70 -98 70 -140 0 -47 23 -37 31 14 15 91 61 139 147 153 49 9 44 22 -16 41 -29 10 -62 26 -74 36 -27 24 -57 91 -58 126 0 29 -17 48 -24 26z"/>
-              <path d="M1070 1011 c0 -62 -36 -163 -74 -207 -43 -50 -117 -91 -195 -107 -34 -6 -62 -16 -62 -22 0 -5 24 -13 53 -17 97 -12 173 -57 225 -133 26 -38 53 -127 53 -177 0 -25 5 -38 14 -38 9 0 15 19 20 61 8 77 37 143 84 192 55 57 91 74 225 102 39 8 26 21 -30 30 -61 8 -150 48 -186 83 -58 55 -97 150 -97 235 0 26 -4 37 -15 37 -11 0 -15 -11 -15 -39z"/>
-              <path d="M476 638 c-3 -7 -7 -30 -10 -52 -9 -70 -50 -110 -132 -131 -54 -14 -57 -27 -9 -37 84 -18 132 -66 143 -145 9 -58 27 -66 36 -16 16 95 60 142 149 158 41 8 52 35 14 35 -13 0 -46 11 -74 25 -53 27 -75 61 -88 138 -6 36 -22 50 -29 25z"/>
+            <g
+              transform="translate(0,148) scale(0.1,-0.1)"
+              fill="url(#redGradient)"
+              stroke="none"
+            >
+              <path
+                d="M646 1288 c-3 -7 -7 -29 -10 -48 -13 -76 -70 -132 -148 -145 -51 -9 -44 -28 13 -37 24 -4 55 -16 69 -26 33 -24 70 -98 70 -140 0 -47 23 -37 31 14 15 91 61 139 147 153 49 9 44 22 -16 41 -29 10 -62 26 -74 36 -27 24 -57 91 -58 126 0 29 -17 48 -24 26z"
+              />
+              <path
+                d="M1070 1011 c0 -62 -36 -163 -74 -207 -43 -50 -117 -91 -195 -107 -34 -6 -62 -16 -62 -22 0 -5 24 -13 53 -17 97 -12 173 -57 225 -133 26 -38 53 -127 53 -177 0 -25 5 -38 14 -38 9 0 15 19 20 61 8 77 37 143 84 192 55 57 91 74 225 102 39 8 26 21 -30 30 -61 8 -150 48 -186 83 -58 55 -97 150 -97 235 0 26 -4 37 -15 37 -11 0 -15 -11 -15 -39z"
+              />
+              <path
+                d="M476 638 c-3 -7 -7 -30 -10 -52 -9 -70 -50 -110 -132 -131 -54 -14 -57 -27 -9 -37 84 -18 132 -66 143 -145 9 -58 27 -66 36 -16 16 95 60 142 149 158 41 8 52 35 14 35 -13 0 -46 11 -74 25 -53 27 -75 61 -88 138 -6 36 -22 50 -29 25z"
+              />
             </g>
           </svg>
         </button>
@@ -102,7 +148,7 @@
         <div id="chat-window" class="chat-window show-chat">
           <div class="chat-header">
             AI Tips
-            <span style="float:right; cursor:pointer;" id="closeBtn">×</span>
+            <span style="float: right; cursor: pointer" id="closeBtn">×</span>
           </div>
           <div class="chat-body">
             <button id="getTipsBtn" class="get-tips-button">Get Tips</button>
@@ -111,8 +157,6 @@
         </div>
       </div>
       <script type="module" src="./js/details.js"></script>
-
     </main>
-
   </body>
 </html>
