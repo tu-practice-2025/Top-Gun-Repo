@@ -433,7 +433,7 @@ window.addEventListener("click", function (event) {
   } else {
     const isVisible = dropdown.style.display === "block";
     dropdown.style.display = isVisible
-      ? "none  !important"
-      : "block !important";
+      ? "none"
+      : "block";
   }
 });
