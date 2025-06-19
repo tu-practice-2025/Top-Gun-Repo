@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const allOption = document.createElement("option");
       allOption.value = "All";
-      allOption.textContent = "All categories";
+      allOption.textContent = "Всички категории";
       categorySelect.appendChild(allOption);
 
       // Get unique categories from transactions
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }</div>
         </td>
         <td>
-          <div style="font-size: 0.9em; color: #555;">Card: ${maskedCardNumber}</div>
+          <div style="font-size: 0.9em; color: #555;">Карта: ${maskedCardNumber}</div>
           <div style="font-size: 0.9em; color: #555;">IBAN: ${maskedIban}</div>
         </td>
         <td style="font-weight: bold; color: ${
@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };">
           ${transaction.type === "E" ? "-" : "+"}${transaction.amount.toFixed(
         2
-      )} BGN
+      )} лв.
 
         </td>
       `;
@@ -250,8 +250,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const sign = totalAmount < 0 ? "-" : "+";
 
       summaryRow.innerHTML = `
-    <td colspan="3" style="text-align: right;">TOTAL:</td>
-    <td style="color: ${color};">${totalAmount.toFixed(2)} BGN</td>
+    <td colspan="3" style="text-align: right;">Общо:</td>
+    <td style="color: ${color};">${totalAmount.toFixed(2)} лв.</td>
   `;
       tbody.appendChild(summaryRow);
     }
@@ -277,27 +277,27 @@ document.addEventListener("DOMContentLoaded", () => {
         <div style="color: black; font-weight: bold; font-size: 1.2em; text-decoration: underline;">Overall Summary</div>
         
         <div>
-          <span style="color: black;">Total Expenses:</span>
+          <span style="color: black;">Общ разход:</span>
           <span style="color: red; font-weight: bold;">${totalExpenses.toFixed(
             2
-          )} BGN</span>
+          )} лв.</span>
         </div>
 
         <div>
-          <span style="color: black;">Total Income:</span>
+          <span style="color: black;">Общ приход:</span>
           <span style="color: green; font-weight: bold;">${totalIncome.toFixed(
             2
-          )} BGN</span>
+          )} лв.</span>
         </div>
 
         <div>
-          <span style="color: black;">Balance:</span>
+          <span style="color: black;">Баланс:</span>
           <span style="color: ${
             balance >= 0 ? "green" : "red"
           }; font-weight: bold;">
-          ${balance.toFixed(2)} BGN</div>
+          ${balance.toFixed(2)} лв.</div>
         <div style="color: #666; font-size: 0.9em;">
-          Transactions: ${allTransactions.length}
+          Брой транзакции: ${allTransactions.length}
         <span
         </div>
 
@@ -315,10 +315,8 @@ document.addEventListener("DOMContentLoaded", () => {
         totalExpenses > 0 ? (categoryTotal / totalExpenses) * 100 : 0;
 
       const isIncomeCategory =
-        selectedCategory === "Income" || selectedCategory === "Income ATM";
-      const spentOrIncomeLabel = isIncomeCategory
-        ? "Total Income"
-        : "Total Spent";
+        selectedCategory === "Приход" || selectedCategory === "Приход ATM";
+      const spentOrIncomeLabel = isIncomeCategory ? "Приход" : "Разход";
       const amountColor = isIncomeCategory ? "green" : "red";
 
       balanceText.innerHTML = `
@@ -329,12 +327,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <span style="color: black;">${spentOrIncomeLabel}:</span>
           <span style="color: ${amountColor}; font-weight: bold;">${categoryTotal.toFixed(
         2
-      )} BGN</span>
+      )} лв.</span>
         </div>
 
-        <div>Percentage of Total: ${percentage.toFixed(2)}%</div>
+        <div>Процент: ${percentage.toFixed(2)}%</div>
         <div style="color: #666; font-size: 0.9em;">
-          Transactions: ${filteredTransactions.length}
+          Брой транзакции: ${filteredTransactions.length}
         </div>
       `;
     }
@@ -420,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
         label.style.fontWeight = "bold";
 
         const amountLabel = document.createElement("div");
-        amountLabel.textContent = `${amount.toFixed(2)} BGN`;
+        amountLabel.textContent = `${amount.toFixed(2)} лв.`;
         amountLabel.style.marginBottom = "5px";
         amountLabel.style.color = "#666";
         amountLabel.style.fontSize = "0.9em";
