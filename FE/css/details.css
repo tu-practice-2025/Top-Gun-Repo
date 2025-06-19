@@ -859,7 +859,49 @@ body {
 }
 
 .logout-btn:hover {
-  background: #dc2626;
+  background: hsl(0, 72%, 51%);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
+
+#budget-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(+70%, -0%);
+    background-color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    width: 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    display: none;
+  }
+
+  #budget-form input[type="number"] {
+    width: 50%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+
+  #budget-form button {
+    background-color: #ef4444;
+    width: 30%;
+    text-align: center;
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 2rem;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  #budget-form button:hover {
+    background-color: #c7050b;
+  }
