@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // opens chat window removes toggle btn
-  toggleBtn.addEventListener("click", async function(){
+  toggleBtn.addEventListener("click", async function () {
     document.getElementById("loader").style.display = "block";
     output.style.display = "none";
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error(error.message);
     }
-    console.log(text)
+    console.log(text);
     output.style.display = "block";
     output.innerHTML = marked.parse(text);
     document.getElementById("loader").style.display = "none";
@@ -55,12 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.addEventListener("click", () => {
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "block  ";
-    output.innerHTML = ""
+    output.innerHTML = "";
   });
-
-  
-
-
 
   // Get user ID from session storage
 
@@ -428,46 +424,49 @@ document.addEventListener("DOMContentLoaded", () => {
           categoryTotals[transaction.categoryName] += transaction.amount;
         });
 
-let budgets = [];
-const categoryNameToId = {
-  "Транспорт и авто услуги": 1,
-  "Супермаркети": 2,
-  "Пътуване и ваканция": 3,
-  "Шопинг": 4,
-  "Ресторанти и барове": 5,
-  "Финансови услуги": 6,
-  "Инвестиции": 7,
-  "Забавление и спорт": 8,
-  "Здраве и красота": 9,
-  "Дрехи": 10,
-  "Кеш": 11,
-  "За дома": 12,
-  "Публични услуги": 13,
-  "Бизнес услуги": 14,
-  "Битови сметки": 15,
-  "Образование": 16,
-  "Задължения и такси": 17,
-  "Преводи": 18,
-  "Други": 19,
-  "Погасяване по кредитни продукти": 20,
-  "Приход": 21,
-  "Приход ATM": 22
-};
+      let budgets = [];
+      const categoryNameToId = {
+        "Транспорт и авто услуги": 1,
+        Супермаркети: 2,
+        "Пътуване и ваканция": 3,
+        Шопинг: 4,
+        "Ресторанти и барове": 5,
+        "Финансови услуги": 6,
+        Инвестиции: 7,
+        "Забавление и спорт": 8,
+        "Здраве и красота": 9,
+        Дрехи: 10,
+        Кеш: 11,
+        "За дома": 12,
+        "Публични услуги": 13,
+        "Бизнес услуги": 14,
+        "Битови сметки": 15,
+        Образование: 16,
+        "Задължения и такси": 17,
+        Преводи: 18,
+        Други: 19,
+        "Погасяване по кредитни продукти": 20,
+        Приход: 21,
+        "Приход ATM": 22,
+      };
 
-try {
-  const res = await fetch(`https://localhost:7121/api/Budgets/${userId}`, { method: "GET" });
-  if (!res.ok) throw new Error(`Response status: ${res.status}`);
-  budgets = await res.json();
-} catch (error) {
-  console.error("Error fetching budgets:", error.message);
-  return;
-}
+      try {
+        const res = await fetch(
+          `https://localhost:7121/api/Budgets/${userId}`,
+          { method: "GET" }
+        );
+        if (!res.ok) throw new Error(`Response status: ${res.status}`);
+        budgets = await res.json();
+      } catch (error) {
+        console.error("Error fetching budgets:", error.message);
+        return;
+      }
 
-// Create map for quick lookup: category_id -> limit
-const categoryBudgets = {};
-budgets.forEach(b => {
-  categoryBudgets[b.category_id] = b.limit;
-});
+      // Create map for quick lookup: category_id -> limit
+      const categoryBudgets = {};
+      budgets.forEach((b) => {
+        categoryBudgets[b.category_id] = b.limit;
+      });
 
 // Render bars
 Object.entries(categoryTotals).forEach(([categoryName, amount], index) => {
@@ -475,20 +474,22 @@ Object.entries(categoryTotals).forEach(([categoryName, amount], index) => {
   const categoryLimit = categoryBudgets[categoryId] || 0;
   const percent = categoryLimit > 0 ? (amount / categoryLimit) * 100 : 0;
 
-  const barWrapper = document.createElement("div");
-  barWrapper.style.marginBottom = "20px";
+        const barWrapper = document.createElement("div");
+        barWrapper.style.marginBottom = "20px";
 
-  const label = document.createElement("div");
-  label.textContent = `${categoryName} - ${percent.toFixed(1)}%`;
-  label.style.marginBottom = "5px";
-  label.style.color = "black";
-  label.style.fontWeight = "bold";
+        const label = document.createElement("div");
+        label.textContent = `${categoryName} - ${percent.toFixed(1)}%`;
+        label.style.marginBottom = "5px";
+        label.style.color = "black";
+        label.style.fontWeight = "bold";
 
-  const amountLabel = document.createElement("div");
-  amountLabel.textContent = `${amount.toFixed(2)} BGN от ${categoryLimit.toFixed(2)} BGN`;
-  amountLabel.style.marginBottom = "5px";
-  amountLabel.style.color = "#666";
-  amountLabel.style.fontSize = "0.9em";
+        const amountLabel = document.createElement("div");
+        amountLabel.textContent = `${amount.toFixed(
+          2
+        )} BGN от ${categoryLimit.toFixed(2)} BGN`;
+        amountLabel.style.marginBottom = "5px";
+        amountLabel.style.color = "#666";
+        amountLabel.style.fontSize = "0.9em";
 
   const barContainer = document.createElement("div");
   if (percent == 0 && index == 0) { barContainer.textContent = "Цъкни за да добавиш бюджет" ;barContainer.style.textAlign = "center"}
@@ -499,12 +500,12 @@ Object.entries(categoryTotals).forEach(([categoryName, amount], index) => {
   barContainer.style.overflow = "hidden";
   barContainer.style.cursor = "pointer";
 
-  const filledBar = document.createElement("div");
-  filledBar.style.height = "100%";
-  filledBar.style.width = `${Math.min(100, percent)}%`;
-  filledBar.style.backgroundColor = "red";
-  filledBar.style.borderRadius = "20px";
-  filledBar.style.transition = "width 0.3s ease";
+        const filledBar = document.createElement("div");
+        filledBar.style.height = "100%";
+        filledBar.style.width = `${Math.min(100, percent)}%`;
+        filledBar.style.backgroundColor = "red";
+        filledBar.style.borderRadius = "20px";
+        filledBar.style.transition = "width 0.3s ease";
 
   // ➕ Add click-to-edit budget logic
   barContainer.addEventListener("click", () => {
@@ -513,11 +514,11 @@ Object.entries(categoryTotals).forEach(([categoryName, amount], index) => {
     document.getElementById("budget-amount").value = categoryLimit;
   });
 
-  barContainer.appendChild(filledBar);
-  barWrapper.appendChild(label);
-  barWrapper.appendChild(amountLabel);
-  barWrapper.appendChild(barContainer);
-  container.appendChild(barWrapper);
+        barContainer.appendChild(filledBar);
+        barWrapper.appendChild(label);
+        barWrapper.appendChild(amountLabel);
+        barWrapper.appendChild(barContainer);
+        container.appendChild(barWrapper);
       });
     } catch (error) {
       console.error("Error loading balance data:", error);
@@ -575,6 +576,40 @@ Object.entries(categoryTotals).forEach(([categoryName, amount], index) => {
   }
 
   window.toggleDropdown = toggleDropdown;
+
+  const sendEmailBtn = document.getElementById("sendEmailBtn");
+
+  if (sendEmailBtn) {
+    sendEmailBtn.onclick = async () => {
+      const email = sessionStorage.getItem("userEmail");
+      const userId = sessionStorage.getItem("userId");
+
+      if (!email || !userId) {
+        alert("Липсва информация за потребителя или имейла.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://localhost:7121/api/email/send?email=${email}&userId=${userId}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        if (response.ok) {
+          alert("Обобщението беше изпратено успешно!");
+        } else {
+          alert("Грешка при изпращане на обобщение.");
+        }
+      } catch (err) {
+        console.error("Email error:", err);
+        alert("Възникна грешка при изпращането.");
+      }
+    };
+  }
+
   createParticles();
 
   document

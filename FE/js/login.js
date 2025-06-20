@@ -21,8 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Switch to register
       registerForm.classList.add("active");
       loginForm.classList.remove("active");
-      formTitle.textContent = "Присъедини с към нас!";
-      formSubtitle.textContent = "Създай своя акаунт";
+      formTitle.textContent = "Създай своя акаунт";
     }
   });
 

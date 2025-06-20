@@ -149,7 +149,7 @@ $(document).ready(function () {
         $tableBody.empty();
 
         transactions.forEach((t) => {
-          const type = t.type === "I" ? "Income" : "Expense";
+          const type = t.type === "I" ? "Приход" : "Разход";
           const amount =
             t.type === "I"
               ? t.amount.toFixed(2) + "BGN"

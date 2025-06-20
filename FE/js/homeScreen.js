@@ -83,9 +83,9 @@ window.addEventListener("click", function (event) {
 
   // closes chat window brings toggle btn back
   closeBtn.addEventListener("click", () => {
-    chatWindow.classList.toggle("show-chat");
-    toggleBtn.style.display = "block  ";
-    output.innerHTML = ""
+    document.getElementById("chat-window").classList.toggle("show-chat");
+    document.getElementById("chat-toggle").style.display = "block  ";
+    document.getElementById('tipsOutput').innerHTML = ""
   });
 
 
