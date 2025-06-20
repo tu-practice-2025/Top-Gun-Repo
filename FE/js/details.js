@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
     output.innerHTML = marked.parse(text);
     document.getElementById("loader").style.display = "none";
   });
-  k;
   closeBtn.addEventListener("click", () => {
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "block  ";
@@ -444,7 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
         categoryBudgets[b.category_id] = b.limit;
       });
 
-      Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
+      Object.entries(categoryTotals).forEach(([categoryName, amount], index) => {
         const categoryId = categoryNameToId[categoryName];
         const categoryLimit = categoryBudgets[categoryId] || 0;
         const percent = categoryLimit > 0 ? (amount / categoryLimit) * 100 : 0;
