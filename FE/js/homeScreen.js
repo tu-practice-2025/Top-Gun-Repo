@@ -1,19 +1,18 @@
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   const userId = parseInt(sessionStorage.getItem("userId"));
   if (!userId) {
     window.location.href = "login.html";
     return;
   }
-    // AI feature
+
   const toggleBtn = document.getElementById("chat-toggle");
   const chatWindow = document.getElementById("chat-window");
   const closeBtn = document.getElementById("closeBtn");
-  const output = document.getElementById('tipsOutput');
+  const output = document.getElementById("tipsOutput");
 
-  // opens chat window removes toggle btn
-  toggleBtn.addEventListener("click", async function(){
+  toggleBtn.addEventListener("click", async function () {
     document.getElementById("loader").style.display = "block";
     output.style.display = "none";
 
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const url = `https://localhost:7121/api/llmchat/${id}`;
     let text;
     try {
-      const response = await fetch(url,{method: "POST"});
+      const response = await fetch(url, { method: "POST" });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
       console.error(error.message);
     }
-    console.log(text)
+    console.log(text);
     output.style.display = "block";
     output.innerHTML = marked.parse(text);
     document.getElementById("loader").style.display = "none";
@@ -66,7 +65,6 @@ window.addEventListener("click", function (event) {
   const dropdown = document.getElementById("profileDropdown");
   const dropdownButton = document.querySelector(".dropbtn");
 
-  // Check if the click is outside both the dropdown and the button
   if (
     !dropdown.contains(event.target) &&
     !dropdownButton.contains(event.target)
@@ -74,24 +72,16 @@ window.addEventListener("click", function (event) {
     dropdown.style.display = "none";
   } else {
     const isVisible = dropdown.style.display === "block";
-    dropdown.style.display = isVisible
-      ? "none"
-      : "block";
+    dropdown.style.display = isVisible ? "none" : "block";
   }
 });
 
+closeBtn.addEventListener("click", () => {
+  chatWindow.classList.toggle("show-chat");
+  toggleBtn.style.display = "block  ";
+  output.innerHTML = "";
+});
 
-  // closes chat window brings toggle btn back
-  closeBtn.addEventListener("click", () => {
-    chatWindow.classList.toggle("show-chat");
-    toggleBtn.style.display = "block  ";
-    output.innerHTML = ""
-  });
-
-
-
-
-// Dashboard Configuration
 const CONFIG = {
   API_BASE_URL: "https://localhost:7121",
   USER_ID: sessionStorage.getItem("userId"),
@@ -175,7 +165,6 @@ const CONFIG = {
     },
   },
 
-  // Fallback colors ако категорията не е намерена в CATEGORY_COLORS
   FALLBACK_COLORS: {
     backgrounds: [
       "rgba(255, 99, 132, 0.7)",
@@ -227,7 +216,6 @@ const CONFIG = {
     ],
   },
 
-  // Income colors (за bar chart-а)
   INCOME_COLORS: {
     backgrounds: [
       "rgba(255, 99, 132, 0.2)",
@@ -238,7 +226,6 @@ const CONFIG = {
   },
 };
 
-// Color Service - централизирано управление на цветовете
 class ColorService {
   /**
    * Получава цвят за конкретна категория
@@ -282,7 +269,6 @@ class ColorService {
   }
 }
 
-// API Service
 class ApiService {
   static async fetchExpenses(userId) {
     const response = await fetch(
@@ -309,7 +295,6 @@ class ApiService {
   }
 }
 
-// Plugin за показване на текст в центъра на дъгообразната диаграма
 const centerTextPlugin = {
   id: "centerText",
   beforeDraw: function (chart) {
@@ -319,7 +304,6 @@ const centerTextPlugin = {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // Изчисляване на общата сума от реалните данни
     let total = 0;
     if (
       chart.config.options.plugins.centerText &&
@@ -327,7 +311,6 @@ const centerTextPlugin = {
     ) {
       total = chart.config.options.plugins.centerText.totalAmount;
     } else {
-      // Fallback - използваме данните от диаграмата
       const data = chart.data.datasets[0].data;
       total = data.reduce((sum, value) => sum + value, 0);
     }
@@ -336,12 +319,10 @@ const centerTextPlugin = {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    // Заглавие "Total:"
     ctx.font = "bold 16px Arial";
     ctx.fillStyle = "#333";
     ctx.fillText("Общо: лв.", centerX, centerY - 15);
 
-    // Сума
     ctx.font = "bold 20px Arial";
     ctx.fillStyle = "#000";
     ctx.fillText(`${total.toFixed(2)}`, centerX, centerY + 10);
@@ -350,10 +331,6 @@ const centerTextPlugin = {
   },
 };
 
-// Регистриране на plugin-а
-// Chart.register(centerTextPlugin);
-
-// Chart Service
 class ChartService {
   static createExpenseChart(apiData) {
     const labels = apiData.map((item) => item.categoryName);
@@ -406,7 +383,6 @@ class ChartService {
             const selectedCategory = labels[index];
             const selectedCategoryId = ids[index];
 
-            // Store selection and navigate
             sessionStorage.setItem("selectedCategory", selectedCategory);
             sessionStorage.setItem("selectedCategoryId", selectedCategoryId);
             window.location.href = "details.html";
@@ -484,7 +460,6 @@ class ChartService {
   }
 
   static createFallbackCharts() {
-    // Fallback expense chart
     const expenseData = {
       labels: ["Transport", "Groceries", "Travel", "Shopping", "Restaurants"],
       datasets: [
@@ -514,7 +489,6 @@ class ChartService {
       new Chart(expenseCtx.getContext("2d"), expenseConfig);
     }
 
-    // Fallback income chart
     const incomeData = {
       labels: ["Salary", "Rent", "Other"],
       datasets: [
@@ -544,7 +518,6 @@ class ChartService {
   }
 }
 
-// Legend Service
 class LegendService {
   static updateLegend(apiData) {
     const topCategories = apiData
@@ -578,7 +551,6 @@ class LegendService {
   }
 }
 
-// Navigation Service
 class NavigationService {
   static initScrollEffect() {
     const nav = document.querySelector(".nav-bar");
@@ -597,12 +569,10 @@ class NavigationService {
 
     window.addEventListener("scroll", handleScroll);
 
-    // Return cleanup function
     return () => window.removeEventListener("scroll", handleScroll);
   }
 }
 
-// Main Dashboard Class
 class Dashboard {
   constructor() {
     this.charts = {
@@ -615,20 +585,17 @@ class Dashboard {
     try {
       console.log("Initializing dashboard...");
 
-      // Load data from API
       const [expenseData, incomeData, transactionData] = await Promise.all([
         ApiService.fetchExpenses(CONFIG.USER_ID),
         ApiService.fetchIncome(CONFIG.USER_ID),
         ApiService.fetchTransactions(CONFIG.USER_ID),
       ]);
 
-      // Create charts
       this.charts.expense = ChartService.createExpenseChart(
         transactionData.expenses
       );
       this.charts.income = ChartService.createIncomeChart(incomeData);
 
-      // Update legend
       LegendService.updateLegend(expenseData);
 
       console.log("Dashboard initialized successfully");
@@ -640,7 +607,6 @@ class Dashboard {
   }
 
   destroy() {
-    // Clean up charts
     if (this.charts.expense) {
       this.charts.expense.destroy();
     }
@@ -650,11 +616,9 @@ class Dashboard {
   }
 }
 
-// Initialize when DOM is ready
 $(document).ready(function () {
   const dashboard = new Dashboard();
 
-  // Initialize dashboard
   dashboard.init();
 
   async function updateSummaryBoxes() {
@@ -676,15 +640,12 @@ $(document).ready(function () {
       const expenseEl = document.getElementById("total-expenses");
       const incomeEl = document.getElementById("total-income");
 
-      // Обнови текста
       expenseEl.textContent = `- ${totalExpenses.toFixed(2)} лв.`;
       incomeEl.textContent = `+ ${totalIncome.toFixed(2)} лв.`;
 
-      // Премахни стари класове (ако има)
       expenseEl.classList.remove("income-positive", "expense-negative");
       incomeEl.classList.remove("income-positive", "expense-negative");
 
-      // Добави нужните цветове
       expenseEl.classList.add("expense-negative");
       incomeEl.classList.add("income-positive");
     } catch (e) {
@@ -696,17 +657,14 @@ $(document).ready(function () {
     updateSummaryBoxes();
   });
 
-  // Initialize navigation effects
   const cleanupNav = NavigationService.initScrollEffect();
 
-  // Store cleanup functions for potential later use
   window.dashboardCleanup = () => {
     dashboard.destroy();
     if (cleanupNav) cleanupNav();
   };
 });
 
-// Optional: Clean up when page unloads
 window.addEventListener("beforeunload", () => {
   if (window.dashboardCleanup) {
     window.dashboardCleanup();

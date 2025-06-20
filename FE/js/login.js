@@ -12,31 +12,26 @@ document.addEventListener("DOMContentLoaded", function () {
     isLoginMode = !isLoginMode;
 
     if (isLoginMode) {
-      // Switch to login
       loginForm.classList.add("active");
       registerForm.classList.remove("active");
       formTitle.textContent = "Добре дошли!";
       formSubtitle.textContent = "";
     } else {
-      // Switch to register
       registerForm.classList.add("active");
       loginForm.classList.remove("active");
-      formTitle.textContent = "Присъедини с към нас!";
+      formTitle.textContent = "Присъедини се към нас!";
       formSubtitle.textContent = "Създай своя акаунт";
     }
   });
 
-  // Form submissions
   loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
     console.log("Успешен вход");
-    // Add your login logic here
   });
 
   registerForm.addEventListener("submit", function (e) {
     e.preventDefault();
     console.log("Успешна регистрация");
-    // Add your registration logic here
   });
 
   document
@@ -105,7 +100,6 @@ function createParticles() {
   }
 }
 
-// Toggle between login and register forms
 function toggleForm() {
   const loginForm = document.getElementById("login-form");
   const registerForm = document.getElementById("register-form");
@@ -125,5 +119,4 @@ function toggleForm() {
   }
 }
 
-// Initialize particles when page loads
 window.addEventListener("load", createParticles);

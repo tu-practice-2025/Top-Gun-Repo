@@ -44,17 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
     output.innerHTML = marked.parse(text);
     document.getElementById("loader").style.display = "none";
   });
-
-  // closes chat window brings toggle btn back
+  k;
   closeBtn.addEventListener("click", () => {
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "block  ";
     output.innerHTML = "";
   });
 
-  // Get user ID from session storage
-
-  // Set current month
   const today = new Date();
   let year = today.getFullYear();
   let month = today.getMonth() + 1;
@@ -67,23 +63,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const formattedMonth = `${year}-${month.toString().padStart(2, "0")}`;
   monthInput.value = formattedMonth;
 
-  // Get selected category from session storage (consistent with homeScreen.js)
   const selectedCategory = sessionStorage.getItem("selectedCategory");
 
-  // Initialize page
   loadCategories();
 
-  // Add event listeners
   categorySelect.addEventListener("change", handleCategoryChange);
   monthInput.addEventListener("change", handleMonthChange);
 
   async function loadCategories() {
     try {
-      // Extract month from the month input for API call
       const selectedMonth = monthInput.value;
       const monthNumber = selectedMonth.split("-")[1];
 
-      // Fetch transaction data to get available categories
       const response = await fetch(
         `${API_BASE_URL}/api/transactions/${userId}/by-month/${monthNumber}`
       );
@@ -96,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
       allOption.textContent = "Всички категории";
       categorySelect.appendChild(allOption);
 
-      // Get unique categories from transactions
       const uniqueCategories = [
         ...new Set(transactions.map((t) => t.categoryName)),
       ];
@@ -108,14 +98,12 @@ document.addEventListener("DOMContentLoaded", () => {
         categorySelect.appendChild(option);
       });
 
-      // Set selected category
       if (selectedCategory && selectedCategory !== "All") {
         categorySelect.value = selectedCategory;
       } else {
         categorySelect.value = "All";
       }
 
-      // Load initial data
       await loadTransactionData();
     } catch (error) {
       console.error("Error loading categories:", error);
@@ -126,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleCategoryChange() {
     const selected = categorySelect.value;
 
-    // Update session storage
     sessionStorage.setItem("selectedCategory", selected);
 
     console.log("Selected category:", selected);
@@ -134,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMonthChange() {
-    loadCategories(); // Reload categories for the new month
+    loadCategories();
   }
 
   async function loadTransactionData() {
@@ -145,13 +132,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const selectedMonth = monthInput.value;
       const monthNumber = selectedMonth.split("-")[1];
 
-      // Fetch transaction data for the selected month
       const response = await fetch(
         `${API_BASE_URL}/api/transactions/${userId}/by-month/${monthNumber}`
       );
       const transactions = await response.json();
 
-      // Filter transactions by category if not "All"
       let filteredTransactions = transactions;
       if (category !== "All") {
         filteredTransactions = transactions.filter(
@@ -160,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       console.log(filteredTransactions);
 
-      // Update UI
       updateTransactionTable(filteredTransactions);
       updateBalanceDisplay(transactions, filteredTransactions, category);
       loadAndRenderBalance(transactions, filteredTransactions);
@@ -173,7 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateTransactionTable(transactions) {
     const tableBody = document.querySelector(".table-placeholder table tbody");
     if (!tableBody) {
-      // Create tbody if it doesn't exist
       const table = document.querySelector(".table-placeholder table");
       const tbody = document.createElement("tbody");
       table.appendChild(tbody);
@@ -190,18 +173,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Display individual transactions
     transactions.forEach((transaction) => {
       const row = document.createElement("tr");
       const transactionDate = new Date(transaction.date).toLocaleDateString();
 
-      // Format card number (show last 4 digits)
       let maskedCardNumber = "None";
       if (transaction.cardNumber !== null) {
         maskedCardNumber = `****-****-****-${transaction.cardNumber.slice(-4)}`;
       }
 
-      // Format IBAN (show first 4 and last 4 characters)
       const maskedIban = `${transaction.iban.slice(
         0,
         4
@@ -232,7 +212,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </td>
       `;
 
-      // Add styling based on amount
       if (transaction.amount > 500) {
         row.style.backgroundColor = "#white";
       }
@@ -240,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.appendChild(row);
     });
 
-    // Add a summary row if showing multiple transactions
     if (transactions.length > 1) {
       const totalAmount = transactions.reduce((sum, t) => {
         const signedAmount = t.type === "E" ? -t.amount : t.amount;
@@ -362,7 +340,6 @@ document.addEventListener("DOMContentLoaded", () => {
     balanceText.innerHTML = `<div style="color: black;">${message}</div>`;
   }
 
-  // Updated balance bars functionality to work with individual transactions
   async function loadAndRenderBalance(
     allTransactions = null,
     filteredTransactions = null
@@ -370,7 +347,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const category = categorySelect.value;
 
-      // Use passed data or fetch new data
       if (!allTransactions) {
         const selectedMonth = monthInput.value;
         const monthNumber = selectedMonth.split("-")[1];
@@ -391,7 +367,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const container = document.getElementById("balance-bars");
       container.innerHTML = "";
 
-      // Group transactions by category for visualization
       const categoryTotals = {};
       const transactionsToShow =
         category === "All" ? allTransactions : filteredTransactions;
@@ -441,13 +416,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Create map for quick lookup: category_id -> limit
       const categoryBudgets = {};
       budgets.forEach((b) => {
         categoryBudgets[b.category_id] = b.limit;
       });
 
-      // Render bars
       Object.entries(categoryTotals).forEach(([categoryName, amount]) => {
         const categoryId = categoryNameToId[categoryName];
         const categoryLimit = categoryBudgets[categoryId] || 0;
@@ -485,7 +458,6 @@ document.addEventListener("DOMContentLoaded", () => {
         filledBar.style.borderRadius = "20px";
         filledBar.style.transition = "width 0.3s ease";
 
-        // ➕ Add click-to-edit budget logic
         barContainer.addEventListener("click", async () => {
           const newLimit = prompt(`Въведете нов бюджет за "${categoryName}":`);
           if (newLimit === null || isNaN(parseFloat(newLimit))) {
@@ -525,7 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error loading balance data:", error);
     }
   }
-  // Keep existing particle and animation functions
+
   function createParticles() {
     const particles = document.getElementById("particles");
     if (!particles) return;
@@ -626,7 +598,6 @@ window.addEventListener("click", function (event) {
   const dropdown = document.getElementById("profileDropdown");
   const dropdownButton = document.querySelector(".dropbtn");
 
-  // Check if the click is outside both the dropdown and the button
   if (
     !dropdown.contains(event.target) &&
     !dropdownButton.contains(event.target)
