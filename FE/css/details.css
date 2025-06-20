@@ -762,12 +762,11 @@ body {
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .profile-icon {
     width: 35px;
     height: 35px;
-    font-size: 16px; /* Smaller emoji on mobile */
+    font-size: 16px;
   }
 
   .profile-icon svg {
@@ -893,6 +892,16 @@ body {
 .email-btn:hover {
   background-color: #e60000;
   color: white;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-title svg {
+  vertical-align: middle;
 }
 
 #budget-box {

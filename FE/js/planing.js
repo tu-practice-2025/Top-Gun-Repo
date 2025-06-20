@@ -7,21 +7,20 @@ $(document).ready(function () {
     return;
   }
 
-    // AI feature
+  // AI feature
   const toggleBtn = document.getElementById("chat-toggle");
   const chatWindow = document.getElementById("chat-window");
   const closeBtn = document.getElementById("closeBtn");
-  const output = document.getElementById('tipsOutput');
-
+  const output = document.getElementById("tipsOutput");
 
   // opens chat window removes toggle btn
-  toggleBtn.addEventListener("click", async function(){
+  toggleBtn.addEventListener("click", async function () {
     document.getElementById("loader").style.display = "block";
     output.style.display = "none";
 
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "none";
-    
+
     const id = sessionStorage.getItem("userId");
     const url = `https://localhost:7121/api/llmchat/${id}`;
     let text;
@@ -41,12 +40,10 @@ $(document).ready(function () {
     document.getElementById("loader").style.display = "none";
   });
 
-  // closes chat window brings toggle btn back
   closeBtn.addEventListener("click", () => {
     chatWindow.classList.toggle("show-chat");
     toggleBtn.style.display = "block  ";
-    output.innerHTML = ""
-
+    output.innerHTML = "";
   });
 
   let categoriesMap = {};
@@ -71,7 +68,7 @@ $(document).ready(function () {
       const amount = parseFloat(amountText);
 
       if (!isNaN(amount)) {
-        if (type === "Income") {
+        if (type === "Приход") {
           totalIncome += amount;
         } else {
           totalExpense += Math.abs(amount);
@@ -114,7 +111,7 @@ $(document).ready(function () {
         $select.empty();
         $select.append('<option value="">-- Избери категория --</option>');
 
-        if (selectedType === "Income") {
+        if (selectedType === "Приход") {
           categories.sort((a, b) => {
             const aIsIncome = a.name.toLowerCase().includes("приход") ? -1 : 1;
             const bIsIncome = b.name.toLowerCase().includes("приход") ? -1 : 1;
@@ -132,7 +129,7 @@ $(document).ready(function () {
       .catch((error) => {
         console.error("Error loading categories:", error);
         $("#inputCategory").html(
-          '<option value="">No available category</option>'
+          '<option value="">Няма налични категории</option>'
         );
       });
   }
@@ -219,10 +216,10 @@ $(document).ready(function () {
     const category = $("#inputCategory option:selected").val().trim();
     const amount = parseFloat($("#inputAmount").val());
     const type = $("input[name='entryType']:checked").val();
-    const isIncome = type === "Income";
+    const isIncome = type === "Приход";
 
     if (!category || isNaN(amount)) {
-      alert("Please, insert correct data.");
+      alert("Моля, въведетр валидни данни.");
       return;
     }
 
@@ -279,7 +276,7 @@ $(document).ready(function () {
       })
       .catch((error) => {
         console.error("Error loading", error.message);
-        alert("ERROR. CHECK CONSOLE");
+        alert("Грешка!");
       });
   }
 
@@ -308,7 +305,7 @@ $(document).ready(function () {
         })
         .catch((err) => {
           console.error("Delete error:", err);
-          alert("Could not delete from database.");
+          alert("Неуспешно изтриване от базата.");
         });
     } else {
       row.remove();
@@ -349,7 +346,7 @@ $(document).ready(function () {
       const typeText = row.find("td:eq(0)").text().trim();
       const categoryName = row.find("td:eq(1)").text().trim();
       const amount = parseFloat(row.find("td:eq(2)").text().trim());
-      const isIncome = typeText === "Income";
+      const isIncome = typeText === "Приход";
 
       if (!categoryName || isNaN(amount) || !id) return;
 
@@ -375,7 +372,7 @@ $(document).ready(function () {
         })
         .catch((err) => {
           console.error("Update error:", err);
-          alert("Could not update in database.");
+          alert("Неуспешна актуализация");
         });
     }
   });
@@ -424,7 +421,6 @@ window.addEventListener("click", function (event) {
   const dropdown = document.getElementById("profileDropdown");
   const dropdownButton = document.querySelector(".dropbtn");
 
-  // Check if the click is outside both the dropdown and the button
   if (
     !dropdown.contains(event.target) &&
     !dropdownButton.contains(event.target)
@@ -432,8 +428,6 @@ window.addEventListener("click", function (event) {
     dropdown.style.display = "none";
   } else {
     const isVisible = dropdown.style.display === "block";
-    dropdown.style.display = isVisible
-      ? "none"
-      : "block";
+    dropdown.style.display = isVisible ? "none" : "block";
   }
 });

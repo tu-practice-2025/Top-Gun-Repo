@@ -109,7 +109,6 @@ body {
   z-index: 2;
 }
 
-/* Main section */
 .main-body {
   flex: 1;
   display: flex;
@@ -122,7 +121,6 @@ body {
   overflow: hidden;
 }
 
-/* Animated geometric background */
 .geometric-bg {
   position: absolute;
   top: 0;
@@ -230,7 +228,6 @@ body {
   }
 }
 
-/* Login/Register Container */
 .login-container {
   background-color: rgba(255, 255, 255, 0.96);
   border-radius: 10px;
@@ -249,9 +246,8 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Header inside container */
 .login-header {
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: bold;
   color: #333;
   text-align: center;
@@ -275,7 +271,6 @@ body {
   height: 100%;
 }
 
-/* Toggle Button */
 .toggle-button {
   position: absolute;
   top: 1.5em;
@@ -309,14 +304,12 @@ body {
   transform: rotate(180deg) scale(1.1);
 }
 
-/* Form animation wrapper */
 .form-wrapper {
   position: relative;
   width: 100%;
   min-height: 300px;
 }
 
-/* Overlapping forms with transition */
 .form {
   position: absolute;
   top: 0;
@@ -334,7 +327,6 @@ body {
   pointer-events: auto;
 }
 
-/* Form content */
 form {
   width: 100%;
   display: flex;
@@ -373,11 +365,20 @@ form input[type="submit"] {
   text-decoration: none;
 }
 
-/* Links */
 .idcode-link,
 .video-link {
   margin-top: 1em;
   font-size: 0.9em;
   color: #1eafbf;
   text-decoration: none;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-title svg {
+  vertical-align: middle;
 }
