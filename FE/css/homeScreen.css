@@ -3,7 +3,6 @@
   padding: 0;
   box-sizing: border-box;
 }
-/* Profile Icon Styles - Add this to your homeScreen.css file */
 
 .nav-bar {
   display: flex;
@@ -46,12 +45,11 @@
   fill: stroke;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .profile-icon {
     width: 35px;
     height: 35px;
-    font-size: 16px; /* Smaller emoji on mobile */
+    font-size: 16px;
   }
 
   .profile-icon svg {
@@ -460,7 +458,7 @@ body {
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px; /* Ограничаваме максималната ширина */
+  max-width: 500px;
   margin: 0 auto;
 }
 
@@ -676,7 +674,6 @@ body {
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
-
 .loader {
   border: 8px solid #f3f3f3;
   border-top: 8px solid #e91e63;
@@ -688,6 +685,20 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-title svg {
+  vertical-align: middle;
 }
